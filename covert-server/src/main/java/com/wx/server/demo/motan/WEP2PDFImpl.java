@@ -1,4 +1,5 @@
 package com.wx.server.demo.motan;
+
 import org.icepdf.core.pobjects.Document;
 import org.icepdf.core.pobjects.Page;
 import org.icepdf.core.util.GraphicsRenderingHints;
@@ -8,9 +9,15 @@ import com.jacob.com.Variant;
 import com.weibo.api.motan.config.springsupport.annotation.MotanService;
 
 import javax.imageio.ImageIO;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.List;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 @MotanService
 public class WEP2PDFImpl implements WEP2PDF {
@@ -27,16 +34,21 @@ public class WEP2PDFImpl implements WEP2PDF {
     public static final int WORD_TXT = 7;
     public static final int EXCEL_HTML = 44;
     public static final int PPT_SAVEAS_JPG = 17;
+    public static final int A4_width = 210;
+    public static final int A4_height = 297;
+    public static final int A3_width = 297;
+    public static final int A3_height = 420;
+    public static int scala = 4;
     // private static final int msoTrue = -1;
     // private static final int msofalse = 0;
 
 
     public static void main(String[] s) {
-        try {
-            pdf2Img("C:\\Users\\wx\\Downloads\\荣威i6保养手册.pdf", "C:\\Users\\wx\\Downloads\\images",270);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+
+        String source = "C:\\Users\\wx\\Downloads\\images";
+        String target = "C:\\Users\\wx\\Downloads\\toimage";
+        combineImg(source, target, 3, 2, "A4", null);
+
 
     }
 
@@ -61,33 +73,114 @@ public class WEP2PDFImpl implements WEP2PDF {
 //        }
 //        return true;
 //    }
-    public static boolean pdf2Img(String soursePath, String targetPath,int dpi) throws IOException {
+    public static boolean pdf2Img(String soursePath, String targetPath, int dpi) throws IOException {
 
         if (!soursePath.endsWith("pdf")) return false;
         // ICEpdf document class
         Document document = null;
 
-        float scale = dpi/72f;
+        float scale = dpi / 72f;
         document = new Document();
-        try
-        {
+        try {
             document.setFile(soursePath);
         } catch (Exception e1) {
             e1.printStackTrace();
         }
         // maxPages = document.getPageTree().getNumberOfPages();
 
-        int pages=document.getNumberOfPages();
-        for(int i=0;i<pages;i++){
+
+        int pages = document.getNumberOfPages();
+        for (int i = 0; i < pages; i++) {
 
             BufferedImage img = (BufferedImage) document.getPageImage(i,
                     GraphicsRenderingHints.SCREEN, Page.BOUNDARY_CROPBOX, 0,
                     scale);
-            File imgFile=new File(targetPath,i+".png");
-            ImageIO.write(img, "PNG",imgFile);
+            File imgFile = new File(targetPath, i + ".jpg");
+            ImageIO.write(img, "jpg", imgFile);
         }
-
         return true;
+    }
+
+    public static BufferedImage scalaImage(BufferedImage sourceImg, int toWidth, int toHeight) {
+        BufferedImage result = new BufferedImage(toWidth, toHeight,
+                BufferedImage.TYPE_INT_RGB);
+
+        result.getGraphics().drawImage(
+                sourceImg.getScaledInstance(toWidth, toHeight,
+                        java.awt.Image.SCALE_SMOOTH), 0, 0, null);
+        return result;
+    }
+
+    public static boolean combineImg(String sourceFile, String destFile, int row, int col, String paperType, Integer page) {
+
+        if (page == null) page = 0;
+        int width = 0;
+        int height = 0;
+        if (paperType.equals("A4")) {
+            width = A4_width * scala;
+            height = A4_height * scala;
+        } else if (paperType.equals("A3")) {
+            width = A3_width * scala;
+            height = A3_height * scala;
+        }
+        if (col >= row) {
+            int temp = width;
+            width = height;
+            height = temp;
+        }
+        File file = new File(sourceFile);
+        if (file.isDirectory()) {
+            File[] files = file.listFiles();
+            assert files != null;
+            int len = files.length;
+            int perLen = row * col;
+            int destLen = (int) Math.ceil(((float) len) / perLen);
+
+            int count = 0;
+            Arrays.sort(files, (o1, o2) -> {
+                int i1 = Integer.parseInt(o1.getName().split("\\.")[0]);
+                int i2 = Integer.parseInt(o2.getName().split("\\.")[0]);
+                return Integer.compare(i1, i2);
+            });
+
+            for (int i = page; i < destLen; i++) {
+
+                BufferedImage result = new BufferedImage(width, height,
+                        BufferedImage.TYPE_INT_RGB);
+                Graphics graphics = result.getGraphics();
+                graphics.setColor(Color.WHITE);
+                graphics.fillRect(0, 0, width, height);
+                for (int j = 0; j < perLen && count < len; j++) {
+                    BufferedImage image = null;
+                    try {
+                        image = ImageIO.read(files[count]);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    if (image != null) {
+                        int toWidth = width / col;
+                        int toHeight = height / row;
+                        BufferedImage bufferedImage = scalaImage(image, toWidth, toHeight);
+                        graphics.drawImage(bufferedImage, ((j % col) * toWidth), (j / col) * toHeight, null);
+
+                    }
+                    count++;
+
+                }
+                try {
+                    ImageIO.write(result, "jpg", new File(destFile, i + 1 + ".jpg"));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                if(page!=0) count=destLen;
+
+            }
+
+
+        }
+        return true;
+
+
     }
 
 

@@ -38,7 +38,7 @@ public class Server {
     @Bean
     public BasicServiceConfigBean baseServiceConfig() {
         BasicServiceConfigBean config = new BasicServiceConfigBean();
-        config.setExport("motan:8002");
+        config.setExport("motan:8003");
         config.setRegistry("registry");
         return config;
     }

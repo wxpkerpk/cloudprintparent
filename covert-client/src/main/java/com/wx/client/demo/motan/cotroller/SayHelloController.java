@@ -9,13 +9,13 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class SayHelloController {
 
-    @MotanReferer(basicReferer = "basicRefererConfig")
-    private Hello hello;
+//    @MotanReferer(basicReferer = "basicRefererConfig")
+//    private Hello hello;
 
     @RequestMapping(value = "/")
     @ResponseBody
     public String index() {
 
-        return hello.say("hello");
+        return  "1";
     }
 }

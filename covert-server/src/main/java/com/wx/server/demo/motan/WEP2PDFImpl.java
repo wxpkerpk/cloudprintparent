@@ -1,8 +1,8 @@
 package com.wx.server.demo.motan;
 
-import org.icepdf.core.pobjects.Document;
-import org.icepdf.core.pobjects.Page;
-import org.icepdf.core.util.GraphicsRenderingHints;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.rendering.PDFRenderer;
+
 import com.jacob.activeX.ActiveXComponent;
 import com.jacob.com.Dispatch;
 import com.jacob.com.Variant;
@@ -11,7 +11,9 @@ import com.weibo.api.motan.config.springsupport.annotation.MotanService;
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -47,59 +49,60 @@ public class WEP2PDFImpl implements WEP2PDF {
 
         String source = "C:\\Users\\wx\\Downloads\\images";
         String target = "C:\\Users\\wx\\Downloads\\toimage";
-        combineImg(source, target, 3, 2, "A4", null);
 
 
     }
 
-    //        public static boolean pdf2Img(String soursePath, String targetPath) throws IOException {
-//
-//        if (!soursePath.endsWith("pdf")) return false;
-//        File file = new File(soursePath);
-//        PDDocument doc = null;
-//        try {
-//            doc = PDDocument.load(file);
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//            return false;
-//        }
-//        PDFRenderer renderer = new PDFRenderer(doc);
-//        int pageCount = doc.getNumberOfPages();
-//        for (int i = 0; i < pageCount; i++) {
-//            BufferedImage image; // Windows native DPI
-//                File imgFile= new File(targetPath,i+".png");
-//                image = renderer.renderImageWithDPI(i,300);
-//                ImageIO.write(image, "PNG",imgFile);
-//        }
-//        return true;
-//    }
-    public static boolean pdf2Img(String soursePath, String targetPath, int dpi) throws IOException {
+    public static boolean pdf2Img(String soursePath, String targetPath) throws IOException {
 
         if (!soursePath.endsWith("pdf")) return false;
-        // ICEpdf document class
-        Document document = null;
-
-        float scale = dpi / 72f;
-        document = new Document();
+        File file = new File(soursePath);
+        PDDocument doc = null;
         try {
-            document.setFile(soursePath);
-        } catch (Exception e1) {
-            e1.printStackTrace();
+            doc = PDDocument.load(file);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
         }
-        // maxPages = document.getPageTree().getNumberOfPages();
-
-
-        int pages = document.getNumberOfPages();
-        for (int i = 0; i < pages; i++) {
-
-            BufferedImage img = (BufferedImage) document.getPageImage(i,
-                    GraphicsRenderingHints.SCREEN, Page.BOUNDARY_CROPBOX, 0,
-                    scale);
-            File imgFile = new File(targetPath, i + ".jpg");
-            ImageIO.write(img, "jpg", imgFile);
+        PDFRenderer renderer = new PDFRenderer(doc);
+        int pageCount = doc.getNumberOfPages();
+        for (int i = 0; i < pageCount; i++) {
+            BufferedImage image; // Windows native DPI
+            File imgFile = new File(targetPath, i + ".png");
+            image = renderer.renderImageWithDPI(i, 300);
+            ImageIO.write(image, "PNG", imgFile);
         }
         return true;
     }
+//    public static boolean pdf2Img(String soursePath, String targetPath, int dpi) throws IOException {
+//
+//        if (!soursePath.endsWith("pdf")) return false;
+//        // ICEpdf document class
+//        Document document = null;
+//
+//        float scale = dpi / 72f;
+//        document = new Document();
+//        try {
+//
+//
+//            document.setFile(soursePath);
+//        } catch (Exception e1) {
+//            e1.printStackTrace();
+//        }
+//        // maxPages = document.getPageTree().getNumberOfPages();
+//
+//
+//        int pages = document.getNumberOfPages();
+//        for (int i = 0; i < pages; i++) {
+//
+//            BufferedImage img = (BufferedImage) document.getPageImage(i,
+//                    GraphicsRenderingHints.SCREEN, Page.BOUNDARY_CROPBOX, 0,
+//                    scale);
+//            File imgFile = new File(targetPath, i + ".jpg");
+//            ImageIO.write(img, "jpg", imgFile);
+//        }
+//        return true;
+//    }
 
     public static BufferedImage scalaImage(BufferedImage sourceImg, int toWidth, int toHeight) {
         BufferedImage result = new BufferedImage(toWidth, toHeight,
@@ -111,7 +114,7 @@ public class WEP2PDFImpl implements WEP2PDF {
         return result;
     }
 
-    public static boolean combineImg(String sourceFile, String destFile, int row, int col, String paperType, Integer page) {
+    public static byte[][] combineImg(String sourceFile, int row, int col, String paperType, Integer page) {
 
         if (page == null) page = 0;
         int width = 0;
@@ -142,7 +145,9 @@ public class WEP2PDFImpl implements WEP2PDF {
                 int i2 = Integer.parseInt(o2.getName().split("\\.")[0]);
                 return Integer.compare(i1, i2);
             });
+            destLen = page == 0 ? destLen : page + 1;
 
+            byte[][]images=new byte[destLen-page][];
             for (int i = page; i < destLen; i++) {
 
                 BufferedImage result = new BufferedImage(width, height,
@@ -168,17 +173,19 @@ public class WEP2PDFImpl implements WEP2PDF {
 
                 }
                 try {
-                    ImageIO.write(result, "jpg", new File(destFile, i + 1 + ".jpg"));
+                    ByteArrayOutputStream out = new ByteArrayOutputStream();
+                    ImageIO.write(result, "jpg",out);
+                    images[i-page]=out.toByteArray();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-                if(page!=0) count=destLen;
 
             }
 
+            return images;
 
         }
-        return true;
+        return null;
 
 
     }

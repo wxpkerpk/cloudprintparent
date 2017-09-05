@@ -4,11 +4,16 @@ import com.weibo.api.motan.config.springsupport.AnnotationBean;
 import com.weibo.api.motan.config.springsupport.BasicServiceConfigBean;
 import com.weibo.api.motan.config.springsupport.ProtocolConfigBean;
 import com.weibo.api.motan.config.springsupport.RegistryConfigBean;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class Server {
+    @Value("${register.address}")
+    private String address;
+    @Value("${register.protocol}")
+    private String protocol;
     @Bean
     public AnnotationBean motanAnnotationBean() {
         AnnotationBean motanAnnotationBean = new AnnotationBean();
@@ -21,8 +26,8 @@ public class Server {
         ProtocolConfigBean config = new ProtocolConfigBean();
         config.setDefault(true);
         config.setName("motan");
-        config.setMaxContentLength(1048576);
-        config.setRequestTimeout(10000);
+        config.setMaxContentLength(10485761);
+        config.setRequestTimeout(100000);
 
         return config;
     }
@@ -30,8 +35,8 @@ public class Server {
     @Bean(name = "registry")
     public RegistryConfigBean registryConfig() {
         RegistryConfigBean config = new RegistryConfigBean();
-        config.setRegProtocol("zookeeper");
-        config.setAddress("139.199.202.40:2181");
+        config.setRegProtocol(protocol);
+        config.setAddress(address);
         return config;
     }
 

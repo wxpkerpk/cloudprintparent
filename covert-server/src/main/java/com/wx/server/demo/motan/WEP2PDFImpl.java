@@ -1,5 +1,6 @@
 package com.wx.server.demo.motan;
 
+import ch.qos.logback.core.util.FileUtil;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.rendering.PDFRenderer;
 
@@ -7,17 +8,19 @@ import com.jacob.activeX.ActiveXComponent;
 import com.jacob.com.Dispatch;
 import com.jacob.com.Variant;
 import com.weibo.api.motan.config.springsupport.annotation.MotanService;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.util.FileSystemUtils;
+import utils.FileUtils;
+import utils.FileUtils$;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
+import java.io.*;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
@@ -45,6 +48,8 @@ public class WEP2PDFImpl implements WEP2PDF {
     // private static final int msofalse = 0;
 
 
+    @Value("${covert.tempPath}")
+    private String tempPath;
     public static void main(String[] s) {
 
         String source = "C:\\Users\\wx\\Downloads\\images";
@@ -52,6 +57,7 @@ public class WEP2PDFImpl implements WEP2PDF {
 
 
     }
+
 
     public static boolean pdf2Img(String soursePath, String targetPath) throws IOException {
 
@@ -191,6 +197,17 @@ public class WEP2PDFImpl implements WEP2PDF {
     }
 
 
+    public   byte[]officeFile2PdfBytes(byte[] source)
+    {
+        String sourceTempPath= UUID.randomUUID().toString();
+        String targetTempPath=UUID.randomUUID().toString();
+        FileUtils.writeFile(source,sourceTempPath);
+        byte []pdfBytes=null;
+        if(officeFileConverterToPdf(sourceTempPath,targetTempPath)){
+           pdfBytes= FileUtils.readFile(targetTempPath);
+        }
+        return pdfBytes;
+    }
     public static boolean officeFileConverterToPdf(String argInputFilePath, String argPdfPath) {
         if (argInputFilePath.isEmpty() || argPdfPath.isEmpty() || getFileSufix(argInputFilePath).isEmpty()) {
             return false;

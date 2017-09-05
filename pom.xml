@@ -10,6 +10,8 @@
     <modules>
         <module>covert-client</module>
         <module>covert-server</module>
+        <module>commen</module>
+
     </modules>
     <properties>
         <scala.version>2.12.2</scala.version>

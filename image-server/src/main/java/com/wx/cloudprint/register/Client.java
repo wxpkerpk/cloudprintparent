@@ -1,4 +1,4 @@
-package com.wx.client.demo;
+package com.wx.cloudprint.register;
 
 import com.weibo.api.motan.config.springsupport.*;
 import org.springframework.context.annotation.Bean;

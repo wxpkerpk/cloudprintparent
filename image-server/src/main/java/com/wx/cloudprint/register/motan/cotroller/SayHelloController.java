@@ -1,4 +1,4 @@
-package com.wx.client.demo.motan.cotroller;
+package com.wx.cloudprint.register.motan.cotroller;
 
 import com.weibo.api.motan.config.springsupport.annotation.MotanReferer;
 import com.wx.server.demo.motan.Hello;

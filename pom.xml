@@ -8,9 +8,9 @@
     <packaging>pom</packaging>
 
     <modules>
-        <module>covert-client</module>
         <module>covert-server</module>
         <module>commen</module>
+        <module>image-server</module>
 
     </modules>
     <properties>
@@ -26,6 +26,7 @@
                 <version>${scala.version}</version>
                 <scope>provided</scope>
             </dependency>
+
     </dependencies>
     <build>
         <plugins>

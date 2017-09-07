@@ -1,4 +1,4 @@
-package com.wx.server.demo;
+package com.wx.cloudprint.server.covert;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;

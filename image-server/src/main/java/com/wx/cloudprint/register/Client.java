@@ -9,7 +9,7 @@ public class Client {
     @Bean
     public AnnotationBean motanAnnotationBean() {
         AnnotationBean motanAnnotationBean = new AnnotationBean();
-        motanAnnotationBean.setPackage("com.wx.client.demo.motan.cotroller");
+        motanAnnotationBean.setPackage("com.wx.cloudprint.cotroller");
         return motanAnnotationBean;
     }
 

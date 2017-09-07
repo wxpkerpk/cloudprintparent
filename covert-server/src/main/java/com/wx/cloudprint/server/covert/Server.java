@@ -1,4 +1,4 @@
-package com.wx.server.demo;
+package com.wx.cloudprint.server.covert;
 
 import com.weibo.api.motan.config.springsupport.AnnotationBean;
 import com.weibo.api.motan.config.springsupport.BasicServiceConfigBean;

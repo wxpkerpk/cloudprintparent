@@ -1,6 +1,5 @@
-package com.wx.server.demo.motan;
+package com.wx.cloudprint.server.covert.motan;
 
-import ch.qos.logback.core.util.FileUtil;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.rendering.PDFRenderer;
 
@@ -9,28 +8,17 @@ import com.jacob.com.Dispatch;
 import com.jacob.com.Variant;
 import com.weibo.api.motan.config.springsupport.annotation.MotanService;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.util.FileSystemUtils;
 import utils.FileUtils;
-import utils.FileUtils$;
 
 import javax.imageio.ImageIO;
-import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collector;
-import java.util.stream.Collectors;
 
 @MotanService
 public class WEP2PDFImpl implements WEP2PDF {
 
-    @Override
-    public byte[] covert(byte[] data) {
-        return new byte[0];
-    }
+
 
     private static final int WDFO_RMATPDF = 17;
     private static final int XLTYPE_PDF = 0;
@@ -39,13 +27,15 @@ public class WEP2PDFImpl implements WEP2PDF {
     public static final int WORD_TXT = 7;
     public static final int EXCEL_HTML = 44;
     public static final int PPT_SAVEAS_JPG = 17;
-
+    public static final int A4_width = 210;
+    public static final int A4_height = 297;
+    public static final int A3_width = 297;
+    public static final int A3_height = 420;
+    public static int scala = 4;
     // private static final int msoTrue = -1;
     // private static final int msofalse = 0;
 
 
-    @Value("${covert.tempPath}")
-    private String tempPath;
     public static void main(String[] s) {
 
         String source = "C:\\Users\\wx\\Downloads\\images";
@@ -54,27 +44,39 @@ public class WEP2PDFImpl implements WEP2PDF {
 
     }
 
-
-    public static boolean pdf2Img(String soursePath, String targetPath) throws IOException {
-
-        if (!soursePath.endsWith("pdf")) return false;
-        File file = new File(soursePath);
-        PDDocument doc = null;
+    @Override
+    public  byte[][]offceBytes2imgsBytes(byte[] offceBytes){
+        byte[]pdfBytes=officeFile2PdfBytes(offceBytes);
         try {
-            doc = PDDocument.load(file);
+            return pdfBytes2ImgsBytes(pdfBytes);
         } catch (IOException e) {
             e.printStackTrace();
-            return false;
         }
+        return null;
+    }
+
+     static  byte[][] pdfBytes2ImgsBytes(byte[]pdfBytes) throws IOException {
+
+
+        PDDocument doc = null;
+        try {
+            doc = PDDocument.load(pdfBytes);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+        int page=doc.getNumberOfPages();
+        byte[][]result=new byte[page][];
         PDFRenderer renderer = new PDFRenderer(doc);
-        int pageCount = doc.getNumberOfPages();
-        for (int i = 0; i < pageCount; i++) {
+        for (int i = 0; i < page; i++) {
             BufferedImage image; // Windows native DPI
-            File imgFile = new File(targetPath, i + ".png");
-            image = renderer.renderImageWithDPI(i, 300);
-            ImageIO.write(image, "PNG", imgFile);
+            ByteArrayOutputStream byteArrayOutputStream=new ByteArrayOutputStream();
+            image = renderer.renderImageWithDPI(i, 196);
+            ImageIO.write(image, "PNG", byteArrayOutputStream);
+            result[i]= byteArrayOutputStream.toByteArray();
+            byteArrayOutputStream.close();
         }
-        return true;
+        return result;
     }
 //    public static boolean pdf2Img(String soursePath, String targetPath, int dpi) throws IOException {
 //
@@ -83,7 +85,7 @@ public class WEP2PDFImpl implements WEP2PDF {
 //        Document document = null;
 //
 //        float scale = dpi / 72f;
-//        document = new Document();
+//        document = new Docu  ment();
 //        try {
 //
 //
@@ -107,9 +109,7 @@ public class WEP2PDFImpl implements WEP2PDF {
 //    }
 
 
-
-
-    public   byte[]officeFile2PdfBytes(byte[] source)
+      static byte[]officeFile2PdfBytes(byte[] source)
     {
         String sourceTempPath= UUID.randomUUID().toString();
         String targetTempPath=UUID.randomUUID().toString();
@@ -120,7 +120,7 @@ public class WEP2PDFImpl implements WEP2PDF {
         }
         return pdfBytes;
     }
-    public static boolean officeFileConverterToPdf(String argInputFilePath, String argPdfPath) {
+     static boolean officeFileConverterToPdf(String argInputFilePath, String argPdfPath) {
         if (argInputFilePath.isEmpty() || argPdfPath.isEmpty() || getFileSufix(argInputFilePath).isEmpty()) {
             return false;
         }
@@ -133,7 +133,7 @@ public class WEP2PDFImpl implements WEP2PDF {
         }
 
         // PDF如果不存在则创建文件夹
-        file = new File(getFilePath(argPdfPath));
+        file = new File(argPdfPath);
         if (!file.exists()) {
             file.mkdir();
         }
@@ -167,7 +167,7 @@ public class WEP2PDFImpl implements WEP2PDF {
      * @param pdfPath
      * @return
      */
-    public static boolean wordToPDF(String wordPath, String pdfPath) {
+     static boolean wordToPDF(String wordPath, String pdfPath) {
         ActiveXComponent msWordApp = new ActiveXComponent("Word.Application");
         msWordApp.setProperty("Visible", new Variant(false));
 
@@ -192,7 +192,7 @@ public class WEP2PDFImpl implements WEP2PDF {
      * @param pdfFile
      * @return
      */
-    public static boolean excelToPdf(String inputFile, String pdfFile) {
+     static boolean excelToPdf(String inputFile, String pdfFile) {
         ActiveXComponent activeXComponent = new ActiveXComponent("Excel.Application");
         activeXComponent.setProperty("Visible", false);
 
@@ -214,7 +214,7 @@ public class WEP2PDFImpl implements WEP2PDF {
      * @param imgFile
      * @return
      */
-    public static boolean pptToImg(String inputFile, String imgFile) {
+     static boolean pptToImg(String inputFile, String imgFile) {
         // 打开word应用程序
         ActiveXComponent app = new ActiveXComponent("PowerPoint.Application");
         // 设置word不可见，office可能有限制
@@ -247,16 +247,7 @@ public class WEP2PDFImpl implements WEP2PDF {
         return argFilePath.substring(splitIndex + 1);
     }
 
-    /**
-     * subString file path
-     *
-     * @param argFilePath file path
-     * @return filePaths
-     */
-    public static String getFilePath(String argFilePath) {
-        int pathIndex = argFilePath.lastIndexOf("/");
-        return argFilePath.substring(0, pathIndex);
-    }
+
 
     /**
      * 如果PDF存在则删除PDF

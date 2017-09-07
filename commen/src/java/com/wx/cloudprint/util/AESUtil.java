@@ -1,6 +1,4 @@
-package com.wx.cloudprint.message.utils;
-
-import sun.security.provider.MD5;
+package com.wx.cloudprint.util;
 
 import javax.crypto.*;
 import javax.crypto.spec.SecretKeySpec;

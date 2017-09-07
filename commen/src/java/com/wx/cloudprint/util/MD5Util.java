@@ -1,4 +1,4 @@
-package com.wx.cloudprint.message.utils;
+package com.wx.cloudprint.util;
 
 import java.security.MessageDigest;
 

@@ -3,17 +3,14 @@ package com.wx.cloudprint.cotroller;
 import com.weibo.api.motan.config.springsupport.annotation.MotanReferer;
 import com.wx.cloudprint.Service.ImageService;
 import com.wx.cloudprint.message.Message;
-import com.wx.cloudprint.message.utils.MD5Util;
+import com.wx.cloudprint.util.MD5Util;
 import com.wx.cloudprint.server.covert.motan.WEP2PDF;
-import org.apache.catalina.servlet4preview.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import utils.FileUtils;
+import com.wx.cloudprint.util.FileUtils;
 
 import javax.annotation.Resource;
-import javax.imageio.ImageIO;
-import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
@@ -53,10 +50,9 @@ public class ImageController {
         byte[]data= file.getBytes();
         String name=file.getName();
         String prefix=name.split("\\.")[1];
-        name=name.split("\\.")[0];
         String currentMD5= MD5Util.encrpt(data);
         if(md5.equals(currentMD5)){
-          byte imageBytes[][]=  wep2PDF.offceBytes2imgsBytes(data);
+          byte imageBytes[][]=  wep2PDF.offceBytes2imgsBytes(data,prefix);
           File parentFile=new File(filePath,md5);
           for(int i=0;i<imageBytes.length;i++){
               File f=new File(parentFile.getPath(),i+".png");
@@ -65,7 +61,6 @@ public class ImageController {
           return Message.createMessage(Message.success_state,null);
         }
         return Message.createMessage(Message.fail_state,null);
-
 
     }
 }

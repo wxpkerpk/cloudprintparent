@@ -17,7 +17,7 @@ public class Server {
     @Bean
     public AnnotationBean motanAnnotationBean() {
         AnnotationBean motanAnnotationBean = new AnnotationBean();
-        motanAnnotationBean.setPackage("com.wx.server.demo.motan");
+        motanAnnotationBean.setPackage("com.wx.cloudprint.server.covert.motan");
         return motanAnnotationBean;
     }
 

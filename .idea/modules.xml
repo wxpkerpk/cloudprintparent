@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/cloudprintparent.iml" filepath="$PROJECT_DIR$/cloudprintparent.iml" />
+      <module fileurl="file://$PROJECT_DIR$/commen/commen.iml" filepath="$PROJECT_DIR$/commen/commen.iml" />
+      <module fileurl="file://$PROJECT_DIR$/covert-server/covert-server.iml" filepath="$PROJECT_DIR$/covert-server/covert-server.iml" />
+      <module fileurl="file://$PROJECT_DIR$/image-server/image-server.iml" filepath="$PROJECT_DIR$/image-server/image-server.iml" />
+    </modules>
+  </component>
+</project>

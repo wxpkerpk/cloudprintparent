@@ -81,6 +81,5 @@
     <orderEntry type="library" name="Maven: jline:jline:0.9.94" level="project" />
     <orderEntry type="library" name="Maven: io.netty:netty:3.7.0.Final" level="project" />
     <orderEntry type="library" name="Maven: com.101tec:zkclient:0.3" level="project" />
-    <orderEntry type="library" name="Maven: org.scala-lang:scala-library:${scala.version}" level="project" />
   </component>
 </module>

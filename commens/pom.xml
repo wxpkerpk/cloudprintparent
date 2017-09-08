@@ -3,19 +3,10 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>commen</artifactId>
-    <version>2.0</version>
+    <groupId>cloudprint</groupId>
+    <artifactId>commens</artifactId>
+    <version>3.0</version>
     <packaging>jar</packaging>
-
-
-
-
-    <parent>
-        <groupId>cloudprint</groupId>
-        <artifactId>cloudprint-parent</artifactId>
-        <version>1.0</version>
-    </parent>
-
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>

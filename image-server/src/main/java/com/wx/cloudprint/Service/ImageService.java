@@ -4,7 +4,9 @@ import org.springframework.stereotype.Service;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
+import java.awt.color.ColorSpace;
 import java.awt.image.BufferedImage;
+import java.awt.image.ColorConvertOp;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
@@ -17,17 +19,21 @@ public class ImageService {
     public static final int A3_width = 297;
     public static final int A3_height = 420;
     public static int scala = 4;
-    public static BufferedImage scalaImage(BufferedImage sourceImg, int toWidth, int toHeight) {
+     private static ColorConvertOp colorConvertOp =new ColorConvertOp(ColorSpace.getInstance(ColorSpace.CS_GRAY),null);
+    public static BufferedImage scalaImage(BufferedImage sourceImg, int toWidth, int toHeight,boolean isMono) {
         BufferedImage result = new BufferedImage(toWidth, toHeight,
                 BufferedImage.TYPE_INT_RGB);
 
         result.getGraphics().drawImage(
                 sourceImg.getScaledInstance(toWidth, toHeight,
                         java.awt.Image.SCALE_SMOOTH), 0, 0, null);
+        if(isMono){
+            result=    colorConvertOp.filter (result,null);
+        }
         return result;
     }
 
-    public static byte[][] combineImg(String sourceFile, int row, int col, String paperType, Integer page) {
+    public  byte[][] combineImg(String sourceFile, int row, int col, String paperType, Integer page,boolean isHorizontal,boolean isMono) {
 
         if (page == null) page = 0;
         int width = 0;
@@ -78,7 +84,7 @@ public class ImageService {
                     if (image != null) {
                         int toWidth = width / col;
                         int toHeight = height / row;
-                        BufferedImage bufferedImage = scalaImage(image, toWidth, toHeight);
+                        BufferedImage bufferedImage = scalaImage(image, toWidth, toHeight,isMono);
                         graphics.drawImage(bufferedImage, ((j % col) * toWidth), (j / col) * toHeight, null);
 
                     }

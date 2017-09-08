@@ -5,15 +5,15 @@ import com.wx.cloudprint.Service.ImageService;
 import com.wx.cloudprint.message.Message;
 import com.wx.cloudprint.util.MD5Util;
 import com.wx.cloudprint.server.covert.motan.WEP2PDF;
+import org.apache.catalina.servlet4preview.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import com.wx.cloudprint.util.FileUtils;
 
 import javax.annotation.Resource;
-import java.io.File;
-import java.io.IOException;
-import java.io.Serializable;
+import javax.servlet.http.HttpServletResponse;
+import java.io.*;
 
 @RestController
 @RequestMapping(name = "/API/file")
@@ -56,11 +56,32 @@ public class ImageController {
           File parentFile=new File(filePath,md5);
           for(int i=0;i<imageBytes.length;i++){
               File f=new File(parentFile.getPath(),i+".png");
-              FileUtils.writeFile(imageBytes[i],f.getPath());
+              FileUtils.writeByte(f.getPath(),imageBytes[i]);
           }
           return Message.createMessage(Message.success_state,null);
         }
         return Message.createMessage(Message.fail_state,null);
 
     }
+
+    @RequestMapping(value = "/pic/preview",method = {RequestMethod.GET,RequestMethod.POST})
+    public void preview(HttpServletRequest request, HttpServletResponse response,@RequestParam String md5, @RequestParam String size,@RequestParam int row,@RequestParam int col,@RequestParam(required = false)Integer page
+            ,@RequestParam boolean isMono) throws IOException {
+
+
+        String sourcePath=new File(filePath,md5).getPath();
+        byte [][]result= imageService.combineImg(sourcePath,row,col,size,page,false,isMono);
+        response.setContentType("image/png");
+        try {
+            response.setHeader("Content-Disposition",
+                    "attachment;filename=" +  new String((md5+"_"+page).getBytes(), "iso8859-1"));
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        OutputStream outputStream= response.getOutputStream();
+        outputStream.write(result[0]);
+
+
+    }
+
 }

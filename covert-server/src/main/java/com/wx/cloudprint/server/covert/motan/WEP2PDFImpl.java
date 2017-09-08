@@ -11,6 +11,7 @@ import com.weibo.api.motan.config.springsupport.annotation.MotanService;
 import org.icepdf.core.pobjects.Document;
 import org.icepdf.core.pobjects.Page;
 import org.icepdf.core.util.GraphicsRenderingHints;
+import org.springframework.beans.factory.annotation.Value;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -33,16 +34,9 @@ public class WEP2PDFImpl implements WEP2PDF {
     public static final int WORD_TXT = 7;
     public static final int EXCEL_HTML = 44;
     public static final int PPT_SAVEAS_JPG = 17;
-    public static final int A4_width = 210;
-    public static final int A4_height = 297;
-    public static final int A3_width = 297;
-    public static final int A3_height = 420;
-    public static int scala = 4;
-    // private static final int msoTrue = -1;
-    // private static final int msofalse = 0;
 
-
-    public static String tempFilePath="D:\\tempFile";
+    @Value("${file.tempPath}")
+    private   String tempFilePath;
 
     public static void main(String[] s) {
 
@@ -51,9 +45,9 @@ public class WEP2PDFImpl implements WEP2PDF {
         String prefix=source.split("\\.")[1];
         try {
             int i=1;
-            byte[][]datas=new WEP2PDFImpl().offceBytes2imgsBytes(FileUtils.readFile(source),prefix);
+            byte[][]datas=new WEP2PDFImpl().offceBytes2imgsBytes(FileUtils.readByte(source),prefix);
             for(byte[] data:datas){
-                FileUtils.writeFile(data,new File(target,(i++)+".jpg").getPath());
+                FileUtils.writeByte(new File(target,(i++)+".jpg").getPath(),data);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -69,25 +63,27 @@ public class WEP2PDFImpl implements WEP2PDF {
             String targetTempPath=null;
             String sourceTempPath= new File(tempFilePath,UUID.randomUUID().toString()+"."+prefix).getPath();
             targetTempPath=new File(tempFilePath,UUID.randomUUID().toString()).getPath();
+            FileUtils.writeByte(sourceTempPath,offceBytes);
+            officeFileConverterToPdf(sourceTempPath,targetTempPath);
+            return readFileImages(targetTempPath);
+        }else if(prefix.equals("pdf")){
             try {
-                FileUtils.writeFile(offceBytes,sourceTempPath);
+                return pdfBytes2ImgsBytes(offceBytes);
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            officeFileConverterToPdf(sourceTempPath,targetTempPath);
-            return readFileImages(targetTempPath);
+        }else {
+            try {
+                byte[] pdfBytes = officeFile2PdfBytes(offceBytes, prefix);
 
-        }
-        try {
-            byte[]pdfBytes=officeFile2PdfBytes(offceBytes,prefix);
-
-            return pdfBytes2ImgsBytes(pdfBytes);
-        } catch (Exception e) {
-            e.printStackTrace();
+                return pdfBytes2ImgsBytes(pdfBytes);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
         return null;
     }
-    static byte[][]readFileImages(String path){
+     byte[][]readFileImages(String path){
 
         File file=new File(path);
           File[] fileList= file.listFiles();
@@ -102,7 +98,7 @@ public class WEP2PDFImpl implements WEP2PDF {
         byte[][]result=new byte[fileList.length][];
         for(int i=0;i<fileList.length;i++){
             try {
-                result[i]=FileUtils.readFile(fileList[i]);
+                result[i]=FileUtils.readByte(fileList[i].getPath());
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -111,7 +107,7 @@ public class WEP2PDFImpl implements WEP2PDF {
 
     }
 
-     static  byte[][] pdfBytes2ImgsBytes(byte[]pdfBytes) throws IOException {
+       byte[][] pdfBytes2ImgsBytes(byte[]pdfBytes) throws IOException {
 
         int dpi=216;
          Document document = null;
@@ -175,7 +171,7 @@ public class WEP2PDFImpl implements WEP2PDF {
 //    }
 
 
-      static byte[]officeFile2PdfBytes(byte[] source,String prefix) throws Exception {
+       byte[]officeFile2PdfBytes(byte[] source,String prefix) throws Exception {
 
         File file=new File(tempFilePath);
         if(!file.exists()) file.mkdir();
@@ -184,10 +180,10 @@ public class WEP2PDFImpl implements WEP2PDF {
         String sourceTempPath= new File(tempFilePath,UUID.randomUUID().toString()+"."+prefix).getPath();
 
          targetTempPath=new File(tempFilePath,UUID.randomUUID().toString()+".pdf").getPath();
-        FileUtils.writeFile(source,sourceTempPath);
+        FileUtils.writeByte(sourceTempPath,source);
         byte []pdfBytes=null;
         if(officeFileConverterToPdf(sourceTempPath,targetTempPath)){
-           pdfBytes= FileUtils.readFile(targetTempPath);
+           pdfBytes= FileUtils.readByte(targetTempPath);
         }
         return pdfBytes;
     }
@@ -250,10 +246,8 @@ public class WEP2PDFImpl implements WEP2PDF {
 
         Dispatch.invoke(doc, "SaveAs", Dispatch.Method, new Object[]{pdfPath, new Variant(WDFO_RMATPDF)}, new int[1]);
         // long pdfEnd = System.currentTimeMillis();
-        if (null != doc) {
-            Dispatch.call(doc, "Close", false);
-        }
-        return true;
+         Dispatch.call(doc, "Close", false);
+         return true;
     }
 
     /**

@@ -14,9 +14,9 @@ public class FileUtils {
     }
 
     public static boolean writeByte(String fileName, byte[] b) {
-        BufferedOutputStream fos=null;
+        FileOutputStream fos=null;
         try {
-            fos = new BufferedOutputStream(new FileOutputStream(fileName));
+            fos = new FileOutputStream((fileName));
             fos.write(b);
             fos.flush();
             return true;

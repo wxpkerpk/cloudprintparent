@@ -3,7 +3,7 @@ package com.wx.cloudprint.imageserver.cotroller;
 import com.wx.cloudprint.dataservice.entity.Res;
 import com.wx.cloudprint.dataservice.service.ResService;
 import com.weibo.api.motan.config.springsupport.annotation.MotanReferer;
-import com.wx.cloudprint.dataservice.service.ImageService;
+import com.wx.cloudprint.imageserver.service.ImageService;
 
 import com.wx.cloudprint.server.covert.motan.WEP2PDF;
 import message.Message;
@@ -38,15 +38,13 @@ public class ImageController {
     private ImageService imageService;
 
 
+    @Value("${server.port}")
+    String port;
     @Resource
     private ResService resService;
     class Url implements Serializable{
-        String host;
+       public String url;
 
-        public Url setHost(String host) {
-            this.host = host;
-            return this;
-        }
     }
     public static String serverIp;
 
@@ -61,7 +59,7 @@ public class ImageController {
     @ResponseBody
     public Message url() {
         Url url=new Url();
-        url.host=serverIp;
+        url.url=serverIp+":"+port+"/API/file/upload";
         return Message.createMessage(Message.success_state,url);
     }
 
@@ -123,7 +121,7 @@ public class ImageController {
 
 
     }
-    @RequestMapping(value = "file/pic/page",method = {RequestMethod.GET,RequestMethod.POST})
+    @RequestMapping(value = "file/page",method = {RequestMethod.GET,RequestMethod.POST})
     public Message getPage(@RequestParam String md5){
         Res res= resService.getByMD5(md5);
         Map<String,Object> message=new LinkedHashMap<>();
@@ -133,7 +131,7 @@ public class ImageController {
             message.put("pageCount",res.getPage());
             message.put("direction",res.getDirection());
         }else{
-            message.put("result","NOT  EXISTED");
+            message.put("result","NO_EXIST");
         }
         return Message.createMessage(Message.success_state,message);
     }

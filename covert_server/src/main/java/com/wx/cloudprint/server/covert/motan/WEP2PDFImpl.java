@@ -1,29 +1,25 @@
-package com.wx.cloudprint.motan;
+package com.wx.cloudprint.server.covert.motan;
 
 
 import com.jacob.activeX.ActiveXComponent;
 import com.jacob.com.Dispatch;
 import com.jacob.com.Variant;
 import com.weibo.api.motan.config.springsupport.annotation.MotanService;
-import org.apache.pdfbox.*;
 
 import org.apache.pdfbox.pdmodel.PDDocument;
-import org.apache.pdfbox.pdmodel.PDPage;
-import org.apache.pdfbox.rendering.ImageType;
+
 import org.apache.pdfbox.rendering.PDFRenderer;
 import org.springframework.beans.factory.annotation.Value;
 import util.FileUtils;
 
-import javax.imageio.IIOImage;
+
 import javax.imageio.ImageIO;
-import javax.imageio.ImageWriter;
-import javax.imageio.stream.ImageOutputStream;
+
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
 import java.util.UUID;
+
 
 @MotanService
 public class WEP2PDFImpl implements WEP2PDF {
@@ -74,7 +70,7 @@ public class WEP2PDFImpl implements WEP2PDF {
             File file=new File(tempFilePath);
             if(!file.exists()) file.mkdir();
             String targetTempPath=null;
-            String sourceTempPath= new File(tempFilePath,UUID.randomUUID().toString()+"."+prefix).getPath();
+            String sourceTempPath= new File(tempFilePath, UUID.randomUUID().toString()+"."+prefix).getPath();
             targetTempPath=new File(tempFilePath,UUID.randomUUID().toString()).getPath();
             FileUtils.writeByte(sourceTempPath,offceBytes);
             officeFileConverterToPdf(sourceTempPath,targetTempPath);

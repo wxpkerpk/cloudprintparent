@@ -1,4 +1,4 @@
-package com.wx.cloudprint.dataservice.service;
+package com.wx.cloudprint.imageserver.service;
 
 import org.springframework.stereotype.Service;
 

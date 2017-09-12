@@ -11,6 +11,9 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
 @SpringBootApplication
 @RestController
@@ -28,30 +31,5 @@ public class StartImageApplication {
         ImageController.serverIp=args[0];
         SpringApplication.run(StartImageApplication.class, args);
     }
-    private CorsConfiguration buildConfig() {
-        CorsConfiguration corsConfiguration = new CorsConfiguration();
-        corsConfiguration.addAllowedOrigin("*");
-        corsConfiguration.addAllowedHeader("*");
-        corsConfiguration.addAllowedMethod("*");
-        return corsConfiguration;
-    }
-
-    /**
-     * 跨域过滤器
-     * @return
-     */
-    @Bean
-    public CorsFilter corsFilter() {
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", buildConfig()); // 4
-        return new CorsFilter(source);
-    }
-//    @Bean
-//    public TomcatEmbeddedServletContainerFactory servletContainer(){
-//        TomcatEmbeddedServletContainerFactory container = new TomcatEmbeddedServletContainerFactory();
-//        container.setPort(8090);
-////		container.addErrorPages(new ErrorPage(HttpStatus.NOT_FOUND,""));
-//        return container;
-//    }
 
 }

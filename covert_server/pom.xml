@@ -23,11 +23,7 @@
 
 
     <dependencies>
-        <dependency>
-            <groupId>com.icepdf</groupId>
-            <artifactId>pro</artifactId>
-            <version>6.3</version>
-        </dependency>
+
         <dependency>
             <groupId>com.wx.cloudprint</groupId>
             <artifactId>commens</artifactId>

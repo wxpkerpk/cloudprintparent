@@ -122,7 +122,7 @@ public class ImageController {
 
     }
     @RequestMapping(value = "file/page",method = {RequestMethod.GET,RequestMethod.POST})
-    public Message getPage(@RequestParam String md5){
+    public Map<String, Object> getPage(@RequestParam String md5){
         Res res= resService.getByMD5(md5);
         Map<String,Object> message=new LinkedHashMap<>();
 
@@ -133,7 +133,7 @@ public class ImageController {
         }else{
             message.put("result","NO_EXIST");
         }
-        return Message.createMessage(Message.success_state,message);
+        return message;
     }
 
 }

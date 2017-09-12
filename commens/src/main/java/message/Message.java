@@ -5,7 +5,7 @@ import java.io.Serializable;
 
 public class Message implements Serializable {
     String result;
-    Object message;
+    Object info;
 
     public static String success_state="ok";
     public static String fail_state="fail";
@@ -15,7 +15,7 @@ public class Message implements Serializable {
 
     public Message(String result, Object message) {
         this.result = result;
-        this.message = message;
+        this.info = message;
     }
 
     public Message() {
@@ -26,11 +26,11 @@ public class Message implements Serializable {
     }
 
     public Object getMessage() {
-        return message;
+        return info;
     }
 
     public void setMessage(Serializable message) {
-        this.message = message;
+        this.info = message;
     }
     public static Message createMessage(String state,Object  message){
         return new Message(state,message);

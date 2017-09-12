@@ -4,35 +4,32 @@ package message;
 import java.io.Serializable;
 
 public class Message implements Serializable {
-    String result;
-    Object info;
+    private String result;
+    private Object info;
 
-    public static String success_state="ok";
-    public static String fail_state="fail";
+    public static String success_state="OK";
+    public static String fail_state="FAIL";
     public String getResult() {
         return result;
     }
 
-    public Message(String result, Object message) {
+    public Message(String result, Object info) {
         this.result = result;
-        this.info = message;
+        this.info = info;
     }
 
     public Message() {
     }
 
-    public void setResult(String result) {
-        this.result = result;
-    }
-
-    public Object getMessage() {
+    public Object getInfo() {
         return info;
     }
 
-    public void setMessage(Serializable message) {
-        this.info = message;
+    public void setInfo(Object info) {
+        this.info = info;
     }
-    public static Message createMessage(String state,Object  message){
+
+    public static Message createMessage(String state, Object  message){
         return new Message(state,message);
     }
 }

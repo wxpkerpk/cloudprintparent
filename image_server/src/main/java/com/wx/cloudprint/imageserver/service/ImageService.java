@@ -45,7 +45,7 @@ public class ImageService {
             width = A3_width * scala;
             height = A3_height * scala;
         }
-        if (col >= row && !isDirection) {
+        if ((col >= row && col >= 2) ||(col==row&&row==1&!isDirection)) {
             int temp = width;
             width = height;
             height = temp;
@@ -67,7 +67,7 @@ public class ImageService {
             destLen = page == null ? destLen : page + 1;
 
             byte[][] images = new byte[destLen - page][];
-            count=page*perLen;
+            count = page * perLen;
             for (int i = page; i < destLen; i++) {
 
                 BufferedImage result = new BufferedImage(width, height,
@@ -85,8 +85,11 @@ public class ImageService {
                     if (image != null) {
                         int toWidth = width / col;
                         int toHeight = height / row;
-                        BufferedImage bufferedImage = scalaImage(image, toWidth, toHeight, isMono);
+                        BufferedImage bufferedImage = null;
+                        bufferedImage = scalaImage(image, toWidth, toHeight, isMono);
+
                         graphics.drawImage(bufferedImage, ((j % col) * toWidth), (j / col) * toHeight, null);
+
 
                     }
                     count++;

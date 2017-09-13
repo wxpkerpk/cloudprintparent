@@ -26,7 +26,7 @@ public class Server {
         ProtocolConfigBean config = new ProtocolConfigBean();
         config.setDefault(true);
         config.setName("motan");
-        config.setMaxContentLength(10485761);
+        config.setMaxContentLength(1048571600);
         config.setRequestTimeout(100000);
 
         return config;

@@ -40,12 +40,12 @@ public class WEP2PDFImpl implements WEP2PDF {
     public static void main(String[] s) {
 
         StringBuilder supers= new StringBuilder();
-        File file=new File("C:\\Users\\wx\\Desktop\\cloudprintparent\\covert_server\\lib");
-        File[]files=file.listFiles();
-        for(File f:files){
-            supers.append(String.format("  <zipfileset src=\"%s\"/>\n  ", f.getName()));
+        try {
+            byte [][]data= pdf2Img(   FileUtils.readByte("/Users/wx/Downloads/02aa61bd-ced0-4de5-8fdf-9d08ee445ac4.pdf"
+            ) ,216);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-        System.out.println(supers.toString());
 //        String source = "C:\\Users\\wx\\Documents\\工作簿1.xlsx";
 //        String target="C:\\Users\\wx\\Downloads\\toimage";
 //        String prefix=source.split("\\.")[1];
@@ -77,7 +77,7 @@ public class WEP2PDFImpl implements WEP2PDF {
             return readFileImages(targetTempPath);
         }else if(prefix.equals("pdf")){
             try {
-                return pdf2Img(offceBytes,216);
+                return pdf2Img(offceBytes,200);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -85,7 +85,7 @@ public class WEP2PDFImpl implements WEP2PDF {
             try {
                 byte[] pdfBytes = officeFile2PdfBytes(offceBytes, prefix);
 
-                return pdf2Img(pdfBytes,216);
+                return pdf2Img(pdfBytes,200);
             } catch (Exception e) {
                 e.printStackTrace();
             }

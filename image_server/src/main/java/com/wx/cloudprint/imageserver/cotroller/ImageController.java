@@ -61,23 +61,32 @@ public class ImageController {
     @ResponseBody
     public Message url() {
         Url url = new Url();
-        url.url = "http://" + serverIp + ":" + port + "/API/file/upload";
+        url.url = genRestfulUrl(serverIp,port,"/API/file/upload");
         Message message = Message.createMessage(Message.success_state, url);
         return message;
     }
+    private String genRestfulUrl(String ip,String port,String prefix)
+    {
+        StringBuilder builder=new StringBuilder(80);
+        builder.append("http://").append(ip).append(":").append(port).append(prefix);
+        return builder.toString();
+    }
 
-
+    static String getFilePrefix(String name){
+        String []temp=name.split("\\.");
+        return temp.length>=2 ?temp[temp.length-1]:null;
+    }
     @RequestMapping(value = "file/upload", method = {RequestMethod.GET, RequestMethod.POST})
     @ResponseBody
     public Message upload(@RequestParam MultipartFile file) throws IOException {
         byte[] data = file.getBytes();
         String name = file.getOriginalFilename();
-        String prefix = name.split("\\.")[1];
+        String prefix = getFilePrefix(name);
         String currentMD5 = MD5Util.encrpt(data);
         boolean isDerect = false;
         //调用远程服务群
         byte imageBytes[][] = wep2PDF.offceBytes2imgsBytes(data, prefix);
-        ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(imageBytes[1]);
+        ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(imageBytes[0]);
         BufferedImage image = ImageIO.read(byteArrayInputStream);
         int width = image.getWidth();
         int height = image.getHeight();
@@ -86,7 +95,7 @@ public class ImageController {
         File parentFile = new File(filePath, currentMD5);
         parentFile.mkdir();
         for (int i = 0; i < imageBytes.length; i++) {
-            File f = new File(parentFile.getPath(), i + ".png");
+            File f = new File(parentFile.getPath(), i + ".jpg");
             FileUtils.writeByte(f.getPath(), imageBytes[i]);
         }
         Res res = new Res();
@@ -106,9 +115,11 @@ public class ImageController {
     public Message Preview(HttpServletRequest request, HttpServletResponse response, @RequestParam String md5, @RequestParam String size, @RequestParam int row, @RequestParam int col, @RequestParam(required = false) Integer page
             , @RequestParam(required = false) Boolean isMono) {
 
-        String url= "http://" + serverIp + ":" + port + "/API/file/pic/get/preview?"+String.format("md5=%s&size=%s&row=%s&col=%s&page=%s",md5,size,row,col,page);
+       String url=  genRestfulUrl(serverIp,port,"/API/file/pic/get/preview?"+String.format("md5=%s&size=%s&row=%s&col=%s&page=%s",md5,size,row,col,page));
 
-        return Message.createMessage(Message.success_state,url);
+        Map<String,String>map=new LinkedHashMap<>();
+        map.put("img",url);
+        return Message.createMessage(Message.success_state,map);
 
     }
     @RequestMapping(value = "file/pic/get/preview", method = {RequestMethod.GET, RequestMethod.POST})
@@ -118,16 +129,15 @@ public class ImageController {
 
         isMono = false;
         String sourcePath = new File(filePath, md5).getPath();
-        byte[][] result = imageService.combineImg(sourcePath, row, col, size, --page, false, isMono);
-        response.setContentType("image/jpeg");
-//        try {
-////            response.setHeader("Content-Disposition",
-////                    "attachment;filename=" +  new String((md5+"_"+page+".png").getBytes(), "iso8859-1"));
-//        } catch (UnsupportedEncodingException e) {
-//            e.printStackTrace();
-//        }
-        OutputStream outputStream = response.getOutputStream();
-        outputStream.write(result[0]);
+        Res res=resService.getByMD5(md5);
+        if(res!=null) {
+
+            byte[][] result = imageService.combineImg(sourcePath, row, col, size, --page, res.getDirection(), isMono);
+            response.setContentType("image/jpeg");
+            OutputStream outputStream = response.getOutputStream();
+            if(result!=null)
+            outputStream.write(result[0]);
+        }
 
 
     }

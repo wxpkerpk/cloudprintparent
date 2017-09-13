@@ -18,7 +18,7 @@ public class Client {
         ProtocolConfigBean config = new ProtocolConfigBean();
         config.setDefault(true);
         config.setName("motan");
-        config.setMaxContentLength(10485716);
+        config.setMaxContentLength(1048571600);
         config.setRequestTimeout(800000);
         return config;
     }

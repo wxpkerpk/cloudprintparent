@@ -102,7 +102,17 @@ public class ImageController {
     }
 
     @RequestMapping(value = "file/pic/preview", method = {RequestMethod.GET, RequestMethod.POST})
-    public void preview(HttpServletRequest request, HttpServletResponse response, @RequestParam String md5, @RequestParam String size, @RequestParam int row, @RequestParam int col, @RequestParam(required = false) Integer page
+    @ResponseBody
+    public Message Preview(HttpServletRequest request, HttpServletResponse response, @RequestParam String md5, @RequestParam String size, @RequestParam int row, @RequestParam int col, @RequestParam(required = false) Integer page
+            , @RequestParam(required = false) Boolean isMono) {
+
+        String url= "http://" + serverIp + ":" + port + "/API/file/pic/get/preview?"+String.format("md5=%s&size=%s&row=%s&col=%s&page=%s",md5,size,row,col,page);
+
+        return Message.createMessage(Message.success_state,url);
+
+    }
+    @RequestMapping(value = "file/pic/get/preview", method = {RequestMethod.GET, RequestMethod.POST})
+    public void getPreview(HttpServletRequest request, HttpServletResponse response, @RequestParam String md5, @RequestParam String size, @RequestParam int row, @RequestParam int col, @RequestParam(required = false) Integer page
             , @RequestParam(required = false) Boolean isMono) throws IOException {
 
 

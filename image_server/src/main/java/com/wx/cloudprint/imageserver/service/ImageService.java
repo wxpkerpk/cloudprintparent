@@ -27,7 +27,7 @@ public class ImageService {
 
         result.getGraphics().drawImage(
                 sourceImg.getScaledInstance(toWidth, toHeight,
-                        Image.SCALE_AREA_AVERAGING), 0, 0, null);
+                        Image.SCALE_SMOOTH), 0, 0, null);
         if (isMono) {
             result = colorConvertOp.filter(result, null);
         }

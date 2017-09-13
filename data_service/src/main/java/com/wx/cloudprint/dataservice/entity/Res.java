@@ -12,7 +12,16 @@ public class Res {
     Date time;
     Boolean isDirection;
     String host;
+    String port;
     int page;
+
+    public String getPort() {
+        return port;
+    }
+
+    public void setPort(String port) {
+        this.port = port;
+    }
 
     public int getPage() {
         return page;

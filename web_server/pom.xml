@@ -4,10 +4,9 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.wx.cloudprint</groupId>
-    <artifactId>image-server</artifactId>
+    <artifactId>web-server</artifactId>
     <version>1.0</version>
     <packaging>jar</packaging>
-    <name>cloudprint-image-server</name>
     <parent>
         <artifactId>cloudprint-parent</artifactId>
         <groupId>com.wx.cloudprint</groupId>

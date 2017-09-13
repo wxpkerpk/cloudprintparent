@@ -1,20 +1,20 @@
-package com.wx.cloudprint.imageserver.register;
+package com.wx.cloudprint.webserver.register;
 
 import com.weibo.api.motan.config.springsupport.*;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-public class Client {
+public class WebClient {
     @Bean
     public AnnotationBean motanAnnotationBean() {
         AnnotationBean motanAnnotationBean = new AnnotationBean();
-        motanAnnotationBean.setPackage("com.wx.cloudprint");
+        motanAnnotationBean.setPackage("com.wx.cloudprint.webserver.cotroller");
         return motanAnnotationBean;
     }
 
     @Bean(name = "motan")
-    public ProtocolConfigBean protocolConfig1() {
+    public ProtocolConfigBean protocolConfig() {
         ProtocolConfigBean config = new ProtocolConfigBean();
         config.setDefault(true);
         config.setName("motan");
@@ -40,13 +40,6 @@ public class Client {
         return config;
     }
 
-    @Bean
-    public BasicServiceConfigBean baseServiceConfig() {
-        BasicServiceConfigBean config = new BasicServiceConfigBean();
-        config.setExport("motan:8004");
-        config.setRegistry("registry");
-        return config;
-    }
 
 }
  

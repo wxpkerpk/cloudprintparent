@@ -57,21 +57,12 @@ public class ImageController {
         System.out.println(md5);
     }
 
-    @RequestMapping(value = "file/url", method = {RequestMethod.GET, RequestMethod.POST})
-    @ResponseBody
-    public Message url() {
-        Url url = new Url();
-        url.url = genRestfulUrl(serverIp,port,"/API/file/upload");
-        Message message = Message.createMessage(Message.success_state, url);
-        return message;
-    }
-    private String genRestfulUrl(String ip,String port,String prefix)
+    public static String genRestfulUrl(String ip,String port,String prefix)
     {
         StringBuilder builder=new StringBuilder(80);
         builder.append("http://").append(ip).append(":").append(port).append(prefix);
         return builder.toString();
     }
-
     static String getFilePrefix(String name){
         String []temp=name.split("\\.");
         return temp.length>=2 ?temp[temp.length-1]:null;
@@ -100,6 +91,7 @@ public class ImageController {
         }
         Res res = new Res();
         res.setHost(serverIp);
+        res.setPort(port);
         res.setDirection(isDerect);
         res.setMd5(currentMD5);
         res.setName(name);
@@ -110,18 +102,7 @@ public class ImageController {
 
     }
 
-    @RequestMapping(value = "file/pic/preview", method = {RequestMethod.GET, RequestMethod.POST})
-    @ResponseBody
-    public Message Preview(HttpServletRequest request, HttpServletResponse response, @RequestParam String md5, @RequestParam String size, @RequestParam int row, @RequestParam int col, @RequestParam(required = false) Integer page
-            , @RequestParam(required = false) Boolean isMono) {
 
-       String url=  genRestfulUrl(serverIp,port,"/API/file/pic/get/preview?"+String.format("md5=%s&size=%s&row=%s&col=%s&page=%s",md5,size,row,col,page));
-
-        Map<String,String>map=new LinkedHashMap<>();
-        map.put("img",url);
-        return Message.createMessage(Message.success_state,map);
-
-    }
     @RequestMapping(value = "file/pic/get/preview", method = {RequestMethod.GET, RequestMethod.POST})
     public void getPreview(HttpServletRequest request, HttpServletResponse response, @RequestParam String md5, @RequestParam String size, @RequestParam int row, @RequestParam int col, @RequestParam(required = false) Integer page
             , @RequestParam(required = false) Boolean isMono) throws IOException {
@@ -142,19 +123,6 @@ public class ImageController {
 
     }
 
-    @RequestMapping(value = "file/page", method = {RequestMethod.GET, RequestMethod.POST})
-    public Map<String, Object> getPage(@RequestParam String md5) {
-        Res res = resService.getByMD5(md5);
-        Map<String, Object> message = new LinkedHashMap<>();
 
-        if (res != null) {
-            message.put("result", "EXISTED");
-            message.put("pageCount", res.getPage());
-            message.put("direction", res.getDirection());
-        } else {
-            message.put("result", "NO_EXIST");
-        }
-        return message;
-    }
 
 }

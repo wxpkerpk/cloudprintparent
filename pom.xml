@@ -27,6 +27,8 @@
         <module>covert_server</module>
         <module>image_server</module>
         <module>commens</module>
+        <module>web_server</module>
+
         <module>data_service</module>
     </modules>
     <properties>

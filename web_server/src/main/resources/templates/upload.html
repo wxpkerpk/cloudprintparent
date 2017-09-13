@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<form action="http://39.108.239.191:8088/API/file/upload" enctype="multipart/form-data" method="post" id="form">
+    <input type="text"  name ="md5"/>
+    <input type="file" name="file"/>
+    <input type="button" onclick="submit()" value="submit"/>
+
+</form>
+
+</body>
+<script>
+    function submit() {
+        document.getElementById("form").submit();
+    }
+
+</script>
+</html>

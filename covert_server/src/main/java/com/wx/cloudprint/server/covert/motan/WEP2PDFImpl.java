@@ -233,7 +233,8 @@ public class WEP2PDFImpl implements WEP2PDF {
      * @return
      */
      static boolean wordToPDF(String wordPath, String pdfPath) {
-        ActiveXComponent msWordApp = new ActiveXComponent("Word.Application");
+         ComThread.InitSTA();
+         ActiveXComponent msWordApp = new ActiveXComponent("Word.Application");
         msWordApp.setProperty("Visible", new Variant(false));
 
         Dispatch docs = Dispatch.get(msWordApp, "Documents").toDispatch();
@@ -259,7 +260,8 @@ public class WEP2PDFImpl implements WEP2PDF {
      * @return
      */
      static boolean excelToPdf(String inputFile, String pdfFile) {
-        ActiveXComponent activeXComponent = new ActiveXComponent("Excel.Application");
+         ComThread.InitSTA();
+         ActiveXComponent activeXComponent = new ActiveXComponent("Excel.Application");
         activeXComponent.setProperty("Visible", false);
 
         deletePdf(pdfFile);
@@ -283,7 +285,8 @@ public class WEP2PDFImpl implements WEP2PDF {
      * @return
      */
      static boolean pptToImg(String inputFile, String imgFile) {
-        // 打开word应用程序
+         ComThread.InitSTA();
+         // 打开word应用程序
         ActiveXComponent app = new ActiveXComponent("PowerPoint.Application");
         // 设置word不可见，office可能有限制
         // app.setProperty("Visible", false);

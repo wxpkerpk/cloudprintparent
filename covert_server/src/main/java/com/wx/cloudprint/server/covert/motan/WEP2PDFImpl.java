@@ -2,6 +2,7 @@ package com.wx.cloudprint.server.covert.motan;
 
 
 import com.jacob.activeX.ActiveXComponent;
+import com.jacob.com.ComThread;
 import com.jacob.com.Dispatch;
 import com.jacob.com.Variant;
 import com.weibo.api.motan.config.springsupport.annotation.MotanService;
@@ -39,25 +40,21 @@ public class WEP2PDFImpl implements WEP2PDF {
 
     public static void main(String[] s) {
 
-        StringBuilder supers= new StringBuilder();
+
+        String source = "C:\\Users\\wx\\Documents\\工作簿1.xlsx";
+        String target="C:\\Users\\wx\\Downloads\\toimage";
+        String prefix=source.split("\\.")[1];
+        int a[]=new int[1];
         try {
-            byte [][]data= pdf2Img(   FileUtils.readByte("/Users/wx/Downloads/02aa61bd-ced0-4de5-8fdf-9d08ee445ac4.pdf"
-            ) ,216);
-        } catch (IOException e) {
+            int i=1;
+            byte datas[][]=new WEP2PDFImpl().offceBytes2imgsBytes(FileUtils.readByte(source),prefix);
+
+            for(byte[] data:datas){
+                FileUtils.writeByte(new File(target,(i++)+".jpg").getPath(),data);
+            }
+        } catch (Exception e) {
             e.printStackTrace();
         }
-//        String source = "C:\\Users\\wx\\Documents\\工作簿1.xlsx";
-//        String target="C:\\Users\\wx\\Downloads\\toimage";
-//        String prefix=source.split("\\.")[1];
-//        try {
-//            int i=1;
-//            byte[][]datas=new WEP2PDFImpl().offceBytes2imgsBytes(FileUtils.readByte(source),prefix);
-//            for(byte[] data:datas){
-//                FileUtils.writeByte(new File(target,(i++)+".jpg").getPath(),data);
-//            }
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
 
     }
 
@@ -248,6 +245,9 @@ public class WEP2PDFImpl implements WEP2PDF {
         Dispatch.invoke(doc, "SaveAs", Dispatch.Method, new Object[]{pdfPath, new Variant(WDFO_RMATPDF)}, new int[1]);
         // long pdfEnd = System.currentTimeMillis();
          Dispatch.call(doc, "Close", false);
+         msWordApp.invoke("Quit", 0);
+         ComThread.Release();
+
          return true;
     }
 
@@ -268,8 +268,10 @@ public class WEP2PDFImpl implements WEP2PDF {
         Dispatch excel = Dispatch.call(excels, "Open", inputFile, false, true).toDispatch();
         Dispatch.call(excel, "ExportAsFixedFormat", XLTYPE_PDF, pdfFile);
         Dispatch.call(excel, "Close", false);
-        activeXComponent.invoke("Quit");
-        return true;
+         activeXComponent.invoke("Quit", new Variant[] {});
+         ComThread.Release();
+
+         return true;
     }
 
 
@@ -297,9 +299,11 @@ public class WEP2PDFImpl implements WEP2PDF {
         // Dispatch.call(file, "Close", false);
         Dispatch.call(file, "Close");
         // 关闭word应用程序
-        // app.invoke("Quit", 0);
-        app.invoke("Quit");
-        return true;
+         app.invoke("Quit", 0);
+//        app.invoke("Quit");
+         ComThread.Release();
+
+         return true;
     }
 
     /**

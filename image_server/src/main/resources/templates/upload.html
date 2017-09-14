@@ -6,7 +6,7 @@
 </head>
 <body>
 <form action="http://39.108.239.191:8088/API/file/upload" enctype="multipart/form-data" method="post" id="form">
-    <input type="text"  name ="md5"/>
+    <input type="text" name="md5"/>
     <input type="file" name="file"/>
     <input type="button" onclick="submit()" value="submit"/>
 
@@ -18,5 +18,63 @@
         document.getElementById("form").submit();
     }
 
+
+    var data = [
+        {
+            '北京市': [
+                {
+                    '市辖区|5-10': ['@county']
+                },
+                {
+                    '县|1-10': ['@county']
+                }
+            ]
+        }
+    ]
+
+    var layer = {
+        '北京市': {
+            '市辖区|5-10': ['@county'],
+            '县|1-10': ['@county']
+        }
+    }
+
+
+    function covert(data) {
+        var stack = [];
+        var stackLayer = []
+        var layer = {};
+        stack.push(data)
+        stackLayer.push(layer)
+        var previous;
+        while (stack.length > 0) {
+            var front = stack.pop();
+            var frontLayer = stackLayer.pop()
+
+            for (var index in front) {
+                if( typeof front[index] ==="string")
+                {
+                    for(var key in previous){
+                        delete previous[key]
+                        previous[key]=front
+                    }
+                }else
+                {
+                    for (var key in front[index]) {
+                        stack.push(front[index][key])
+                        frontLayer[key] = {}
+                        stackLayer.push(frontLayer[key])
+                        previous=frontLayer
+                    }
+                }
+            }
+        }
+
+
+        return layer
+    }
+
+    var newLayer = covert(data)
+    console.log(newLayer)
 </script>
 </html>

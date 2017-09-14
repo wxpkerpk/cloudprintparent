@@ -7,7 +7,6 @@ import com.wx.cloudprint.imageserver.service.ImageService;
 
 import com.wx.cloudprint.server.covert.motan.WEP2PDF;
 import message.Message;
-import org.apache.catalina.servlet4preview.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
@@ -17,6 +16,7 @@ import util.MD5Util;
 
 import javax.annotation.Resource;
 import javax.imageio.ImageIO;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.awt.image.BufferedImage;
 import java.io.*;

@@ -6,13 +6,13 @@ import com.weibo.api.motan.config.springsupport.annotation.MotanReferer;
 
 import com.wx.cloudprint.server.covert.motan.GetIp;
 import message.Message;
-import org.apache.catalina.servlet4preview.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 import util.FileUtils;
 import util.MD5Util;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.util.LinkedHashMap;

@@ -2,6 +2,7 @@ package com.wx.cloudprint.server.covert.motan;
 
 
 import com.jacob.activeX.ActiveXComponent;
+import com.jacob.com.ComFailException;
 import com.jacob.com.ComThread;
 import com.jacob.com.Dispatch;
 import com.jacob.com.Variant;
@@ -26,7 +27,6 @@ import java.util.UUID;
 public class WEP2PDFImpl implements WEP2PDF {
 
 
-
     private static final int WDFO_RMATPDF = 17;
     private static final int XLTYPE_PDF = 0;
     private static final int PPT_SAVEAS_PDF = 32;
@@ -36,21 +36,21 @@ public class WEP2PDFImpl implements WEP2PDF {
     public static final int PPT_SAVEAS_JPG = 17;
 
     @Value("${file.tempPath}")
-    private   String tempFilePath;
+    private String tempFilePath;
 
     public static void main(String[] s) {
 
 
         String source = "C:\\Users\\wx\\Documents\\工作簿1.xlsx";
-        String target="C:\\Users\\wx\\Downloads\\toimage";
-        String prefix=source.split("\\.")[1];
-        int a[]=new int[1];
+        String target = "C:\\Users\\wx\\Downloads\\toimage";
+        String prefix = source.split("\\.")[1];
+        int a[] = new int[1];
         try {
-            int i=1;
-            byte datas[][]=new WEP2PDFImpl().offceBytes2imgsBytes(FileUtils.readByte(source),prefix);
+            int i = 1;
+            byte datas[][] = new WEP2PDFImpl().offceBytes2imgsBytes(FileUtils.readByte(source), prefix);
 
-            for(byte[] data:datas){
-                FileUtils.writeByte(new File(target,(i++)+".jpg").getPath(),data);
+            for (byte[] data : datas) {
+                FileUtils.writeByte(new File(target, (i++) + ".jpg").getPath(), data);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -59,52 +59,52 @@ public class WEP2PDFImpl implements WEP2PDF {
     }
 
     @Override
-    public  byte[][]offceBytes2imgsBytes(byte[] offceBytes,String prefix)   {
-        if(tempFilePath==null||tempFilePath.equals("")) {
-            tempFilePath=new File("").getAbsolutePath();
+    public byte[][] offceBytes2imgsBytes(byte[] offceBytes, String prefix) {
+        if (tempFilePath == null || tempFilePath.equals("")) {
+            tempFilePath = new File("").getAbsolutePath();
         }
-        if(prefix.equals("ppt")||prefix.equals("pptx")){
-            File file=new File(tempFilePath);
-            if(!file.exists()) file.mkdir();
-            String targetTempPath=null;
-            String sourceTempPath= new File(tempFilePath, UUID.randomUUID().toString()+"."+prefix).getPath();
-            targetTempPath=new File(tempFilePath,UUID.randomUUID().toString()).getPath();
-            FileUtils.writeByte(sourceTempPath,offceBytes);
-            officeFileConverterToPdf(sourceTempPath,targetTempPath);
+        if (prefix.equals("ppt") || prefix.equals("pptx")) {
+            File file = new File(tempFilePath);
+            if (!file.exists()) file.mkdir();
+            String targetTempPath = null;
+            String sourceTempPath = new File(tempFilePath, UUID.randomUUID().toString() + "." + prefix).getPath();
+            targetTempPath = new File(tempFilePath, UUID.randomUUID().toString()).getPath();
+            FileUtils.writeByte(sourceTempPath, offceBytes);
+            officeFileConverterToPdf(sourceTempPath, targetTempPath);
             return readFileImages(targetTempPath);
-        }else if(prefix.equals("pdf")){
+        } else if (prefix.equals("pdf")) {
             try {
-                return pdf2Img(offceBytes,200);
+                return pdf2Img(offceBytes, 200);
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        }else {//word or excel
+        } else {//word or excel
             try {
                 byte[] pdfBytes = officeFile2PdfBytes(offceBytes, prefix);
 
-                return pdf2Img(pdfBytes,200);
+                return pdf2Img(pdfBytes, 200);
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
         return null;
     }
-     byte[][]readFileImages(String path){
 
-        File file=new File(path);
-          File[] fileList= file.listFiles();
-        Arrays.sort(fileList,(o1, o2)->{
-            String name1=o1.getName().split("\\.")[0];
-            String name2=o2.getName().split("\\.")[0];
+    byte[][] readFileImages(String path) {
 
+        File file = new File(path);
+        File[] fileList = file.listFiles();
+        Arrays.sort(fileList, (o1, o2) -> {
+            String name1 = o1.getName().split("\\.")[0];
+            String name2 = o2.getName().split("\\.")[0];
 
 
             return name1.compareTo(name2);
         });
-        byte[][]result=new byte[fileList.length][];
-        for(int i=0;i<fileList.length;i++){
+        byte[][] result = new byte[fileList.length][];
+        for (int i = 0; i < fileList.length; i++) {
             try {
-                result[i]=FileUtils.readByte(fileList[i].getPath());
+                result[i] = FileUtils.readByte(fileList[i].getPath());
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -113,7 +113,7 @@ public class WEP2PDFImpl implements WEP2PDF {
 
     }
 
-//       byte[][] pdfBytes2ImgsBytes(byte[]pdfBytes) throws IOException {
+    //       byte[][] pdfBytes2ImgsBytes(byte[]pdfBytes) throws IOException {
 //
 //        int dpi=216;
 //         Document document = null;
@@ -146,20 +146,20 @@ public class WEP2PDFImpl implements WEP2PDF {
 //
 //        return result;
 //    }
-    public static byte[][] pdf2Img(byte []pdfBytes, int dpi) throws IOException {
+    public static byte[][] pdf2Img(byte[] pdfBytes, int dpi) throws IOException {
 
         PDDocument doc = PDDocument.load(pdfBytes);
         int pageCount = doc.getNumberOfPages();
-        byte[][]result=new byte[pageCount][];
+        byte[][] result = new byte[pageCount][];
         System.out.println(pageCount);
-        PDFRenderer renderer= new PDFRenderer(doc);
+        PDFRenderer renderer = new PDFRenderer(doc);
 
-        for(int i=0;i<pageCount;i++){
-            BufferedImage image= renderer.renderImageWithDPI(i,dpi);
-                        ByteArrayOutputStream arrayOutputStream=new ByteArrayOutputStream();
+        for (int i = 0; i < pageCount; i++) {
+            BufferedImage image = renderer.renderImageWithDPI(i, dpi);
+            ByteArrayOutputStream arrayOutputStream = new ByteArrayOutputStream();
 
-            ImageIO.write(image,"jpg",arrayOutputStream);
-            result[i]=arrayOutputStream.toByteArray();
+            ImageIO.write(image, "jpg", arrayOutputStream);
+            result[i] = arrayOutputStream.toByteArray();
             arrayOutputStream.close();
 
         }
@@ -169,23 +169,24 @@ public class WEP2PDFImpl implements WEP2PDF {
     }
 
 
-       byte[]officeFile2PdfBytes(byte[] source,String prefix) throws Exception {
+    byte[] officeFile2PdfBytes(byte[] source, String prefix) throws Exception {
 
-        File file=new File(tempFilePath);
-        if(!file.exists()) file.mkdir();
+        File file = new File(tempFilePath);
+        if (!file.exists()) file.mkdir();
 
-          String targetTempPath=null;
-        String sourceTempPath= new File(tempFilePath,UUID.randomUUID().toString()+"."+prefix).getPath();
+        String targetTempPath = null;
+        String sourceTempPath = new File(tempFilePath, UUID.randomUUID().toString() + "." + prefix).getPath();
 
-         targetTempPath=new File(tempFilePath,UUID.randomUUID().toString()+".pdf").getPath();
-        FileUtils.writeByte(sourceTempPath,source);
-        byte []pdfBytes=null;
-        if(officeFileConverterToPdf(sourceTempPath,targetTempPath)){
-           pdfBytes= FileUtils.readByte(targetTempPath);
+        targetTempPath = new File(tempFilePath, UUID.randomUUID().toString() + ".pdf").getPath();
+        FileUtils.writeByte(sourceTempPath, source);
+        byte[] pdfBytes = null;
+        if (officeFileConverterToPdf(sourceTempPath, targetTempPath)) {
+            pdfBytes = FileUtils.readByte(targetTempPath);
         }
         return pdfBytes;
     }
-     static boolean officeFileConverterToPdf(String argInputFilePath, String argPdfPath) {
+
+    static boolean officeFileConverterToPdf(String argInputFilePath, String argPdfPath) {
         if (argInputFilePath.isEmpty() || argPdfPath.isEmpty() || getFileSufix(argInputFilePath).isEmpty()) {
             return false;
         }
@@ -213,43 +214,50 @@ public class WEP2PDFImpl implements WEP2PDF {
             case "doc":
             case "docx":
             case "txt":
-                return wordToPDF(argInputFilePath, argPdfPath);
+                return doc2pdf(argInputFilePath, argPdfPath);
             case "xls":
             case "xlsx":
                 return excelToPdf(argInputFilePath, argPdfPath);
             case "ppt":
             case "pptx":
-                return pptToImg(argInputFilePath, argPdfPath);
+                return ppt2Img(argInputFilePath, argPdfPath);
         }
-
         return false;
     }
 
-    /**
-     * converter word to pdf
-     *
-     * @param wordPath
-     * @param pdfPath
-     * @return
-     */
-     static boolean wordToPDF(String wordPath, String pdfPath) {
-         ComThread.InitSTA();
-         ActiveXComponent msWordApp = new ActiveXComponent("Word.Application");
-        msWordApp.setProperty("Visible", new Variant(false));
+    public static boolean doc2pdf(String srcFilePath, String pdfFilePath) {
+        ActiveXComponent app = null;
+        Dispatch doc = null;
+        try {
+            ComThread.InitSTA();
+            app = new ActiveXComponent("Word.Application");
+            app.setProperty("Visible", false);
+            Dispatch docs = app.getProperty("Documents").toDispatch();
+            doc = Dispatch.invoke(docs, "Open", Dispatch.Method,
+                    new Object[]{srcFilePath,
+                            new Variant(false),
+                            new Variant(true),//是否只读
+                            new Variant(false),
+                            new Variant("pwd")},
+                    new int[1]).toDispatch();
+//          Dispatch.put(doc, "Compatibility", false);  //兼容性检查,为特定值false不正确
+            Dispatch.put(doc, "RemovePersonalInformation", false);
+            Dispatch.call(doc, "ExportAsFixedFormat", pdfFilePath, WDFO_RMATPDF); // word保存为pdf格式宏，值为17
 
-        Dispatch docs = Dispatch.get(msWordApp, "Documents").toDispatch();
-        // long pdfStart = System.currentTimeMillis();
-        Dispatch doc = Dispatch.invoke(docs, "Open", Dispatch.Method, new Object[]{wordPath, new Variant(false), new Variant(true)}, new int[1]).toDispatch();
-
-        deletePdf(pdfPath);
-
-        Dispatch.invoke(doc, "SaveAs", Dispatch.Method, new Object[]{pdfPath, new Variant(WDFO_RMATPDF)}, new int[1]);
-        // long pdfEnd = System.currentTimeMillis();
-         Dispatch.call(doc, "Close", false);
-         msWordApp.invoke("Quit", 0);
-         ComThread.Release();
-
-         return true;
+            return true; // set flag true;
+        } catch (ComFailException e) {
+            return false;
+        } catch (Exception e) {
+            return false;
+        } finally {
+            if (doc != null) {
+                Dispatch.call(doc, "Close", false);
+            }
+            if (app != null) {
+                app.invoke("Quit", 0);
+            }
+            ComThread.Release();
+        }
     }
 
     /**
@@ -259,54 +267,62 @@ public class WEP2PDFImpl implements WEP2PDF {
      * @param pdfFile
      * @return
      */
-     static boolean excelToPdf(String inputFile, String pdfFile) {
-         ComThread.InitSTA();
-         ActiveXComponent activeXComponent = new ActiveXComponent("Excel.Application");
-        activeXComponent.setProperty("Visible", false);
+    static boolean excelToPdf(String inputFile, String pdfFile) {
+        ActiveXComponent activeXComponent = null;
+        Dispatch excel = null;
+        try {
+            ComThread.InitSTA();
+            activeXComponent = new ActiveXComponent("Excel.Application");
+            activeXComponent.setProperty("Visible", false);
 
-        deletePdf(pdfFile);
+            deletePdf(pdfFile);
 
-        Dispatch excels = activeXComponent.getProperty("Workbooks").toDispatch();
-        Dispatch excel = Dispatch.call(excels, "Open", inputFile, false, true).toDispatch();
-        Dispatch.call(excel, "ExportAsFixedFormat", XLTYPE_PDF, pdfFile);
-        Dispatch.call(excel, "Close", false);
-         activeXComponent.invoke("Quit", new Variant[] {});
-         ComThread.Release();
+            Dispatch excels = activeXComponent.getProperty("Workbooks").toDispatch();
+            excel = Dispatch.call(excels, "Open", inputFile, false, true).toDispatch();
 
-         return true;
+            Dispatch.call(excel, "ExportAsFixedFormat", XLTYPE_PDF, pdfFile);
+            return true;
+        } catch (Exception e) {
+            return false;
+        } finally {
+            if (activeXComponent != null) activeXComponent.invoke("Quit", new Variant[]{});
+            if (excel != null) Dispatch.call(excel, "Close", false);
+            ComThread.Release();
+        }
+
     }
 
 
-    /**
-     * ppt to img
-     *
-     * @param inputFile
-     * @param imgFile
-     * @return
-     */
-     static boolean pptToImg(String inputFile, String imgFile) {
-         ComThread.InitSTA();
-         // 打开word应用程序
-        ActiveXComponent app = new ActiveXComponent("PowerPoint.Application");
-        // 设置word不可见，office可能有限制
-        // app.setProperty("Visible", false);
-        // 获取word中国所打开的文档，返回Documents对象
-        Dispatch files = app.getProperty("Presentations").toDispatch();
-        // 调用Documents对象中Open方法打开文档，并返回打开的文档对象Document
-        Dispatch file = Dispatch.call(files, "open", inputFile, true, true, false).toDispatch();
-        // 调用Document对象的SaveAs方法，将文档保存为pdf格式
-        // Dispatch.call(doc, "ExportAsFixedFormat", outputFile,
-        // PPT_TO_PDF);
-        Dispatch.call(file, "SaveAs", imgFile, PPT_SAVEAS_JPG);
-        // 关闭文档
-        // Dispatch.call(file, "Close", false);
-        Dispatch.call(file, "Close");
-        // 关闭word应用程序
-         app.invoke("Quit", 0);
-//        app.invoke("Quit");
-         ComThread.Release();
+    public static boolean ppt2Img(String srcFilePath, String pdfFilePath) {
+        ActiveXComponent app = null;
+        Dispatch ppt = null;
+        try {
+            ComThread.InitSTA();
+            app = new ActiveXComponent("PowerPoint.Application");
+            Dispatch ppts = app.getProperty("Presentations").toDispatch();
 
-         return true;
+            // 因POWER.EXE的发布规则为同步，所以设置为同步发布
+            ppt = Dispatch.call(ppts, "Open", srcFilePath, true,// ReadOnly
+                    true,// Untitled指定文件是否有标题
+                    false// WithWindow指定文件是否可见
+            ).toDispatch();
+
+            Dispatch.call(ppt, "SaveAs", pdfFilePath, PPT_SAVEAS_JPG); //ppSaveAsPDF为特定值32
+
+            return true; // set flag true;
+        } catch (ComFailException e) {
+            return false;
+        } catch (Exception e) {
+            return false;
+        } finally {
+            if (ppt != null) {
+                Dispatch.call(ppt, "Close");
+            }
+            if (app != null) {
+                app.invoke("Quit");
+            }
+            ComThread.Release();
+        }
     }
 
     /**
@@ -319,7 +335,6 @@ public class WEP2PDFImpl implements WEP2PDF {
         int splitIndex = argFilePath.lastIndexOf(".");
         return argFilePath.substring(splitIndex + 1);
     }
-
 
 
     /**

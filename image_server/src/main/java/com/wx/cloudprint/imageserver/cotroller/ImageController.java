@@ -86,7 +86,7 @@ public class ImageController {
         File parentFile = new File(filePath, currentMD5);
         parentFile.mkdir();
         for (int i = 0; i < imageBytes.length; i++) {
-            File f = new File(parentFile.getPath(), i + ".jpg");
+            File f = new File(parentFile.getPath(), i + ".png");
             FileUtils.writeByte(f.getPath(), imageBytes[i]);
         }
         Res res = new Res();
@@ -114,7 +114,7 @@ public class ImageController {
         if(res!=null) {
 
             byte[][] result = imageService.combineImg(sourcePath, row, col, size, --page, res.getDirection(), isMono);
-            response.setContentType("image/jpeg");
+            response.setContentType("image/png");
             OutputStream outputStream = response.getOutputStream();
             if(result!=null)
             outputStream.write(result[0]);

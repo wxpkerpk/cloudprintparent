@@ -1,4 +1,6 @@
-/Users/wx/project/cloudprintparent/cloudprintparent/data_service/src/main/java/com/wx/cloudprint/dataservice/entity/Address.java
-/Users/wx/project/cloudprintparent/cloudprintparent/data_service/src/main/java/com/wx/cloudprint/dataservice/entity/Res.java
-/Users/wx/project/cloudprintparent/cloudprintparent/data_service/src/main/java/com/wx/cloudprint/dataservice/dao/ResDao.java
-/Users/wx/project/cloudprintparent/cloudprintparent/data_service/src/main/java/com/wx/cloudprint/dataservice/service/ResService.java
+C:\Users\wx\Desktop\cloudprintparent\data_service\src\main\java\com\wx\cloudprint\dataservice\entity\Address.java
+C:\Users\wx\Desktop\cloudprintparent\data_service\src\main\java\com\wx\cloudprint\dataservice\dao\ResDao.java
+C:\Users\wx\Desktop\cloudprintparent\data_service\src\main\java\com\wx\cloudprint\dataservice\entity\Dispatch.java
+C:\Users\wx\Desktop\cloudprintparent\data_service\src\main\java\com\wx\cloudprint\dataservice\entity\Point.java
+C:\Users\wx\Desktop\cloudprintparent\data_service\src\main\java\com\wx\cloudprint\dataservice\entity\Res.java
+C:\Users\wx\Desktop\cloudprintparent\data_service\src\main\java\com\wx\cloudprint\dataservice\service\ResService.java

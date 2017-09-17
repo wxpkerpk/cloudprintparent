@@ -11,10 +11,20 @@ public class Dispatch {
     @Id
     @GeneratedValue(generator = "uuid")
     @GenericGenerator(name = "uuid", strategy = "org.hibernate.id.UUIDGenerator")
+            String id;
+
     int maxPageCount;
     float distributionStart;
     float distributionCharge;
-    String desc;
+    String descr;
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
 
     public int getMaxPageCount() {
         return maxPageCount;
@@ -40,11 +50,11 @@ public class Dispatch {
         this.distributionCharge = distributionCharge;
     }
 
-    public String getDesc() {
-        return desc;
+    public String getDescr() {
+        return descr;
     }
 
-    public void setDesc(String desc) {
-        this.desc = desc;
+    public void setDescr(String descr) {
+        this.descr = descr;
     }
 }

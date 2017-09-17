@@ -35,9 +35,18 @@ public class Point {
         this.price = price;
     }
 
-    List<Integer>takeTime=new ArrayList<>();
 
-     @OneToOne(targetEntity = Dispatch.class)
+    String take_time;
+
+    public String getTake_time() {
+        return take_time;
+    }
+
+    public void setTake_time(String take_time) {
+        this.take_time = take_time;
+    }
+
+    @OneToOne(targetEntity = Dispatch.class)
      Dispatch dispatch;
      float minCharge;
 
@@ -113,13 +122,7 @@ public class Point {
         this.image = image;
     }
 
-    public List<Integer> getTakeTime() {
-        return takeTime;
-    }
 
-    public void setTakeTime(List<Integer> takeTime) {
-        this.takeTime = takeTime;
-    }
 
     public Dispatch getDispatch() {
         return dispatch;

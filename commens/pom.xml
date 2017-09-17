@@ -13,8 +13,8 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <java.version>1.8</java.version>
         <motan.version>0.3.1</motan.version>
+        <scala.version>2.12</scala.version>
 
     </properties>
 <dependencies>
@@ -24,6 +24,19 @@
         <artifactId>gson</artifactId>
         <version>2.8.1</version>
     </dependency>
+    <!-- JSON -->
+    <!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.module/jackson-module-scala_2.11 -->
+    <dependency>
+        <groupId>com.fasterxml.jackson.module</groupId>
+        <artifactId>jackson-module-scala_${scala.version}</artifactId>
+        <version>2.8.7</version>
+    </dependency>
+    <dependency>
+        <groupId>org.json4s</groupId>
+        <artifactId>json4s-jackson_${scala.version}</artifactId>
+        <version>3.5.1</version>
+    </dependency>
+
 
 
 </dependencies>

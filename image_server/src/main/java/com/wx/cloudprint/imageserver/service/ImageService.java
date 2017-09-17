@@ -18,7 +18,7 @@ public class ImageService {
     public static final int A4_height = 297;
     public static final int A3_width = 297;
     public static final int A3_height = 420;
-    public static int scala = 4;
+    public static float scala = 4;
     private static ColorConvertOp colorConvertOp = new ColorConvertOp(ColorSpace.getInstance(ColorSpace.CS_GRAY), null);
 
     public static BufferedImage scalaImage(BufferedImage sourceImg, int toWidth, int toHeight, boolean isMono) {
@@ -27,7 +27,7 @@ public class ImageService {
 
         result.getGraphics().drawImage(
                 sourceImg.getScaledInstance(toWidth, toHeight,
-                        Image.SCALE_SMOOTH), 0, 0, null);
+                        Image.SCALE_DEFAULT), 0, 0, null);
         if (isMono) {
             result = colorConvertOp.filter(result, null);
         }
@@ -39,11 +39,11 @@ public class ImageService {
         int width = 0;
         int height = 0;
         if (paperType.equals("A4")) {
-            width = A4_width * scala;
-            height = A4_height * scala;
+            width = (int) (A4_width * scala);
+            height = (int) (A4_height * scala);
         } else if (paperType.equals("A3")) {
-            width = A3_width * scala;
-            height = A3_height * scala;
+            width = (int) (A3_width * scala);
+            height = (int) (A3_height * scala);
         }
         if ((col >= row && col >= 2) ||(col==row&&row==1&!isDirection)) {
             int temp = width;
@@ -65,6 +65,7 @@ public class ImageService {
                 return Integer.compare(i1, i2);
             });
             destLen = page == null ? destLen : page + 1;
+            if(page==null) page=0;
 
             byte[][] images = new byte[destLen - page][];
             count = page * perLen;
@@ -97,7 +98,7 @@ public class ImageService {
                 }
                 try {
                     ByteArrayOutputStream out = new ByteArrayOutputStream();
-                    ImageIO.write(result, "jpg", out);
+                    ImageIO.write(result, "png", out);
                     images[i - page] = out.toByteArray();
                 } catch (IOException e) {
                     e.printStackTrace();

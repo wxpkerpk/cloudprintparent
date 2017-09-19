@@ -1,13 +1,11 @@
 package com.wx.cloudprint.dataservice.entity;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Target;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.OneToOne;
+import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,15 +24,14 @@ public class Point {
      String message;
      String image;
      String price;
-
+     @JsonIgnore
+     String addressId;
     public String getPrice() {
         return price;
     }
-
     public void setPrice(String price) {
         this.price = price;
     }
-
 
     String take_time;
 
@@ -123,6 +120,13 @@ public class Point {
     }
 
 
+    public String getAddressId() {
+        return addressId;
+    }
+
+    public void setAddressId(String addressId) {
+        this.addressId = addressId;
+    }
 
     public Dispatch getDispatch() {
         return dispatch;

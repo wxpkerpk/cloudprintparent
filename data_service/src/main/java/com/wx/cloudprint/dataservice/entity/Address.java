@@ -13,8 +13,6 @@ public class Address {
 
 
     @Id
-    @GeneratedValue(generator = "uuid")
-    @GenericGenerator(name = "uuid", strategy = "org.hibernate.id.UUIDGenerator")
     String id;
     String name;
     @OneToMany(targetEntity = Address.class)                                          //指定一对多关系
@@ -24,9 +22,14 @@ public class Address {
 
     public static void main(String []s){
         Address address=new Address();
+        address.setId("1");
         address.setName("北京市");
         Address address1=new Address("xx区1",null);
+        address1.setId("2");
+
         Address address2=new Address("xx区2",null);
+        address2.setId("3");
+
 
         List<Address>addressList=new ArrayList<>();
         addressList.add(address1);
@@ -34,6 +37,8 @@ public class Address {
 
         Address address3=new Address("直辖区",addressList);
         address.getChildren().add(address3);
+        address3.setId("4");
+
         System.out.println(JsonUtil.toJson(address));
         System.out.println(JsonUtil.toJson(toMap(address)));
 
@@ -53,7 +58,9 @@ public class Address {
 
 
         }else{
-            return childName;
+            Map<String,String>stringMap=new LinkedHashMap<>();
+            stringMap.put(childName,address.getId());
+            return stringMap;
         }
     }
     public String getName() {

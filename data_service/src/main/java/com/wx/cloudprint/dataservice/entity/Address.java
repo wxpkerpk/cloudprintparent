@@ -40,18 +40,18 @@ public class Address {
         address3.setId("4");
 
         System.out.println(JsonUtil.toJson(address));
-        System.out.println(JsonUtil.toJson(toMap(address)));
+//        System.out.println(JsonUtil.toJson(toMap(address)));
 
     }
-    public static Object toMap(Address address)
+    public  Object toMap( )
     {
         Map<String,Object> map=new LinkedHashMap<>();
-        String childName=address.getName();
-        if(address.getChildren()!=null) {
+        String childName=name;
+        if(children!=null) {
             List<Object>mapList=new LinkedList<>();
 
-            for (Address ad : address.getChildren()) {
-                mapList.add(toMap(ad));
+            for (Address ad : children) {
+                mapList.add(ad.toMap());
             }
             map.put(childName,mapList);
             return map;
@@ -59,10 +59,11 @@ public class Address {
 
         }else{
             Map<String,String>stringMap=new LinkedHashMap<>();
-            stringMap.put(childName,address.getId());
+            stringMap.put(childName,id);
             return stringMap;
         }
     }
+
     public String getName() {
         return name;
     }

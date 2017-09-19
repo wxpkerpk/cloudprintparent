@@ -8,7 +8,7 @@ import org.json4s.JsonDSL._
 import org.json4s.jackson.JsonMethods._
 import spray.json._
 import DefaultJsonProtocol._
-import com.wx.cloudprint.dataservice.service.PointService
+import com.wx.cloudprint.dataservice.service.{AddressService, PointService}
 import message.Message
 import org.springframework.beans.factory.annotation.Autowired
 import util.JsonUtil //
@@ -20,19 +20,18 @@ class WebAPPController {
   @Autowired
   var pointService:PointService=_
   @Autowired
-  var addressService :AddressSer
-  @RequestMapping(value = Array("/"))
-  @ResponseBody  def test( param:String):JsonNode={
+  var addressService :AddressService=_
 
-    ("data"->1)~("num"->3)
+  @RequestMapping(value = Array("point/address"), method = Array(RequestMethod.GET, RequestMethod.POST))
+  @ResponseBody
+  def getAddress(): Message = {
+    val address=addressService.getRoot.toMap
+    Message.createMessage(Message.success_state, address)
   }
 
-  @RequestMapping(value = Array("point/address"), method = Array(RequestMethod.GET, RequestMethod.POST)) def getAddress(): Message = {
-    val address=
-    Message.createMessage(Message.success_state, content)
-  }
-
-  @RequestMapping(value = Array("point/points"), method = Array(RequestMethod.GET, RequestMethod.POST)) def getPoints(ID:String): Message = {
+  @RequestMapping(value = Array("point/points"), method = Array(RequestMethod.GET, RequestMethod.POST))
+  @ResponseBody
+  def getPoints(ID:String): Message = {
     val point=pointService.getByAddressId(ID)
 
     Message.createMessage(Message.success_state, point)

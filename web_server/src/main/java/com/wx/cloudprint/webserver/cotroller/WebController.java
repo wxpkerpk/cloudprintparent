@@ -102,19 +102,6 @@ public class WebController {
         }
         return message;
     }
-    @RequestMapping(value = "point/address", method = {RequestMethod.GET, RequestMethod.POST})
-    public Message getAddress(){
 
-        String content="{\"result\":\"OK\",\"info\":{\"上海市\":{\"市辖区\":[\"闸北区\",\"和布克赛尔蒙古自治县\",\"静安区\",\"黔西县\",\"丰润区\",\"虹口区\",\"三地门乡\"],\"县\":[\"赫章县\",\"灌南县\",\"-\",\"芒市\"]},\"北京市\":{\"市辖区\":[\"仲巴县\",\"武清区\",\"越秀区\",\"屯门区\",\"其它区\",\"望城区\",\"彭泽县\"],\"县\":[\"朝天区\",\"海州区\",\"玉门市\",\"含山县\",\"-\"]}}}";
-        return Message.createMessage(Message.success_state,content);
-
-    }
-    @RequestMapping(value = "point/points", method = {RequestMethod.GET, RequestMethod.POST})
-    public Message getPoints(){
-
-        String content="{\"result\":\"OK\",\"info\":[{\"pointID\":95,\"status\":\"RUNNING\",\"pointType\":\"ATM\",\"delivery_scope\":\"\",\"delivery_time\":\"每天中午十二点到两点，每天晚上8点到10点\",\"phone\":\"13845426158\",\"pointName\":\"巴青县大楼\",\"address\":\"软件园华北方向直走\",\"message\":\"欢迎使用快印打印~\",\"image\":\"\",\"takeTime\":[22,32,24,0],\"price\":{\"A4\":{\"70g\":{\"mono\":{\"duplex\":46},\"colorful\":{\"duplex\":30,\"oneside\":39}},\"80g\":{\"mono\":{\"duplex\":49},\"colorful\":{\"oneside\":38,\"duplex\":48}}},\"A3\":{\"70g\":{\"mono\":{\"oneside\":19}}}},\"printInfo\":{\"maxPageCount\":200,\"prePrintStart\":500,\"distributionStart\":1000,\"distributionCharge_free\":300,\"distributionCharge\":100},\"preInfo\":{\"maxPageCount\":500,\"prePrintStart\":500,\"desc\":\"\"},\"atmInfo\":{\"maxPageCount\":200,\"desc\":\"\"},\"dispatch\":{\"maxPageCount\":500,\"distributionStart\":500,\"distributionCharge_free\":300,\"distributionCharge\":200,\"desc\":\"\"},\"minCharge\":0,\"reduction\":{\"withCoupon\":false,\"newUser\":0,\"full\":[],\"redPacket\":false,\"activity\":[]}},{\"pointID\":96,\"status\":\"SUMMER_HOLIDAY\",\"pointType\":\"DISPATCHING\",\"delivery_scope\":\"\",\"delivery_time\":\"每天中午十二点到两点，每天晚上8点到10点\",\"phone\":\"13232314384\",\"pointName\":\"霞山区大楼\",\"address\":\"Paul Wilson一楼进大门左转\",\"message\":\"欢迎使用快印打印~\",\"image\":\"\",\"takeTime\":[14,25,24,0],\"price\":{\"A4\":{\"70g\":{\"mono\":{\"duplex\":42,\"oneside\":15},\"colorful\":{\"duplex\":45,\"oneside\":29}}},\"A3\":{\"70g\":{\"mono\":{\"duplex\":14}}}},\"printInfo\":{\"maxPageCount\":200,\"prePrintStart\":500,\"distributionStart\":1000,\"distributionCharge_free\":300,\"distributionCharge\":100},\"preInfo\":{\"maxPageCount\":500,\"prePrintStart\":500,\"desc\":\"\"},\"atmInfo\":{\"maxPageCount\":200,\"desc\":\"\"},\"dispatch\":{\"maxPageCount\":500,\"distributionStart\":500,\"distributionCharge_free\":300,\"distributionCharge\":200,\"desc\":\"\"},\"minCharge\":0,\"reduction\":{\"withCoupon\":false,\"newUser\":0,\"full\":[],\"redPacket\":false,\"activity\":[]}},{\"pointID\":97,\"status\":\"RUNNING\",\"pointType\":\"ATM\",\"delivery_scope\":\"Mary Rodriguez广场附近\",\"delivery_time\":\"每天中午十二点到两点，每天晚上8点到10点\",\"phone\":\"13151768843\",\"pointName\":\"华阳区大楼\",\"address\":\"软件园西北方向直走\",\"message\":\"新点开张！欢迎使用~\",\"image\":\"\",\"takeTime\":[14,53,24,0],\"price\":{\"A4\":{\"70g\":{\"mono\":{\"duplex\":38,\"oneside\":34}},\"80g\":{\"colorful\":{\"duplex\":23}}},\"A3\":{\"70g\":{\"mono\":{\"duplex\":43,\"oneside\":15}}}},\"printInfo\":{\"maxPageCount\":200,\"prePrintStart\":500,\"distributionStart\":1000,\"distributionCharge_free\":300,\"distributionCharge\":100},\"preInfo\":{\"maxPageCount\":500,\"prePrintStart\":500,\"desc\":\"\"},\"atmInfo\":{\"maxPageCount\":200,\"desc\":\"\"},\"dispatch\":{\"maxPageCount\":500,\"distributionStart\":500,\"distributionCharge_free\":300,\"distributionCharge\":200,\"desc\":\"\"},\"minCharge\":0,\"reduction\":{\"withCoupon\":false,\"newUser\":0,\"full\":[],\"redPacket\":false,\"activity\":[]}}]}\n";
-        return Message.createMessage(Message.success_state,content);
-
-    }
 
 }

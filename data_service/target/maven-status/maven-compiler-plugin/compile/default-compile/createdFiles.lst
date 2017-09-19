@@ -1,6 +1,10 @@
 com\wx\cloudprint\dataservice\entity\Point.class
-com\wx\cloudprint\dataservice\service\ResService.class
-com\wx\cloudprint\dataservice\entity\Address.class
-com\wx\cloudprint\dataservice\dao\ResDao.class
+com\wx\cloudprint\dataservice\dao\AddressDao.class
 com\wx\cloudprint\dataservice\entity\Res.class
 com\wx\cloudprint\dataservice\entity\Dispatch.class
+com\wx\cloudprint\dataservice\service\AddressService.class
+com\wx\cloudprint\dataservice\service\ResService.class
+com\wx\cloudprint\dataservice\entity\Address.class
+com\wx\cloudprint\dataservice\dao\PointDao.class
+com\wx\cloudprint\dataservice\dao\ResDao.class
+com\wx\cloudprint\dataservice\service\PointService.class

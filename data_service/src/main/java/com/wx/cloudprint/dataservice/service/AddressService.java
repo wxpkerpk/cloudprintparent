@@ -14,7 +14,7 @@ public class AddressService {
 
     public Address getRoot()
     {
-        return addressDao.findOne("0");
+        return addressDao.findOne("1");
 
     }
 

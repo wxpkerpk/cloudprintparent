@@ -51,8 +51,9 @@ object WebAPPController extends App{
    val str=  (("caliper"->price.caliper)~("size"->price.size)~("money"->(
     "mono"->("oneside"->price.color.mono.oneside)~("duplex"->price.color.mono.duplex))~(
       "colorful"->("oneside"->price.color.mono.oneside)~("duplex"->price.color.mono.duplex))
-      )).asInstanceOf[price]
+      ))
 
+    asJsonNode(str)
   }
 
  println( price2json( price("A4","70g",  color(money(1.0f,2.0f),money(1.0f,2.0f))) ))

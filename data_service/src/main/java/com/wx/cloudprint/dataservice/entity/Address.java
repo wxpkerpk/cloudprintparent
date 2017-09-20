@@ -15,7 +15,7 @@ public class Address {
     @Id
     String id;
     String name;
-    @OneToMany(targetEntity = Address.class)                                          //指定一对多关系
+    @OneToMany(targetEntity = Address.class,fetch = FetchType.EAGER)                                          //指定一对多关系
     @Cascade(value={CascadeType.ALL})         //设定级联关系
     @JoinColumn(name="children_id")
     List<Address> children=new ArrayList<>();
@@ -40,14 +40,14 @@ public class Address {
         address3.setId("4");
 
         System.out.println(JsonUtil.toJson(address));
-//        System.out.println(JsonUtil.toJson(toMap(address)));
+       System.out.println(JsonUtil.toJson(address.toMap()));
 
     }
     public  Object toMap( )
     {
         Map<String,Object> map=new LinkedHashMap<>();
         String childName=name;
-        if(children!=null) {
+        if(children!=null&&children.size()>0) {
             List<Object>mapList=new LinkedList<>();
 
             for (Address ad : children) {
@@ -55,8 +55,6 @@ public class Address {
             }
             map.put(childName,mapList);
             return map;
-
-
         }else{
             Map<String,String>stringMap=new LinkedHashMap<>();
             stringMap.put(childName,id);

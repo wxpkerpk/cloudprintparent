@@ -43,7 +43,7 @@ public class Point {
         this.take_time = take_time;
     }
 
-    @OneToOne(targetEntity = Dispatch.class)
+    @OneToOne(targetEntity = Dispatch.class,fetch = FetchType.EAGER,cascade = CascadeType.ALL)
      Dispatch dispatch;
      float minCharge;
 

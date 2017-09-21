@@ -8,8 +8,10 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface PointDao extends PagingAndSortingRepository<Point, String>, JpaSpecificationExecutor<Point>{
         @Query("from Point u where u.addressId=:addressId")
-        Point findByAddressId(@Param(value = "addressId") String addressId);
+        List<Point> findByAddressId(@Param(value = "addressId") String addressId);
 }

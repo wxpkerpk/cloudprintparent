@@ -13,7 +13,7 @@ import message.Message
 import org.springframework.beans.factory.annotation.Autowired
 import util.JsonUtil //
 @RestController
-@RequestMapping(value = Array("/test"))
+@RequestMapping(value = Array("/API"))
 class WebAPPController {
   implicit def autoAsJsonNode(value: JValue) = asJsonNode(value)
 
@@ -26,15 +26,30 @@ class WebAPPController {
   @ResponseBody
   def getAddress(): Message = {
     val address=addressService.getRoot.toMap
-    Message.createMessage(Message.success_state, address)
+    Message.createMessage(Message.success_state, Array(address))
   }
 
   @RequestMapping(value = Array("point/points"), method = Array(RequestMethod.GET, RequestMethod.POST))
   @ResponseBody
   def getPoints(ID:String): Message = {
     val point=pointService.getByAddressId(ID)
-
-    Message.createMessage(Message.success_state, point)
+    import scala.collection.JavaConverters._
+//
+//    if(point.size()>0) {
+//      Message.createMessage(Message.success_state, point)
+//      point.asScala.map(x=>{
+//        var m = scala.util.parsing.json.JSON.parseFull(JsonUtil.toJson(x)).getOrElse(0).asInstanceOf[Map[String, Any]]
+//        m -= "price"
+//       val temp= "price" -> scala.util.parsing.json.JSON.parseFull(m("price").toString).getOrElse(0).asInstanceOf[Map[String, Any]]
+//        m -= "price"
+//        m += temp
+//        m
+//
+//      })
+//
+//    }
+//    else
+     Message.createMessage("EMPTY",point)
   }
 
 }

@@ -1,7 +1,6 @@
 package com.wx.cloudprint
 
 import java.util
-import java.util.{ArrayList, List}
 
 import com.google.gson.Gson
 import com.wx.cloudprint.dataservice.entity.{Address, Dispatch, Point}
@@ -73,26 +72,34 @@ def price2json(price:price)={
 
 }
 
-    val str= price2json( price("A4","70g",  color(money(1.0f,2.0f),money(1.0f,2.0f))) )
-    val point=new Point()
-    point.setAddress("xxoo街")
-    point.setAddressId("2")
-    point.setDelivery_scope("整个学校周边3km以内")
-    point.setDelivery_time("9.00-19.00")
-    point.setImage("http://zyin-res.oss-cn-shenzhen.aliyuncs.com/static%2Fimages%2FATM.jpg")
-    point.setMessage("welcome")
-    point.setMinCharge(3f)
-    point.setPhone("110")
-    point.setPointName("有爱的打印店")
-    point.setPrice(Array(str).toJson.toString())
-    point.setStatus("运营中")
-    val dispatch=new Dispatch()
-    dispatch.setDescr("1234234")
-    dispatch.setDistributionCharge(300)
-    dispatch.setDistributionStart(500)
-    dispatch.setMaxPageCount(1000)
-    point.setDispatch(dispatch)
-    pointService.add(point)
+//    val str= price2json( price("A4","70g",  color(money(1.0f,2.0f),money(1.0f,2.0f))) )
+//    val point=new Point()
+//    point.setAddress("xxoo街")
+//    point.setAddressId("2")
+//    point.setDelivery_scope("整个学校周边3km以内")
+//    point.setDelivery_time("9.00-19.00")
+//    point.setImage("http://zyin-res.oss-cn-shenzhen.aliyuncs.com/static%2Fimages%2FATM.jpg")
+//    point.setMessage("welcome")
+//    point.setMinCharge(3f)
+//    point.setPhone("110")
+//    point.setPointName("有爱的打印店")
+//    point.setPrice(Array(str).toJson.toString())
+//    point.setStatus("运营中")
+//    val dispatch=new Dispatch()
+//    dispatch.setDescr("1234234")
+//    dispatch.setDistributionCharge(300)
+//    dispatch.setDistributionStart(500)
+//    dispatch.setMaxPageCount(1000)
+//    point.setDispatch(dispatch)
+//    pointService.add(point)
+    import scala.collection.JavaConverters._
+
+    val point =pointService.getByAddressId("2")
+     val s=point.asScala.map(x=>{
+      var m =   string2jvalue(x.getPrice)
+       m
+    })
+    println(point)
 
 
   }

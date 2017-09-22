@@ -11,7 +11,11 @@ import DefaultJsonProtocol._
 import com.wx.cloudprint.dataservice.service.{AddressService, PointService}
 import message.Message
 import org.springframework.beans.factory.annotation.Autowired
-import util.JsonUtil //
+import util.JsonUtil
+import java.util
+
+import com.google.gson.Gson
+import com.wx.cloudprint.dataservice.entity.Point //
 @RestController
 @RequestMapping(value = Array("/API"))
 class WebAPPController {
@@ -28,27 +32,28 @@ class WebAPPController {
     val address=addressService.getRoot.toMap
     Message.createMessage(Message.success_state, Array(address))
   }
+  val gson=new Gson()
 
   @RequestMapping(value = Array("point/points"), method = Array(RequestMethod.GET, RequestMethod.POST))
   @ResponseBody
   def getPoints(ID:String): Message = {
+    def point2Map(point:Point)={
+      val pointJson=JsonUtil.toJson(point)
+      val map= gson.fromJson(pointJson,classOf[util.Map[String,Object]])
+      val priceJson= map.get("price")
+      val price=gson.fromJson(priceJson.toString, classOf[util.List[Object]])
+      map.put("price",price)
+      map
+
+    }
     val point=pointService.getByAddressId(ID)
     import scala.collection.JavaConverters._
-//
-//    if(point.size()>0) {
-//      Message.createMessage(Message.success_state, point)
-//      point.asScala.map(x=>{
-//        var m = scala.util.parsing.json.JSON.parseFull(JsonUtil.toJson(x)).getOrElse(0).asInstanceOf[Map[String, Any]]
-//        m -= "price"
-//       val temp= "price" -> scala.util.parsing.json.JSON.parseFull(m("price").toString).getOrElse(0).asInstanceOf[Map[String, Any]]
-//        m -= "price"
-//        m += temp
-//        m
-//
-//      })
-//
-//    }
-//    else
+
+    if(point.size()>0) {
+     val newPointMap= point.asScala.map(point2Map).asJava
+      Message.createMessage(Message.success_state, newPointMap)
+    }
+    else
      Message.createMessage("EMPTY",point)
   }
 

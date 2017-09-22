@@ -22,7 +22,7 @@ import java.util.Map;
 @RequestMapping(value = "/API")
 public class WebController {
 
-//    @MotanReferer(basicReferer = "basicRefererConfig")
+    @MotanReferer(basicReferer = "basicRefererConfig")
     private GetIp getIp;
 
     @Value("${file.path}")

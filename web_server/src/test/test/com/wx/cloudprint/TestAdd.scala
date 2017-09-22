@@ -3,6 +3,7 @@ package com.wx.cloudprint
 import java.util
 
 import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import com.wx.cloudprint.dataservice.entity.{Address, Dispatch, Point}
 import com.wx.cloudprint.dataservice.service.{AddressService, PointService}
 import com.wx.cloudprint.webserver.controller.{color, money, price}
@@ -60,46 +61,65 @@ class TestAdd  extends Assert {
 //    //    addressService.add(address3)
 //    val re=addressService.getRoot.toMap
 //    println(new Gson().toJson(re))
-def price2json(price:price)={
+def price2json(price:Array[price])={
   implicit def autoAsJsonNode(value: JValue) = asJsonNode(value)
 
-  val str=  (("caliper"->price.caliper)~("size"->price.size)~("money"->(
-    "mono"->("oneside"->price.color.mono.oneside)~("duplex"->price.color.mono.duplex))~(
-    "colorful"->("oneside"->price.color.mono.oneside)~("duplex"->price.color.mono.duplex))
-    ))
 
-  asJsonNode(str).toString
 
+  val json= price.map(x=>{
+    val str=  ("caliper" -> x.caliper) ~ ("size" -> x.size) ~ ("money" -> (
+      "mono" -> ("oneside" -> x.color.mono.oneside) ~ ("duplex" -> x.color.mono.duplex)) ~ (
+      "colorful" -> ("oneside" -> x.color.mono.oneside) ~ ("duplex" -> x.color.mono.duplex))
+      )
+    asJsonNode(str).toString
+  })
+
+
+  var stringBuilder =new StringBuilder
+ stringBuilder= stringBuilder.append("[")
+  for(x <- json){
+    stringBuilder=stringBuilder.append(x).append(",")
+  }
+  stringBuilder= stringBuilder.delete(stringBuilder.length-1,stringBuilder.length)
+  stringBuilder=stringBuilder.append("]")
+
+  stringBuilder.toString()
 }
 
-//    val str= price2json( price("A4","70g",  color(money(1.0f,2.0f),money(1.0f,2.0f))) )
-//    val point=new Point()
-//    point.setAddress("xxoo街")
-//    point.setAddressId("2")
-//    point.setDelivery_scope("整个学校周边3km以内")
-//    point.setDelivery_time("9.00-19.00")
-//    point.setImage("http://zyin-res.oss-cn-shenzhen.aliyuncs.com/static%2Fimages%2FATM.jpg")
-//    point.setMessage("welcome")
-//    point.setMinCharge(3f)
-//    point.setPhone("110")
-//    point.setPointName("有爱的打印店")
-//    point.setPrice(Array(str).toJson.toString())
-//    point.setStatus("运营中")
-//    val dispatch=new Dispatch()
-//    dispatch.setDescr("1234234")
-//    dispatch.setDistributionCharge(300)
-//    dispatch.setDistributionStart(500)
-//    dispatch.setMaxPageCount(1000)
-//    point.setDispatch(dispatch)
-//    pointService.add(point)
-    import scala.collection.JavaConverters._
+    val str= price2json( Array(price("A4","70g",  color(money(1.0f,2.0f),money(1.0f,2.0f)))) )
+    val point=new Point()
+    point.setAddress("xxoo街")
+    point.setAddressId("2")
+    point.setDelivery_scope("整个学校周边3km以内")
+    point.setDelivery_time("9.00-19.00")
+    point.setImage("http://zyin-res.oss-cn-shenzhen.aliyuncs.com/static%2Fimages%2FATM.jpg")
+    point.setMessage("welcome")
+    point.setMinCharge(3f)
+    point.setPhone("110")
+    point.setPointName("有爱的打印店")
+    point.setPrice(str)
+    point.setStatus("运营中")
+    val dispatch=new Dispatch()
+    dispatch.setDescr("1234234")
+    dispatch.setDistributionCharge(300)
+    dispatch.setDistributionStart(500)
+    dispatch.setMaxPageCount(1000)
+    point.setDispatch(dispatch)
 
-    val point =pointService.getByAddressId("2")
-     val s=point.asScala.map(x=>{
-      var m =   string2jvalue(x.getPrice)
-       m
-    })
-    println(point)
+    pointService.add(point)
+    def point2Map(point:Point)={
+      val pointJson=new Gson().toJson(point)
+      val map= new Gson().fromJson(pointJson,classOf[util.Map[String,Object]])
+      val priceJson= map.get("price")
+       val price= new Gson().fromJson(priceJson.toString, classOf[util.List[Object]])
+      map.put("price",price)
+      map
+
+    }
+    val map=point2Map(point)
+  println(  new Gson().toJson(map))
+
+
 
 
   }

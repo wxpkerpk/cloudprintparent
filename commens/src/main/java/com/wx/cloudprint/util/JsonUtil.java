@@ -1,4 +1,4 @@
-package util;
+package com.wx.cloudprint.util;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;

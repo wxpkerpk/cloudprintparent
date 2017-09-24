@@ -1,4 +1,4 @@
-package message;
+package com.wx.cloudprint.message;
 
 
 import java.io.Serializable;

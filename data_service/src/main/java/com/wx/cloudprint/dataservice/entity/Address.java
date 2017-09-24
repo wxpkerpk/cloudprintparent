@@ -2,8 +2,7 @@ package com.wx.cloudprint.dataservice.entity;
 
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
-import org.hibernate.annotations.GenericGenerator;
-import util.JsonUtil;
+import com.wx.cloudprint.util.JsonUtil;
 
 import javax.persistence.*;
 import java.util.*;

@@ -11,7 +11,7 @@ import org.apache.pdfbox.pdmodel.PDDocument;
 
 import org.apache.pdfbox.rendering.PDFRenderer;
 import org.springframework.beans.factory.annotation.Value;
-import util.FileUtils;
+import com.wx.cloudprint.util.FileUtils;
 
 
 import javax.imageio.ImageIO;

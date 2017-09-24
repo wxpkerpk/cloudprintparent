@@ -1,4 +1,4 @@
-package util;
+package com.wx.cloudprint.util;
 
 import javax.crypto.*;
 import javax.crypto.spec.SecretKeySpec;

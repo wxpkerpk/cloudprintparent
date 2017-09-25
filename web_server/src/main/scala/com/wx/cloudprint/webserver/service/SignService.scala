@@ -16,19 +16,19 @@ class SignService {
   def signin(userName:String,password:String)={
     val body=Http(signinUrl).postForm(Seq("userName" -> userName, "password" -> password)).asString.body
     val map=JSON.parseFull(body).get.asInstanceOf[Map[String,Map[String,String]]]
-    map("status")
+    map
 
 
   }
   def getCode(tel:String)={
          val body=Http(getCodeUrl).postForm(Seq("userName" -> tel)).asString.body
     val map=JSON.parseFull(body).get.asInstanceOf[Map[String,Map[String,String]]]
-    map("status")
+    map
   }
   def register(userName:String,password:String,code:String)={
     val body=Http(registerUrl).postForm(Seq("userName" -> userName, "password" -> password,"code"->code)).asString.body
     val map=JSON.parseFull(body).get.asInstanceOf[Map[String,Map[String,String]]]
-    map("status")
+    map
 
   }
 }

@@ -28,17 +28,7 @@ import com.wx.cloudprint.server.covert.motan.GetIp //
 class WebAPPController {
   implicit def autoAsJsonNode(value: JValue) = asJsonNode(value)
 
-  @Autowired
-  var pointService:PointService=_
-  @Autowired
-  var addressService :AddressService=_
 
-  @RequestMapping(value = Array("point/address"), method = Array(RequestMethod.GET, RequestMethod.POST))
-  @ResponseBody
-  def getAddress(): Message = {
-    val address=addressService.getRoot.toMap
-    Message.createMessage(Message.success_state, Array(address))
-  }
   val gson=new Gson()
   //    @MotanReferer(basicReferer = "basicRefererConfig")
   private var getIp: GetIp= _
@@ -54,36 +44,9 @@ class WebAPPController {
 
 
   var serverIp: String = _
-  @RequestMapping(value = Array("point/points"), method = Array(RequestMethod.GET, RequestMethod.POST))
-  @ResponseBody
-  def getPoints(ID:String): Message = {
-    def point2Map(point:Point)={
-      val pointJson=JsonUtil.toJson(point)
-      val map= gson.fromJson(pointJson,classOf[util.Map[String,Object]])
-      val priceJson= map.get("price")
-      val price=gson.fromJson(priceJson.toString, classOf[util.List[Object]])
-      map.put("price",price)
-      map
-
-    }
-    val point=pointService.getByAddressId(ID)
-
-    if(point.size()>0) {
-     val newPointMap= point.asScala.map(point2Map).asJava
-      Message.createMessage(Message.success_state, newPointMap)
-    }
-    else
-     Message.createMessage("EMPTY",point)
-  }
 
 
 
-
-  def main(s: Array[String]): Unit = {
-    val data = FileUtils.readByte("C:\\Users\\wx\\Documents\\工作簿1.xlsx")
-    val md5 = MD5Util.encrpt(data)
-    System.out.println(md5)
-  }
 
   @RequestMapping(value = Array("test"), method = Array(RequestMethod.GET, RequestMethod.POST))
   @ResponseBody def test(request: HttpServletRequest): String = request.getSession.getId
@@ -91,7 +54,7 @@ class WebAPPController {
   @RequestMapping(value = Array("file/url"), method = Array(RequestMethod.GET, RequestMethod.POST))
   @ResponseBody def url: Message = {
 
-    val urls=Map("url"->getIp()).asJava
+    val urls=Map("url"->getIp.getIp).asJava
     val message = Message.createMessage(Message.success_state, urls)
     message
   }
@@ -102,7 +65,7 @@ class WebAPPController {
     builder.toString
   }
 
-  private[cotroller] def getFilePrefix(name: String) = {
+ def getFilePrefix(name: String) = {
     val temp = name.split("\\.")
     if (temp.length >= 2) temp(temp.length - 1)
     else null
@@ -113,7 +76,7 @@ class WebAPPController {
   @ResponseBody def Preview(request: HttpServletRequest, response: HttpServletResponse, @RequestParam md5: String, @RequestParam size: String, @RequestParam row: Int, @RequestParam col: Int, @RequestParam(required = false) page: Integer, @RequestParam(required = false) isMono: Boolean): Message = {
     val res = resService.getByMD5(md5)
     if (res != null) {
-      val url = genRestfulUrl(res.getHost, res.getPort, "/API/file/pic/get/preview?" + String.format("md5=%s&size=%s&row=%s&col=%s&page=%s", md5, size, row, col, page))
+      val url = genRestfulUrl(res.getHost, res.getPort, "/API/file/pic/get/preview?" + s"md5=$md5&size=$size&row=$row&col=$col&page=$page")
       val map = new util.LinkedHashMap[String, String]
       map.put("img", url)
       return Message.createMessage(Message.success_state, map)

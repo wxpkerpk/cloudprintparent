@@ -42,7 +42,7 @@ class TestAdd  {
   def add():Unit={
 
   println(gisnservice.signin("123","123123"))
-//    println(gisnservice.getCode("18011302985"))
+   println(gisnservice.getCode("18011302985"))
     println(gisnservice.register("`18011302985","666666pk","158711"))
 
 

@@ -45,8 +45,8 @@ class PointAPIController {
   @RequestMapping(value = Array("point/address"), method = Array(RequestMethod.GET, RequestMethod.POST))
   @ResponseBody
   def getAddress(): Message = {
-    val address=addressService.getRoot.toMap
-    Message.createMessage(Message.success_state, Array(address))
+    val address=addressService.getRoot.asScala.map(_.toMap)
+    Message.createMessage(Message.success_state, address.asJava)
   }
 
 }

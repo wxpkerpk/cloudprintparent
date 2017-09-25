@@ -5,6 +5,7 @@ import com.wx.cloudprint.dataservice.entity.Address;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 @Service
 public class AddressService {
@@ -12,11 +13,12 @@ public class AddressService {
     AddressDao addressDao;
 
 
-    public Address getRoot()
+    public List<Address> getRoot()
     {
-        return addressDao.findOne("1");
+        return addressDao.findRoot();
 
     }
+
 
     public void add(Address address){
 

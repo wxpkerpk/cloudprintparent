@@ -19,6 +19,33 @@ public class Address {
     @JoinColumn(name="children_id")
     List<Address> children=new ArrayList<>();
 
+    @OneToOne(targetEntity = Address.class,fetch = FetchType.EAGER)
+    Address parent;
+
+    public Address getParent() {
+        return parent;
+    }
+
+    public void setParent(Address parent) {
+        this.parent = parent;
+    }
+
+    public void addChild(Address address){
+        address.setParent(this);
+        children.add(address);
+
+
+    }
+    boolean is_root =false;
+
+    public boolean isIs_root() {
+        return is_root;
+    }
+
+    public void setIs_root(boolean is_root) {
+        this.is_root = is_root;
+    }
+
     public static void main(String []s){
         Address address=new Address();
         address.setId("1");
@@ -67,6 +94,7 @@ public class Address {
 
     public Address(String name, List<Address> children) {
         this.name = name;
+        if(children!=null)
         this.children = children;
     }
 

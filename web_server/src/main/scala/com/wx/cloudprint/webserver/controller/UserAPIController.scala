@@ -9,7 +9,12 @@ import org.json4s.JsonAST.JValue
 import org.json4s.jackson.JsonMethods.asJsonNode
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.{RequestMapping, RequestMethod, ResponseBody, RestController}
-
+import org.json4s.JsonAST.{JInt, JString, JValue}
+import org.json4s.JsonDSL._
+import org.json4s.jackson.JsonMethods._
+import spray.json._
+import DefaultJsonProtocol._
+import com.fasterxml.jackson.databind.JsonNode
 @RestController
 @RequestMapping(value = Array("/API"))
 class UserAPIController {
@@ -20,13 +25,13 @@ class UserAPIController {
   var userService:UserService=_
   implicit def autoAsJsonNode(value: JValue) = asJsonNode(value)
 
-  @RequestMapping(value = Array("file/url"), method = Array(RequestMethod.GET, RequestMethod.POST))
+  @RequestMapping(value = Array("/user/login"), method = Array(RequestMethod.GET, RequestMethod.POST))
   @ResponseBody
-  def login(request:HttpServletRequest, response:HttpServletResponse, username:String, password:String)={
+  def login(request:HttpServletRequest, response:HttpServletResponse, username:String, password:String):JsonNode={
     val result=signService.signin(username,password)
     val status=result("status")("code")
     val message=result("status")("message")
-    status match {
+    val info= status match {
       case "200" => {//登录成功
         val data=result("data")
 
@@ -44,13 +49,14 @@ class UserAPIController {
           userService.add(user)
 
         }
-        request.getSession.setAttribute("user")
+        request.getSession.setAttribute("user",user)
+        ("result"->"ok") ~ ("info"->(("nickname"->user.getNickName) ~ ("uid"->user.getId)~("phone"->user.getTel)~("avatar"->user.getHeadPic)~("lastPoint"->"")))
+    }
+      case "300"=> ("result"->"ok") ~ ("info"->"用户不存在")
+      case _ =>        ("result"->"ok") ~ ("info"->"账号或密码错误")
 
     }
-    }
-
-
+    info
   }
-
 
 }

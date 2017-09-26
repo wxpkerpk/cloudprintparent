@@ -15,33 +15,35 @@ import org.json4s.jackson.JsonMethods._
 import spray.json._
 import DefaultJsonProtocol._
 import com.fasterxml.jackson.databind.JsonNode
+
 @RestController
 @RequestMapping(value = Array("/API"))
 class UserAPIController {
   @Autowired
-  var signService:SignService=_
+  var signService: SignService = _
 
   @Autowired
-  var userService:UserService=_
+  var userService: UserService = _
+
   implicit def autoAsJsonNode(value: JValue) = asJsonNode(value)
 
   @RequestMapping(value = Array("/user/login"), method = Array(RequestMethod.GET, RequestMethod.POST))
   @ResponseBody
-  def login(request:HttpServletRequest, response:HttpServletResponse, username:String, password:String):JsonNode={
-    val result=signService.signin(username,password)
-    val status=result("status")("code")
-    val message=result("status")("message")
-    val info= status match {
-      case "200" => {//登录成功
-        val data=result("data")
+  def login(request: HttpServletRequest, response: HttpServletResponse, username: String, password: String): JsonNode = {
+    val result = signService.signin(username, password)
+    val status = result("status")("code")
+    val message = result("status")("message")
+    val info = status match {
+      case "200" => //登录成功
+        val data = result("data")
 
-        val userId=data("userId")
-        var user=userService.findByShulianId(userId)
-        if(user==null){
-            val userName=data("userName")
-          val nickName=data("nickName")
-          val headPic=data("headPic")
-          user=new User()
+        val userId = data("userId")
+        var user = userService.findByShulianId(userId)
+        if (user == null) {
+          val userName = data("userName")
+          val nickName = data("nickName")
+          val headPic = data("headPic")
+          user = new User()
           user.setNickName(nickName)
           user.setShulianId(userId)
           user.setTel(userName)
@@ -49,14 +51,31 @@ class UserAPIController {
           userService.add(user)
 
         }
-        request.getSession.setAttribute("user",user)
-        ("result"->"ok") ~ ("info"->(("nickname"->user.getNickName) ~ ("uid"->user.getId)~("phone"->user.getTel)~("avatar"->user.getHeadPic)~("lastPoint"->"")))
-    }
-      case "300"=> ("result"->"ok") ~ ("info"->"用户不存在")
-      case _ =>        ("result"->"ok") ~ ("info"->"账号或密码错误")
+        request.getSession.setAttribute("user", user)
+        ("result" -> "OK") ~ ("info" -> (("nickname" -> user.getNickName) ~ ("uid" -> user.getId) ~ ("phone" -> user.getTel) ~ ("avatar" -> user.getHeadPic) ~ ("lastPoint" -> "")))
+      case "300" => ("result" -> "OK") ~ ("info" -> "用户不存在")
+      case _ => ("result" -> "OK") ~ ("info" -> "账号或密码错误")
 
     }
+
     info
+  }
+
+  @RequestMapping(value = Array("/user/login/state"), method = Array(RequestMethod.GET, RequestMethod.POST))
+  @ResponseBody
+  def getState(request: HttpServletRequest, response: HttpServletResponse): JsonNode = {
+    if (request.getSession.getAttribute("user") == null) {
+      ("result" -> "OK") ~ ("info" -> "NOT_LOGINING")
+    } else ("result" -> "OK") ~ ("info" -> "LOGINING")
+
+  }
+
+  @RequestMapping(value = Array("/user/logout"), method = Array(RequestMethod.GET, RequestMethod.POST))
+  @ResponseBody
+  def logout(request: HttpServletRequest, response: HttpServletResponse): JsonNode = {
+    request.getReader.readLine()
+    request.getSession.removeAttribute("user")
+    ("result" -> "ok") ~ ("info" -> "")
   }
 
 }

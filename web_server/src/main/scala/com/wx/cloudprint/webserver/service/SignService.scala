@@ -27,6 +27,7 @@ class SignService {
   }
   def register(userName:String,password:String,code:String)={
     val body=Http(registerUrl).postForm(Seq("userName" -> userName, "password" -> password,"code"->code)).asString.body
+
     val map=JSON.parseFull(body).get.asInstanceOf[Map[String,Map[String,String]]]
     map
 

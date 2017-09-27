@@ -31,6 +31,7 @@
         <module>commens</module>
         <module>web_server</module>
 
+        <module>redismodule</module>
         <module>data_service</module>
     </modules>
     <properties>

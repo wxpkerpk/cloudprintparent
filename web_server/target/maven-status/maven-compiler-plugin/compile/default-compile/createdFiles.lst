@@ -1,7 +1,6 @@
 com\wx\cloudprint\webserver\register\Config.class
-com\wx\cloudprint\webserver\cotroller\WebController.class
 com\wx\cloudprint\webserver\register\WebClient.class
 com\wx\cloudprint\webserver\register\Config$1.class
-com\wx\cloudprint\webserver\cotroller\WebController$Url.class
 com\wx\cloudprint\webserver\register\StartWebApplication.class
+com\wx\cloudprint\alipay\Alipay.class
 com\wx\cloudprint\server\covert\motan\GetIp.class

@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.{RequestMapping, RequestMethod, R
 class OrderAPIController {
   implicit val formats = DefaultFormats
 
+
   val gson = new Gson()
   @Autowired
   var pointService: PointService = _
@@ -44,6 +45,8 @@ class OrderAPIController {
 }
 
 object OrderAPIController extends App {
+
+
 
   def caculatePrice(order: String, price: String, dispatch: Dispatch) = {
     implicit val formats = DefaultFormats

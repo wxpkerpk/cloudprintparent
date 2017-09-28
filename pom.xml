@@ -31,11 +31,10 @@
         <module>commens</module>
         <module>web_server</module>
 
-        <module>redismodule</module>
         <module>data_service</module>
     </modules>
     <properties>
-        <scala.version>2.12</scala.version>
+        <scala.version>2.12.3</scala.version>
         <java.version>1.8</java.version>
     </properties>
 

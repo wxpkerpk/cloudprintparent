@@ -16,6 +16,7 @@
         <motan.version>0.3.1</motan.version>
         <scala.version>2.12</scala.version>
 
+        <java.version>1.8</java.version>
     </properties>
 <dependencies>
     <!-- https://mvnrepository.com/artifact/com.google.code.gson/gson -->

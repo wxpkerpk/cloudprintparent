@@ -15,6 +15,9 @@ class SignService {
   var registerUrl:String=_
   @Value("${sign.code.url}")
   var getCodeUrl:String=_
+
+  @Value("${sign.getUserInfo.url}")
+  var getUserInfo :String=_
   def signin(userName:String,password:String)={
     val body=Http(signinUrl).postForm(Seq("userName" -> userName, "password" -> password)).asString.body
     val map=parse(body).extract[Map[String,Map[String,String]]]
@@ -32,6 +35,11 @@ class SignService {
 
     val map=parse(body).extract[Map[String,Map[String,String]]]
     map
+
+  }
+
+
+  def getUserInfo(userName:String)={
 
   }
 }

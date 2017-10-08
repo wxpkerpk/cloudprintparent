@@ -1,5 +1,6 @@
 package com.wx.cloudprint.webserver.controller
 
+import java.util.UUID
 import javax.servlet.http.{HttpServletRequest, HttpServletResponse}
 
 import com.wx.cloudprint.dataservice.entity.User
@@ -65,17 +66,38 @@ class UserAPIController {
   @ResponseBody
   def getState(request: HttpServletRequest, response: HttpServletResponse): JsonNode = {
     if (request.getSession.getAttribute("user") == null) {
-      ("result" -> "OK") ~ ("info" -> "NOT_LOGINING")
-    } else ("result" -> "OK") ~ ("info" -> "LOGINING")
+      ("result" -> "OK") ~ ("info" -> "LOGINING")
+    } else ("result" -> "OK") ~ ("info" -> "NOT_LOGINING")
 
   }
 
   @RequestMapping(value = Array("/user/logout"), method = Array(RequestMethod.GET, RequestMethod.POST))
   @ResponseBody
   def logout(request: HttpServletRequest, response: HttpServletResponse): JsonNode = {
-    request.getReader.readLine()
     request.getSession.removeAttribute("user")
     ("result" -> "ok") ~ ("info" -> "")
   }
+  @RequestMapping(value = Array("/user/registerable"), method = Array(RequestMethod.GET, RequestMethod.POST))
+  @ResponseBody
+  def registerable(username:String):JsonNode={
+    val map=signService.signin(username,UUID.randomUUID().toString)
+    val status = map("status")("code")
+    val result= status match {
+      case "300"=>"error"
+      case _ =>"OK"
+    }
+    ("result" -> result) ~ ("info" -> "")
+  }
+  @RequestMapping(value = Array("/user/SMS/captcha"), method = Array(RequestMethod.GET, RequestMethod.POST))
+  @ResponseBody
+  def captcha(username:String)= {
+    val map = signService.getCode(username)
+    val status = map("status")("code")
+    val result = status match {
+      case "200" => "OK"
+      case _ => "error"
+    }
 
+    ("result" -> result) ~ ("info" -> "")
+  }
 }

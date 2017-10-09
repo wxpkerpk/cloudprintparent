@@ -91,8 +91,8 @@ class UserAPIController {
   @RequestMapping(value = Array("/user/SMS/captcha"), method = Array(RequestMethod.GET, RequestMethod.POST))
   @ResponseBody
   def captcha(username:String)= {
-    val map = signService.getCode(username)
-    val status = map("status")("code")
+    val map = signService. getCode(username)
+    val status = map("status").asInstanceOf[Map[String,String]]("code")
     val result = status match {
       case "200" => "OK"
       case _ => "error"

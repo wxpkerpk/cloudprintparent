@@ -27,7 +27,7 @@ class SignService {
   }
   def getCode(tel:String)={
          val body=Http(getCodeUrl).postForm(Seq("userName" -> tel)).asString.body
-    val map=parse(body).extract[Map[String,Map[String,String]]]
+    val map=parse(body).extract[Map[String,Any]]
     map
   }
   def register(userName:String,password:String,code:String)={

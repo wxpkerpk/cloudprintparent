@@ -6,13 +6,16 @@ import org.json4s._
 import org.json4s.jackson.JsonMethods._
 import com.google.gson.Gson
 import com.wx.cloudprint.dataservice.entity.{Dispatch, Order, Point}
-import com.wx.cloudprint.dataservice.service.{AddressService, PointService}
+import com.wx.cloudprint.dataservice.service.{AddressService, OrderService, PointService}
 import com.wx.cloudprint.message.Message
 import com.wx.cloudprint.webserver.anotation.Acess
 import org.json4s.JsonAST.JValue
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.{RequestMapping, RequestMethod, ResponseBody, RestController}
 import org.json4s.JsonDSL._
+
+import scala.collection.mutable.ArrayBuffer
+
 @RestController
 @RequestMapping(value = Array("/API"))
 class OrderAPIController extends BaseController {
@@ -24,39 +27,57 @@ class OrderAPIController extends BaseController {
   var pointService: PointService = _
   @Autowired
   var addressService: AddressService = _
+  @Autowired
+  var orderService:OrderService =_
 
-  import org.springframework.beans.factory.annotation.Autowired
-  import javax.servlet.http.HttpServletRequest
   implicit def autoAsJsonNode(value: JValue) = asJsonNode(value)
 
+  @RequestMapping(value = Array("/orders/info"), method = Array(RequestMethod.GET, RequestMethod.POST))
+  @ResponseBody
+  def getInfo()={
 
+  }
+  @RequestMapping(value = Array("/orders/detail"), method = Array(RequestMethod.GET, RequestMethod.POST))
+  @ResponseBody
+  def detail(orderID:String)={
+    val order=orderService.get(orderID)
+
+    val files=render(order.getFiles)
+    val settles=render(order.getSettle)
+    val dispatch=render(order.getDispatching)
+
+  }
   @RequestMapping(value = Array("/order/verify"), method = Array(RequestMethod.GET, RequestMethod.POST))
   @ResponseBody
   @Acess(authorities = Array("user"))
-  def verify(param: String) : JsonNode= {
-    val user = getUser()
+  def verify(param: String): JsonNode = {
+
+    val user = null
     import OrderAPIController.caculatePrice
-    val session = request.getSession
+    import OrderAPIController.getSettles
     val json = parse(param)
     val pointId = json \ "id"
     val point = pointService.get(pointId.extract[String])
     val dispatch = (json \ "dispatching").toOption.orNull
     val pointdispatch = if (dispatch == null) null else point.getDispatch
 
-    val money=(json \ "money").extract[Float]
-    val sum = caculatePrice(param, point.getPrice, pointdispatch)
-    if(sum!=money){
-       ("result" -> Message.fail_state) ~ ("info" -> "后台金额核对不一致")
-    }else{
-      val order=new Order
+    val money = (json \ "money").extract[Float]
+    val settles = getSettles(param, point.getPrice)
+    val sum = caculatePrice(settles,pointdispatch)
+    if (sum != money) {
+      ("result" -> Message.fail_state) ~ ("info" -> "后台金额核对不一致")
+    } else {
+      val order = new Order
       order.setId(BaseController.makeTimeId)
       order.setFiles(compact(render(json \ "files")))
       order.setMoney(money)
       order.setUser(user)
+      val settlesStr = settles.map { x => compact(render(x)) }.mkString("[", ",", "]")
+      order.setSettle(settlesStr)
       order.setPointId(pointId.extract[String])
-      if(dispatch!=null) order.setDispatching(compact(render(dispatch)))
-
-      ("result" -> Message.success_state) ~ ("info" -> (("orderID"->"")~("desc"->"")))
+      if (dispatch != null) order.setDispatching(compact(render(dispatch)))
+      orderService.add(order)
+      ("result" -> Message.success_state) ~ ("info" -> (("orderID" -> "") ~ ("desc" -> "")))
 
     }
 
@@ -66,14 +87,15 @@ class OrderAPIController extends BaseController {
 
 object OrderAPIController extends App {
 
-  implicit val formats = DefaultFormats
 
-  def caculatePrice(order: String, price: String, dispatch: Dispatch) = {
+  def getSettles(order: String, price: String) = {
     implicit val formats = DefaultFormats
+
     val json = parse(order)
     val files = json \ "files"
-    val priceMap = parse(price).extract[List[Map[String, Any]]]
-    var sum = 0f
+    val priceJson=parse(price)
+    val priceMap =priceJson.extract[Array[Map[String, Any]]]
+    val settles = new ArrayBuffer[JValue]()
     for (JObject(child) <- files) {
       val values = child.toMap
       val copies = values("copies").extract[Int]
@@ -88,16 +110,24 @@ object OrderAPIController extends App {
       val money = map(color)
       val perPrice = if (side == 1) money("oneside") else money("duplex")
       page = if (page > 0) page else 0
-      sum += page * perPrice.toString.toFloat * copies
+      val node = ("size" -> size) ~ ("caliper" -> caliper) ~ ("color" -> color) ~ ("side" -> side) ~ ("unit" -> perPrice.toString.toFloat) ~ ("count" -> page * copies)
+      settles += node
     }
-    sum + (if (dispatch == null) 0f else dispatch.getDistributionCharge)
+    settles.toArray
+  }
 
+  def caculatePrice(settles: Array[JValue], dispatch: Dispatch) = {
+    implicit val formats = DefaultFormats
+
+    var sum = settles.map { x => (x \ "unit").extract[Float] * (x \ "count").extract[Int] }.sum
+    sum += (if (dispatch != null) dispatch.getDistributionStart else 0f)
+    sum
 
   }
 
 
   val str = "[{\"caliper\":\"70g\",\"size\":\"A4\",\"money\":{\"mono\":{\"oneside\":1.0,\"duplex\":2.0},\"colorful\":{\"oneside\":1.0,\"duplex\":2.0}}}]"
-  val order = "{\n  \"id\": \"0026\",\n  \"files\": [{\n    \"fileID\": \"A52B4686E173B0612B71148F7F9E099A\",\n    \"fileName\": \"申报指南.docx\",\n    \"layout\": 2,\n    \"copies\": 1,\n    \"size\": \"A4\",\n    \"caliper\": \"70g\",\n    \"color\": \"mono\",\n    \"side\": 1,\n    \"startPage\": 0,\n    \"endPage\": 0\n  }],\n  \"money\": 25,\n  \"couponID\": 0,\n  \"reduction\": {\n    \"newUser\": false,\n    \"full\": []\n  },\n  \"dispatching\": {\n    \"username\": \"\",\n    \"userPhone\": \"\",\n    \"address\": \"\",\n    \"leftMessage\": \"\"\n  }\n}"
+  val order = "{\n  \"id\": \"7276d189-1ea1-43c5-9d95-e2503f1f72f5\",\n  \"files\": [{\n    \"fileID\": \"A52B4686E173B0612B71148F7F9E099A\",\n    \"fileName\": \"申报指南.docx\",\n    \"layout\": 2,\n    \"copies\": 1,\n    \"size\": \"A4\",\n    \"caliper\": \"70g\",\n    \"color\": \"mono\",\n    \"side\": 1,\n    \"startPage\": 0,\n    \"endPage\": 0\n  }],\n  \"money\": 25,\n  \"couponID\": 0,\n  \"reduction\": {\n    \"newUser\": false,\n    \"full\": []\n  },\n  \"dispatching\": {\n    \"username\": \"\",\n    \"userPhone\": \"\",\n    \"address\": \"\",\n    \"leftMessage\": \"\"\n  }\n}"
 
   val test = "{\n  \"pointID\": \"0026\",\n  \"money\": 25,\n  \"files\": [{\n    \"fileID\": \"A52B4686E173B0612B71148F7F9E099A\",\n    \"fileName\": \"申报指南.docx\",\n    \"row\": 1, \n    \"col\": 2,\n    \"copies\": 1,\n    \"size\": \"A4\",\n    \"caliper\": \"70g\",\n    \"color\": \"mono\",\n    \"side\": 1,\n    \"startPage\": 0,\n    \"endPage\": 0\n  }],\n  \"dispatching\": {\n    \"nickname\": \"\",\n    \"phone\": \"\",\n    \"address\": \"\",\n    \"message\": \"\"\n  }\n}"
   val json = parse(test)

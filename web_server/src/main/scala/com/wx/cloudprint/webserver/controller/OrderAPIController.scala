@@ -11,8 +11,9 @@ import com.wx.cloudprint.message.Message
 import com.wx.cloudprint.webserver.anotation.Acess
 import org.json4s.JsonAST.JValue
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.web.bind.annotation.{RequestMapping, RequestMethod, ResponseBody, RestController}
+import org.springframework.web.bind.annotation._
 import org.json4s.JsonDSL._
+import scala.collection.JavaConverters._
 
 import scala.collection.mutable.ArrayBuffer
 
@@ -28,31 +29,62 @@ class OrderAPIController extends BaseController {
   @Autowired
   var addressService: AddressService = _
   @Autowired
-  var orderService:OrderService =_
+  var orderService: OrderService = _
 
   implicit def autoAsJsonNode(value: JValue) = asJsonNode(value)
 
   @RequestMapping(value = Array("/orders/info"), method = Array(RequestMethod.GET, RequestMethod.POST))
   @ResponseBody
-  def getInfo()={
+  def getInfo(page: Int, limits: Int, @RequestParam(name = "type") state: String):JsonNode = {
+
+    val orders = orderService.getOrders(page, limits, state)
+    val orderstr= orders.asScala.map { x =>
+      val files = parse(x.getFiles).extract[Array[Map[String, Any]]]
+      val name = files(0).getOrElse("fileName", "")
+      val count = files.length
+      render(("orderID" -> x.getId) ~ ("orserDate" -> x.getOrderDate) ~ ("state" -> x.getPayState) ~ ("money" -> x.getMoney) ~ ("pointName" -> x.getPointName) ~ ("fileCount" -> count) ~ ("filePrename" -> name.toString))
+    }.mkString("[",",","]")
+
+    parse(orderstr)
 
   }
+
   @RequestMapping(value = Array("/orders/detail"), method = Array(RequestMethod.GET, RequestMethod.POST))
   @ResponseBody
-  def detail(orderID:String)={
-    val order=orderService.get(orderID)
+  def detail(orderID: String): JsonNode = {
+    val order = orderService.get(orderID)
 
-    val files=render(order.getFiles)
-    val settles=render(order.getSettle)
-    val dispatch=render(order.getDispatching)
+    val files = parse(order.getFiles)
+    val settles = parse(order.getSettle)
+    val dispatch = parse(order.getDispatching)
+
+    val id = order.getId
+    val userName = order.getUser.getTel
+    val nickName = order.getUser.getNickName
+    val orderDate = order.getOrderDate
+    val state = order.getPayState
+    val payway = order.getPayWay
+    val pointName = order.getPointName
+    val pointId = order.getPointId
+    val printDate = order.getPrintDate
+    val money = order.getMoney
+    val point = pointService.get(pointId)
+
+
+    ("result" -> "OK") ~ ("info" -> (("uid" -> order.getUser.getId) ~ ("username" -> userName) ~ ("nickname" -> nickName) ~ ("orderID" -> id) ~ ("orderDate" ->
+      orderDate) ~ ("state" -> state) ~ ("payway" -> payway) ~ ("pointName" -> pointName) ~ ("pointPhone" -> (if (point == null) "" else point.getPhone))
+      ~ ("printDate" -> printDate) ~ ("printID" -> pointId) ~ ("money" -> money) ~ ("files" -> files) ~ ("dispatching" -> dispatch) ~ ("settle" -> settles)
+      ))
+
 
   }
+
   @RequestMapping(value = Array("/order/verify"), method = Array(RequestMethod.GET, RequestMethod.POST))
   @ResponseBody
   @Acess(authorities = Array("user"))
   def verify(param: String): JsonNode = {
 
-    val user = null
+    val user = getUser()
     import OrderAPIController.caculatePrice
     import OrderAPIController.getSettles
     val json = parse(param)
@@ -63,7 +95,7 @@ class OrderAPIController extends BaseController {
 
     val money = (json \ "money").extract[Float]
     val settles = getSettles(param, point.getPrice)
-    val sum = caculatePrice(settles,pointdispatch)
+    val sum = caculatePrice(settles, pointdispatch)
     if (sum != money) {
       ("result" -> Message.fail_state) ~ ("info" -> "后台金额核对不一致")
     } else {
@@ -71,6 +103,7 @@ class OrderAPIController extends BaseController {
       order.setId(BaseController.makeTimeId)
       order.setFiles(compact(render(json \ "files")))
       order.setMoney(money)
+      order.setOrderDate(System.currentTimeMillis())
       order.setUser(user)
       val settlesStr = settles.map { x => compact(render(x)) }.mkString("[", ",", "]")
       order.setSettle(settlesStr)
@@ -93,8 +126,8 @@ object OrderAPIController extends App {
 
     val json = parse(order)
     val files = json \ "files"
-    val priceJson=parse(price)
-    val priceMap =priceJson.extract[Array[Map[String, Any]]]
+    val priceJson = parse(price)
+    val priceMap = priceJson.extract[Array[Map[String, Any]]]
     val settles = new ArrayBuffer[JValue]()
     for (JObject(child) <- files) {
       val values = child.toMap

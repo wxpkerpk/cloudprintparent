@@ -5,7 +5,7 @@ import java.util
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.wx.cloudprint.dataservice.entity.{Address, Dispatch, Point}
-import com.wx.cloudprint.dataservice.service.{AddressService, PointService}
+import com.wx.cloudprint.dataservice.service.{AddressService, OrderService, PointService}
 import com.wx.cloudprint.webserver.controller.{OrderAPIController, color, money, price}
 import com.wx.cloudprint.webserver.register.StartWebApplication
 import com.wx.cloudprint.webserver.service.SignService
@@ -34,6 +34,8 @@ class TestAdd  {
 
 
   @Autowired
+  var orderService:OrderService=_
+  @Autowired
   var gisnservice:SignService=_
 
   @Autowired
@@ -43,9 +45,13 @@ class TestAdd  {
   @Test
   def add():Unit={
 
-    val order = "{\n  \"id\": \"7276d189-1ea1-43c5-9d95-e2503f1f72f5\",\n  \"files\": [{\n    \"fileID\": \"A52B4686E173B0612B71148F7F9E099A\",\n    \"fileName\": \"申报指南.docx\",\n    \"layout\": 2,\n    \"copies\": 1,\n    \"size\": \"A4\",\n    \"caliper\": \"70g\",\n    \"color\": \"mono\",\n    \"side\": 1,\n    \"startPage\": 0,\n    \"endPage\": 0\n  }],\n  \"money\": 501.0,\n  \"couponID\": 0,\n  \"reduction\": {\n    \"newUser\": false,\n    \"full\": []\n  },\n  \"dispatching\": {\n    \"username\": \"\",\n    \"userPhone\": \"\",\n    \"address\": \"\",\n    \"leftMessage\": \"\"\n  }\n}"
+//    val order = "{\n  \"id\": \"7276d189-1ea1-43c5-9d95-e2503f1f72f5\",\n  \"files\": [{\n    \"fileID\": \"A52B4686E173B0612B71148F7F9E099A\",\n    \"fileName\": \"申报指南.docx\",\n    \"layout\": 2,\n    \"copies\": 1,\n    \"size\": \"A4\",\n    \"caliper\": \"70g\",\n    \"color\": \"mono\",\n    \"side\": 1,\n    \"startPage\": 0,\n    \"endPage\": 0\n  }],\n  \"money\": 501.0,\n  \"couponID\": 0,\n  \"reduction\": {\n    \"newUser\": false,\n    \"full\": []\n  },\n  \"dispatching\": {\n    \"username\": \"\",\n    \"userPhone\": \"\",\n    \"address\": \"\",\n    \"leftMessage\": \"\"\n  }\n}"
+//
+//    orderController.verify(order)
 
-    orderController.verify(order)
+   val order=orderController.detail("150756263242510000")
+    println(compact(render(order)))
+
 
 
 

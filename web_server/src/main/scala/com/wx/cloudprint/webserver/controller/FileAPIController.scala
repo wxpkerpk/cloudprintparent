@@ -19,8 +19,10 @@ import javax.servlet.http.{HttpServletRequest, HttpServletResponse}
 
 import org.springframework.beans.factory.annotation.Value
 import javax.annotation.Resource
+
 import scala.collection.JavaConverters._
 import com.google.gson.Gson
+import com.weibo.api.motan.config.springsupport.annotation.MotanReferer
 import com.wx.cloudprint.dataservice.entity.{Point, Res}
 import com.wx.cloudprint.server.covert.motan.GetIp //
 @RestController
@@ -30,7 +32,7 @@ class WebAPPController {
 
 
   val gson=new Gson()
-  //    @MotanReferer(basicReferer = "basicRefererConfig")
+      @MotanReferer(basicReferer = "basicRefererConfig")
   private var getIp: GetIp= _
 
   @Value("${file.path}")

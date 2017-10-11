@@ -82,11 +82,12 @@ class OrderAPIController extends BaseController {
   @RequestMapping(value = Array("/order/verify"), method = Array(RequestMethod.GET, RequestMethod.POST, RequestMethod.OPTIONS))
   @ResponseBody
   @Acess(authorities = Array("user"))
-  def verify(param: String): JsonNode = {
+  def verify(order: java.util.HashMap[String,Object]): JsonNode = {
 
     val user = getUser()
     import OrderAPIController.caculatePrice
     import OrderAPIController.getSettles
+    val param=gson.toJson(order)
     val json = parse(param)
     val pointId = json \ "id"
     val point = pointService.get(pointId.extract[String])

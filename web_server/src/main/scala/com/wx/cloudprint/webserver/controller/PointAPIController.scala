@@ -19,7 +19,7 @@ class PointAPIController {
   var pointService:PointService=_
   @Autowired
   var addressService :AddressService=_
-  @RequestMapping(value = Array("point/points"), method = Array(RequestMethod.GET, RequestMethod.POST))
+  @RequestMapping(value = Array("point/points"), method = Array(RequestMethod.GET, RequestMethod.POST, RequestMethod.OPTIONS))
   @ResponseBody
   def getPoints(ID:String): Message = {
     def point2Map(point:Point)={
@@ -42,7 +42,7 @@ class PointAPIController {
   }
 
 
-  @RequestMapping(value = Array("point/address"), method = Array(RequestMethod.GET, RequestMethod.POST))
+  @RequestMapping(value = Array("point/address"), method = Array(RequestMethod.GET, RequestMethod.POST, RequestMethod.OPTIONS))
   @ResponseBody
   def getAddress(): Message = {
     val address=addressService.getRoot.asScala.map(_.toMap)

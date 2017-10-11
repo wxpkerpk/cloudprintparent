@@ -33,7 +33,7 @@ class OrderAPIController extends BaseController {
 
   implicit def autoAsJsonNode(value: JValue) = asJsonNode(value)
 
-  @RequestMapping(value = Array("/orders/info"), method = Array(RequestMethod.GET, RequestMethod.POST))
+  @RequestMapping(value = Array("/orders/info"), method = Array(RequestMethod.GET, RequestMethod.POST, RequestMethod.OPTIONS))
   @ResponseBody
   def getInfo(page: Int, limits: Int, @RequestParam(name = "type") state: String):JsonNode = {
 
@@ -49,7 +49,7 @@ class OrderAPIController extends BaseController {
 
   }
 
-  @RequestMapping(value = Array("/orders/detail"), method = Array(RequestMethod.GET, RequestMethod.POST))
+  @RequestMapping(value = Array("/orders/detail"), method = Array(RequestMethod.GET, RequestMethod.POST, RequestMethod.OPTIONS))
   @ResponseBody
   def detail(orderID: String): JsonNode = {
     val order = orderService.get(orderID)
@@ -79,7 +79,7 @@ class OrderAPIController extends BaseController {
 
   }
 
-  @RequestMapping(value = Array("/order/verify"), method = Array(RequestMethod.GET, RequestMethod.POST))
+  @RequestMapping(value = Array("/order/verify"), method = Array(RequestMethod.GET, RequestMethod.POST, RequestMethod.OPTIONS))
   @ResponseBody
   @Acess(authorities = Array("user"))
   def verify(param: String): JsonNode = {

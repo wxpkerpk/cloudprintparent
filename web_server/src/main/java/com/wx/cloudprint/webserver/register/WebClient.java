@@ -9,7 +9,7 @@ public class WebClient {
     @Bean
     public AnnotationBean motanAnnotationBean() {
         AnnotationBean motanAnnotationBean = new AnnotationBean();
-        motanAnnotationBean.setPackage("com.wx.cloudprint.webserver.cotroller");
+        motanAnnotationBean.setPackage("com.wx.cloudprint.webserver.controller");
         return motanAnnotationBean;
     }
 

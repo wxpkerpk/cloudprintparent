@@ -28,7 +28,7 @@ class UserAPIController {
 
   implicit def autoAsJsonNode(value: JValue) = asJsonNode(value)
 
-  @RequestMapping(value = Array("/user/login"), method = Array(RequestMethod.GET, RequestMethod.POST))
+  @RequestMapping(value = Array("/user/login"), method = Array(RequestMethod.GET, RequestMethod.POST, RequestMethod.OPTIONS))
   @ResponseBody
   def login(request: HttpServletRequest, response: HttpServletResponse, username: String, password: String): JsonNode = {
     val result = signService.signin(username, password)
@@ -62,7 +62,7 @@ class UserAPIController {
     info
   }
 
-  @RequestMapping(value = Array("/user/login/state"), method = Array(RequestMethod.GET, RequestMethod.POST))
+  @RequestMapping(value = Array("/user/login/state"), method = Array(RequestMethod.GET, RequestMethod.POST, RequestMethod.OPTIONS))
   @ResponseBody
   def getState(request: HttpServletRequest, response: HttpServletResponse): JsonNode = {
     if (request.getSession.getAttribute("user") == null) {
@@ -71,13 +71,13 @@ class UserAPIController {
 
   }
 
-  @RequestMapping(value = Array("/user/logout"), method = Array(RequestMethod.GET, RequestMethod.POST))
+  @RequestMapping(value = Array("/user/logout"), method = Array(RequestMethod.GET, RequestMethod.POST, RequestMethod.OPTIONS))
   @ResponseBody
   def logout(request: HttpServletRequest, response: HttpServletResponse): JsonNode = {
     request.getSession.removeAttribute("user")
     ("result" -> "ok") ~ ("info" -> "")
   }
-  @RequestMapping(value = Array("/user/registerable"), method = Array(RequestMethod.GET, RequestMethod.POST))
+  @RequestMapping(value = Array("/user/registerable"), method = Array(RequestMethod.GET, RequestMethod.POST, RequestMethod.OPTIONS))
   @ResponseBody
   def registerable(username:String):JsonNode={
     val map=signService.signin(username,UUID.randomUUID().toString)
@@ -88,7 +88,7 @@ class UserAPIController {
     }
     ("result" -> result) ~ ("info" -> "")
   }
-  @RequestMapping(value = Array("/user/SMS/captcha"), method = Array(RequestMethod.GET, RequestMethod.POST))
+  @RequestMapping(value = Array("/user/SMS/captcha"), method = Array(RequestMethod.GET, RequestMethod.POST, RequestMethod.OPTIONS))
   @ResponseBody
   def captcha(username:String)= {
     val map = signService. getCode(username)

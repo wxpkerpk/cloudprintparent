@@ -50,10 +50,10 @@ class WebAPPController {
 
 
 
-  @RequestMapping(value = Array("test"), method = Array(RequestMethod.GET, RequestMethod.POST))
+  @RequestMapping(value = Array("test"), method = Array(RequestMethod.GET, RequestMethod.POST, RequestMethod.OPTIONS))
   @ResponseBody def test(request: HttpServletRequest): String = request.getSession.getId
 
-  @RequestMapping(value = Array("file/url"), method = Array(RequestMethod.GET, RequestMethod.POST))
+  @RequestMapping(value = Array("file/url"), method = Array(RequestMethod.GET, RequestMethod.POST, RequestMethod.OPTIONS))
   @ResponseBody def url: Message = {
 
     val urls=Map("url"->getIp.getIp).asJava
@@ -74,7 +74,7 @@ class WebAPPController {
   }
 
 
-  @RequestMapping(value = Array("file/pic/preview"), method = Array(RequestMethod.GET, RequestMethod.POST))
+  @RequestMapping(value = Array("file/pic/preview"), method = Array(RequestMethod.GET, RequestMethod.POST, RequestMethod.OPTIONS))
   @ResponseBody def Preview(request: HttpServletRequest, response: HttpServletResponse, @RequestParam md5: String, @RequestParam size: String, @RequestParam row: Int, @RequestParam col: Int, @RequestParam(required = false) page: Integer, @RequestParam(required = false) isMono: Boolean): Message = {
     val res = resService.getByMD5(md5)
     if (res != null) {
@@ -87,7 +87,7 @@ class WebAPPController {
   }
 
 
-  @RequestMapping(value = Array("file/page"), method = Array(RequestMethod.GET, RequestMethod.POST))
+  @RequestMapping(value = Array("file/page"), method = Array(RequestMethod.GET, RequestMethod.POST, RequestMethod.OPTIONS))
   def getPage(@RequestParam md5: String) = {
     val res = resService.getByMD5(md5)
     val message = new util.LinkedHashMap[String, AnyRef]

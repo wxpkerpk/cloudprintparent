@@ -1,12 +1,9 @@
 package com.wx.cloudprint.webserver.register;
 
 import com.wx.cloudprint.webserver.Interceptor.AuthenticationInterceptor;
-import org.hibernate.SessionFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.servlet.MultipartConfigFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.orm.hibernate5.HibernateTemplate;
 import org.springframework.session.data.redis.config.annotation.web.http.EnableRedisHttpSession;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
@@ -16,20 +13,23 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 import javax.servlet.MultipartConfigElement;
 
 @Configuration(value = "webconfig")
-public class Config extends WebMvcConfigurerAdapter {
+public class Config   {
 
-    @Override
-    public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(new AuthenticationInterceptor()).addPathPatterns("/**");
-        super.addInterceptors(registry);
+    @Bean
+    public WebMvcConfigurer corsConfigurer() {
+        return new WebMvcConfigurerAdapter() {
+            @Override
+            public void addCorsMappings(CorsRegistry registry) {
+                registry.addMapping("/API/**");
+            }
+            @Override
+            public void addInterceptors(InterceptorRegistry registry) {
+                registry.addInterceptor(new AuthenticationInterceptor()).addPathPatterns("/**");
+                super.addInterceptors(registry);
 
+            }
+        };
     }
-
-    @Override
-    public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/API/**");
-    }
-
 
     @Bean
     public MultipartConfigElement multipartConfigElement() {

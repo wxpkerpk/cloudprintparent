@@ -1,5 +1,18 @@
-<form name="punchout_form" method="post" action="https://openapi.alipaydev.com/gateway.do?charset=utf-8&method=alipay.trade.page.pay&sign=ZFKqiUM8nf1o8Pwbp9PFTPIJ2SZr8N60IDPV9yi5BN1qc8yAmxA9sRRxSmf7hi6Q%2BcoljuiZWwlCMmTr6pipPMvdGN9ud69Loo0%2Fzn3BHe8pauFmkvktI2Ej7ct%2FLM9VPbJ81MKH%2FXNfesbP%2FHKPVEZexFLLkQ4UvvpwuHktqQASywa0MUFwVQ0td80JAdaULd3%2BAb5%2FJMTbQNWOZokmRf0bXzmf6NPaDSC%2FfygaYKiKnJWNM%2F%2BXCwDuRvu4QTEFeIrgADrbzD4izOYUXhU0%2BRXRyzjQiI3mbDU%2F4GCly1f8%2Bx5eEBNAJgoEANFlDjx%2FHgy%2FT%2B41K9GXHBEW9XrZPQ%3D%3D&return_url=http%3A%2F%2F127.0.0.1%2Falipay.trade.page.pay-JAVA-UTF-8%2Freturn_url.jsp&notify_url=http%3A%2F%2F127.0.0.1%2Falipay.trade.page.pay-JAVA-UTF-8%2Fnotify_url.jsp&version=1.0&app_id=2016080700190999&sign_type=RSA2&timestamp=2017-09-28+22%3A55%3A18&alipay_sdk=alipay-sdk-java-dynamicVersionNo&format=json">
-    <input type="hidden" name="biz_content" value="{&quot;out_trade_no&quot;:&quot;12342234&quot;,&quot;total_amount&quot;:&quot;1&quot;,&quot;subject&quot;:&quot;test&quot;,&quot;body&quot;:&quot;234&quot;,&quot;product_code&quot;:&quot;FAST_INSTANT_TRADE_PAY&quot;}">
-    <input type="submit" value="立即支付" style="display:none" >
+<script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+<form action="http://localhost:8080/API/test" enctype="multipart/form-data">
+
 </form>
-<script>document.forms[0].submit();</script>
+<script>
+
+    $.ajax({
+        url:"http://localhost:8080/API/point/address",
+        type: "POST",
+        datType: "JSON",
+        contentType: "application/json",
+        success:function (data) {
+            console.log(data)
+        }
+
+    })
+
+</script>

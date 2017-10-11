@@ -1,4 +1,4 @@
-package com.wx.cloudprint.imageserver.service.cotroller;
+package com.wx.cloudprint.notifyserver.alilpay.cotroller;
 
 import com.alipay.api.AlipayApiException;
 import com.alipay.api.internal.util.AlipaySignature;

@@ -1,4 +1,4 @@
-package com.wx.cloudprint.imageserver.service.register;
+package com.wx.cloudprint.notifyserver.alilpay.register;
 
 
 import org.springframework.boot.SpringApplication;

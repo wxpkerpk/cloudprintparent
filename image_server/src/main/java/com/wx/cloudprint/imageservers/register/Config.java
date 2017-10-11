@@ -1,4 +1,4 @@
-package com.wx.cloudprint.notifyserver.alilpay.register;
+package com.wx.cloudprint.imageservers.register;
 
 import org.springframework.boot.web.servlet.MultipartConfigFactory;
 import org.springframework.context.annotation.Bean;

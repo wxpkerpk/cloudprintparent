@@ -22,9 +22,6 @@ public class StartWebApplication {
 
         SpringApplication.run(StartWebApplication.class, args);
     }
-    @Bean
-    public HibernateJpaSessionFactoryBean sessionFactory() {
-        return new HibernateJpaSessionFactoryBean();
-    }
+
 
 }

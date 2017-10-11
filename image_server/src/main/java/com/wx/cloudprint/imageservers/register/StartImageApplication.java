@@ -1,8 +1,8 @@
-package com.wx.cloudprint.imageserver.service.register;
+package com.wx.cloudprint.imageservers.register;
 
 import com.weibo.api.motan.common.MotanConstants;
 import com.weibo.api.motan.util.MotanSwitcherUtil;
-import com.wx.cloudprint.imageserver.service.cotroller.ImageController;
+import com.wx.cloudprint.imageservers.cotroller.ImageController;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;

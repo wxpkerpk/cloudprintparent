@@ -9,7 +9,6 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.web.bind.annotation.RestController;
 
 @SpringBootApplication
-@RestController
 @EntityScan(value = "com.wx.cloudprint.dataservice.entity")
 @ComponentScan({"com.wx.cloudprint"})
 @EnableJpaRepositories(basePackages = "com.wx.cloudprint.dataservice.dao")

@@ -39,6 +39,7 @@
         <module>commens</module>
         <module>web_server</module>
 
+        <module>online_pay_notify</module>
         <module>data_service</module>
     </modules>
     <properties>

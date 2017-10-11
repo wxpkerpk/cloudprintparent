@@ -98,7 +98,7 @@ class OrderAPIController extends BaseController {
     val settles = getSettles(param, point.getPrice)
     val sum = caculatePrice(settles, pointdispatch)
     if (sum != money) {
-      ("result" -> Message.fail_state) ~ ("info" -> "后台金额核对不一致")
+      ("result" -> "ERROR") ~ ("info" -> "后台金额核对不一致")
     } else {
       val order = new Order
       order.setId(BaseController.makeTimeId)

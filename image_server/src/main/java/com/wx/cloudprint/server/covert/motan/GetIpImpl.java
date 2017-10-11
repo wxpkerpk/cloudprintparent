@@ -1,7 +1,7 @@
 package com.wx.cloudprint.server.covert.motan;
 
 import com.weibo.api.motan.config.springsupport.annotation.MotanService;
-import com.wx.cloudprint.imageserver.cotroller.ImageController;
+import com.wx.cloudprint.imageserver.service.cotroller.ImageController;
 import org.springframework.beans.factory.annotation.Value;
 
 @MotanService

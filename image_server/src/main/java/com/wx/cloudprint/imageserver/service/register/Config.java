@@ -1,4 +1,4 @@
-package com.wx.cloudprint.imageserver.register;
+package com.wx.cloudprint.imageserver.service.register;
 
 import org.springframework.boot.web.servlet.MultipartConfigFactory;
 import org.springframework.context.annotation.Bean;

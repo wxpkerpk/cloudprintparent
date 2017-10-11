@@ -1,4 +1,4 @@
-package com.wx.cloudprint.imageserver.cotroller;
+package com.wx.cloudprint.imageserver.service.cotroller;
 
 import com.wx.cloudprint.dataservice.entity.Res;
 import com.wx.cloudprint.dataservice.service.ResService;

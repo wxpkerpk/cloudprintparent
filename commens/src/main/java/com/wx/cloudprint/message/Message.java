@@ -8,7 +8,7 @@ public class Message implements Serializable {
     private Object info;
 
     public static String success_state="OK";
-    public static String fail_state="FAIL";
+    public static String fail_state="ERROR";
     public String getResult() {
         return result;
     }

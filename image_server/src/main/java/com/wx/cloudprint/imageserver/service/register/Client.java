@@ -1,4 +1,4 @@
-package com.wx.cloudprint.imageserver.register;
+package com.wx.cloudprint.imageserver.service.register;
 
 import com.weibo.api.motan.config.springsupport.*;
 import org.springframework.context.annotation.Bean;

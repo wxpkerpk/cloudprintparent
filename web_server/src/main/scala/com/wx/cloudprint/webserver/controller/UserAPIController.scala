@@ -16,6 +16,7 @@ import org.json4s.jackson.JsonMethods._
 import spray.json._
 import DefaultJsonProtocol._
 import com.fasterxml.jackson.databind.JsonNode
+import com.wx.cloudprint.message.Message
 
 @RestController
 @RequestMapping(value = Array("/API"))
@@ -28,7 +29,7 @@ class UserAPIController {
 
   implicit def autoAsJsonNode(value: JValue) = asJsonNode(value)
 
-  @RequestMapping(value = Array("/user/login"), method = Array(RequestMethod.GET, RequestMethod.POST, RequestMethod.OPTIONS))
+  @RequestMapping(value = Array("/user/logining"), method = Array(RequestMethod.GET, RequestMethod.POST, RequestMethod.OPTIONS))
   @ResponseBody
   def login(request: HttpServletRequest, response: HttpServletResponse, username: String, password: String): JsonNode = {
     val result = signService.signin(username, password)
@@ -82,20 +83,23 @@ class UserAPIController {
   def registerable(username:String):JsonNode={
     val map=signService.signin(username,UUID.randomUUID().toString)
     val status = map("status")("code")
-    val result= status match {
-      case "300"=>"error"
-      case _ =>"OK"
+    val message=map("status")("message")
+    if(message.contains("用户不存在")){
+      ("result" -> "OK") ~ ("info" -> "")
+
+    }else{
+      ("result" -> "ERROR") ~ ("info" -> "该用户已经注册过")
+
     }
-    ("result" -> result) ~ ("info" -> "")
   }
   @RequestMapping(value = Array("/user/SMS/captcha"), method = Array(RequestMethod.GET, RequestMethod.POST, RequestMethod.OPTIONS))
   @ResponseBody
   def captcha(username:String)= {
     val map = signService. getCode(username)
-    val status = map("status").asInstanceOf[Map[String,String]]("code")
+    val status = map("code")
     val result = status match {
       case "200" => "OK"
-      case _ => "error"
+      case _ => "ERROR"
     }
 
     ("result" -> result) ~ ("info" -> "")

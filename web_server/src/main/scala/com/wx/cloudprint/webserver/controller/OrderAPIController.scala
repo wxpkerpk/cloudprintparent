@@ -82,11 +82,12 @@ class OrderAPIController extends BaseController {
   @RequestMapping(value = Array("/order/verify"), method = Array(RequestMethod.GET, RequestMethod.POST, RequestMethod.OPTIONS))
   @ResponseBody
   @Acess(authorities = Array("user"))
-  def verify(param: String): JsonNode = {
+  def verify(order: java.util.HashMap[String,Object]): JsonNode = {
 
     val user = getUser()
     import OrderAPIController.caculatePrice
     import OrderAPIController.getSettles
+    val param=gson.toJson(order)
     val json = parse(param)
     val pointId = json \ "id"
     val point = pointService.get(pointId.extract[String])
@@ -97,7 +98,7 @@ class OrderAPIController extends BaseController {
     val settles = getSettles(param, point.getPrice)
     val sum = caculatePrice(settles, pointdispatch)
     if (sum != money) {
-      ("result" -> Message.fail_state) ~ ("info" -> "后台金额核对不一致")
+      ("result" -> "ERROR") ~ ("info" -> "后台金额核对不一致")
     } else {
       val order = new Order
       order.setId(BaseController.makeTimeId)

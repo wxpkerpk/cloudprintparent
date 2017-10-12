@@ -24,8 +24,8 @@ import org.springframework.test.context.junit4.SpringRunner
 import org.json4s.JsonAST.{JInt, JString, JValue}
 import org.json4s.JsonDSL._
 import org.json4s.jackson.JsonMethods._
-@RunWith(classOf[SpringRunner])
-@SpringBootTest(classes = Array(classOf[StartWebApplication]))
+//@RunWith(classOf[SpringRunner])
+//@SpringBootTest(classes = Array(classOf[StartWebApplication]))
 class TestAdd  {
   @Autowired
   var pointService:PointService=_
@@ -49,8 +49,8 @@ class TestAdd  {
 //
 //    orderController.verify(order)
 
-   val order=orderController.detail("150756263242510000")
-    println(compact(render(order)))
+//   val order=orderController.detail("150756263242510000")
+//    println(compact(render(order)))
 
 
 

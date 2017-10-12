@@ -1,18 +1,17 @@
-package com.wx.cloudprint.imageserver.cotroller;
+package com.wx.cloudprint.imageservers.cotroller;
 
+import com.weibo.api.motan.config.springsupport.annotation.MotanReferer;
 import com.wx.cloudprint.dataservice.entity.Res;
 import com.wx.cloudprint.dataservice.service.ResService;
-import com.weibo.api.motan.config.springsupport.annotation.MotanReferer;
-import com.wx.cloudprint.imageserver.service.ImageService;
-
-import com.wx.cloudprint.server.covert.motan.WEP2PDF;
+import com.wx.cloudprint.imageservers.service.ImageService;
 import com.wx.cloudprint.message.Message;
+import com.wx.cloudprint.server.covert.motan.WEP2PDF;
+import com.wx.cloudprint.util.FileUtils;
+import com.wx.cloudprint.util.MD5Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import com.wx.cloudprint.util.FileUtils;
-import com.wx.cloudprint.util.MD5Util;
 
 import javax.annotation.Resource;
 import javax.imageio.ImageIO;

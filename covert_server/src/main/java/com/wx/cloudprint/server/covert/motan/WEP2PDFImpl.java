@@ -10,6 +10,9 @@ import com.weibo.api.motan.config.springsupport.annotation.MotanService;
 import org.apache.pdfbox.pdmodel.PDDocument;
 
 import org.apache.pdfbox.rendering.PDFRenderer;
+import org.icepdf.core.pobjects.Document;
+import org.icepdf.core.pobjects.Page;
+import org.icepdf.core.util.GraphicsRenderingHints;
 import org.springframework.beans.factory.annotation.Value;
 import com.wx.cloudprint.util.FileUtils;
 
@@ -26,7 +29,6 @@ import java.util.UUID;
 public class WEP2PDFImpl implements WEP2PDF {
 
 
-
     private static final int WDFO_RMATPDF = 17;
     private static final int XLTYPE_PDF = 0;
     private static final int PPT_SAVEAS_PDF = 32;
@@ -36,75 +38,74 @@ public class WEP2PDFImpl implements WEP2PDF {
     public static final int PPT_SAVEAS_JPG = 17;
 
     @Value("${file.tempPath}")
-    private   String tempFilePath;
+    private String tempFilePath = "C:\\Users\\wx\\Desktop\\LIB";
 
     public static void main(String[] s) {
 
 
-        String source = "C:\\Users\\wx\\Documents\\演示文稿1.pptx";
-        String target="C:\\Users\\wx\\Downloads\\toimage";
-        String prefix=source.split("\\.")[1];
-        int a[]=new int[1];
-        try {
-            int i=1;
-            byte datas[][]=new WEP2PDFImpl().offceBytes2imgsBytes(FileUtils.readByte(source),prefix);
+        String source = "C:\\Users\\wx\\Downloads\\高等数学 第7版 下_同济大学.pdf";
+        String target = "C:\\Users\\wx\\Downloads\\toimages";
+        String prefix = source.split("\\.")[1];
 
-            for(byte[] data:datas){
-                FileUtils.writeByte(new File(target,(i++)+".jpg").getPath(),data);
-            }
-        } catch (Exception e) {
+
+        try {
+           byte [][]result=  pdfBytes2ImgsBytes(FileUtils.readByte(source));
+           int i=1;
+           for(byte[]bs:result){
+               FileUtils.writeByte(new File(target,(i++)+".jpg" ).getPath(),bs);
+           }
+        } catch (IOException e) {
             e.printStackTrace();
         }
-
     }
 
     @Override
-    public  byte[][]offceBytes2imgsBytes(byte[] offceBytes,String prefix)   {
-        if(tempFilePath==null||tempFilePath.equals("")) {
-            tempFilePath=new File("").getAbsolutePath();
+    public byte[][] offceBytes2imgsBytes(byte[] offceBytes, String prefix) {
+        if (tempFilePath == null || tempFilePath.equals("")) {
+            tempFilePath = new File("").getAbsolutePath();
         }
-        if(prefix.equals("ppt")||prefix.equals("pptx")){
-            File file=new File(tempFilePath);
-            if(!file.exists()) file.mkdir();
-            String targetTempPath=null;
-            String sourceTempPath= new File(tempFilePath, UUID.randomUUID().toString()+"."+prefix).getPath();
-            targetTempPath=new File(tempFilePath,UUID.randomUUID().toString()).getPath();
-            FileUtils.writeByte(sourceTempPath,offceBytes);
-            officeFileConverterToPdf(sourceTempPath,targetTempPath);
+        if (prefix.equals("ppt") || prefix.equals("pptx")) {
+            File file = new File(tempFilePath);
+            if (!file.exists()) file.mkdir();
+            String targetTempPath = null;
+            String sourceTempPath = new File(tempFilePath, UUID.randomUUID().toString() + "." + prefix).getPath();
+            targetTempPath = new File(tempFilePath, UUID.randomUUID().toString()).getPath();
+            FileUtils.writeByte(sourceTempPath, offceBytes);
+            officeFileConverterToPdf(sourceTempPath, targetTempPath);
             return readFileImages(targetTempPath);
-        }else if(prefix.equals("pdf")){
+        } else if (prefix.equals("pdf")) {
             try {
-                return pdf2Img(offceBytes,200);
+                return pdfBytes2ImgsBytes(offceBytes);
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        }else {//word or excel
+        } else {//word or excel
             try {
                 byte[] pdfBytes = officeFile2PdfBytes(offceBytes, prefix);
 
-                return pdf2Img(pdfBytes,200);
+                return pdfBytes2ImgsBytes(pdfBytes);
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
         return null;
     }
-    byte[][]readFileImages(String path){
 
-        File file=new File(path);
-        File[] fileList= file.listFiles();
-        Arrays.sort(fileList,(o1, o2)->{
-            String name1=o1.getName().split("\\.")[0];
-            String name2=o2.getName().split("\\.")[0];
+    byte[][] readFileImages(String path) {
 
+        File file = new File(path);
+        File[] fileList = file.listFiles();
+        Arrays.sort(fileList, (o1, o2) -> {
+            String name1 = o1.getName().split("\\.")[0];
+            String name2 = o2.getName().split("\\.")[0];
 
 
             return name1.compareTo(name2);
         });
-        byte[][]result=new byte[fileList.length][];
-        for(int i=0;i<fileList.length;i++){
+        byte[][] result = new byte[fileList.length][];
+        for (int i = 0; i < fileList.length; i++) {
             try {
-                result[i]=FileUtils.readByte(fileList[i].getPath());
+                result[i] = FileUtils.readByte(fileList[i].getPath());
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -113,53 +114,53 @@ public class WEP2PDFImpl implements WEP2PDF {
 
     }
 
-    //       byte[][] pdfBytes2ImgsBytes(byte[]pdfBytes) throws IOException {
-//
-//        int dpi=216;
-//         Document document = null;
-//
-//         float scale = dpi / 72f;
-//         document = new Document();
-//         try {
-//
-//
-//             document.setByteArray(pdfBytes,0,pdfBytes.length,UUID.randomUUID().toString()+".pdf");
-//         } catch (Exception e1) {
-//             e1.printStackTrace();
-//         }
-//         // maxPages = document.getPageTree().getNumberOfPages();
-//
-//
-//         int pages = document.getNumberOfPages();
-//         byte[][]result=new byte[pages][];
-//         for (int i = 0; i < pages; i++) {
-//
-//             BufferedImage img = (BufferedImage) document.getPageImage(i,
-//                     GraphicsRenderingHints.SCREEN, Page.BOUNDARY_CROPBOX, 0,
-//                     scale);
-//             ByteArrayOutputStream arrayOutputStream=new ByteArrayOutputStream();
-//
-//             ImageIO.write(img, "jpg", arrayOutputStream);
-//             result[i]=arrayOutputStream.toByteArray();
-//             arrayOutputStream.close();
-//         }
-//
-//        return result;
-//    }
-    public static byte[][] pdf2Img(byte []pdfBytes, int dpi) throws IOException {
+    static byte[][] pdfBytes2ImgsBytes(byte[] pdfBytes) throws IOException {
+
+        int dpi = 216;
+        Document document = null;
+
+        float scale = dpi / 72f;
+        document = new Document();
+        try {
+
+
+            document.setByteArray(pdfBytes, 0, pdfBytes.length, UUID.randomUUID().toString() + ".pdf");
+        } catch (Exception e1) {
+            e1.printStackTrace();
+        }
+        // maxPages = document.getPageTree().getNumberOfPages();
+
+
+        int pages = document.getNumberOfPages();
+        byte[][] result = new byte[pages][];
+        for (int i = 0; i < pages; i++) {
+
+            BufferedImage img = (BufferedImage) document.getPageImage(i,
+                    GraphicsRenderingHints.SCREEN, Page.BOUNDARY_CROPBOX, 0,
+                    scale);
+            ByteArrayOutputStream arrayOutputStream = new ByteArrayOutputStream();
+
+            ImageIO.write(img, "jpg", arrayOutputStream);
+            result[i] = arrayOutputStream.toByteArray();
+            arrayOutputStream.close();
+        }
+
+        return result;
+    }
+
+    public static byte[][] pdf2Img(byte[] pdfBytes, int dpi) throws IOException {
 
         PDDocument doc = PDDocument.load(pdfBytes);
         int pageCount = doc.getNumberOfPages();
-        byte[][]result=new byte[pageCount][];
+        byte[][] result = new byte[pageCount][];
         System.out.println(pageCount);
-        PDFRenderer renderer= new PDFRenderer(doc);
+        PDFRenderer renderer = new PDFRenderer(doc);
+        for (int i = 0; i < pageCount; i++) {
+            BufferedImage image = renderer.renderImageWithDPI(i, dpi);
+            ByteArrayOutputStream arrayOutputStream = new ByteArrayOutputStream();
 
-        for(int i=0;i<pageCount;i++){
-            BufferedImage image= renderer.renderImageWithDPI(i,dpi);
-            ByteArrayOutputStream arrayOutputStream=new ByteArrayOutputStream();
-
-            ImageIO.write(image,"jpg",arrayOutputStream);
-            result[i]=arrayOutputStream.toByteArray();
+            ImageIO.write(image, "jpg", arrayOutputStream);
+            result[i] = arrayOutputStream.toByteArray();
             arrayOutputStream.close();
 
         }
@@ -169,22 +170,23 @@ public class WEP2PDFImpl implements WEP2PDF {
     }
 
 
-    byte[]officeFile2PdfBytes(byte[] source,String prefix) throws Exception {
+    byte[] officeFile2PdfBytes(byte[] source, String prefix) throws Exception {
 
-        File file=new File(tempFilePath);
-        if(!file.exists()) file.mkdir();
+        File file = new File(tempFilePath);
+        if (!file.exists()) file.mkdir();
 
-        String targetTempPath=null;
-        String sourceTempPath= new File(tempFilePath,UUID.randomUUID().toString()+"."+prefix).getPath();
+        String targetTempPath = null;
+        String sourceTempPath = new File(tempFilePath, UUID.randomUUID().toString() + "." + prefix).getPath();
 
-        targetTempPath=new File(tempFilePath,UUID.randomUUID().toString()+".pdf").getPath();
-        FileUtils.writeByte(sourceTempPath,source);
-        byte []pdfBytes=null;
-        if(officeFileConverterToPdf(sourceTempPath,targetTempPath)){
-            pdfBytes= FileUtils.readByte(targetTempPath);
+        targetTempPath = new File(tempFilePath, UUID.randomUUID().toString() + ".pdf").getPath();
+        FileUtils.writeByte(sourceTempPath, source);
+        byte[] pdfBytes = null;
+        if (officeFileConverterToPdf(sourceTempPath, targetTempPath)) {
+            pdfBytes = FileUtils.readByte(targetTempPath);
         }
         return pdfBytes;
     }
+
     static boolean officeFileConverterToPdf(String argInputFilePath, String argPdfPath) {
         if (argInputFilePath.isEmpty() || argPdfPath.isEmpty() || getFileSufix(argInputFilePath).isEmpty()) {
             return false;
@@ -268,7 +270,7 @@ public class WEP2PDFImpl implements WEP2PDF {
         Dispatch excel = Dispatch.call(excels, "Open", inputFile, false, true).toDispatch();
         Dispatch.call(excel, "ExportAsFixedFormat", XLTYPE_PDF, pdfFile);
         Dispatch.call(excel, "Close", false);
-        activeXComponent.invoke("Quit", new Variant[] {});
+        activeXComponent.invoke("Quit", new Variant[]{});
         ComThread.Release();
 
         return true;
@@ -318,7 +320,6 @@ public class WEP2PDFImpl implements WEP2PDF {
         int splitIndex = argFilePath.lastIndexOf(".");
         return argFilePath.substring(splitIndex + 1);
     }
-
 
 
     /**

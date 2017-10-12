@@ -24,8 +24,8 @@ import org.springframework.test.context.junit4.SpringRunner
 import org.json4s.JsonAST.{JInt, JString, JValue}
 import org.json4s.JsonDSL._
 import org.json4s.jackson.JsonMethods._
-//@RunWith(classOf[SpringRunner])
-//@SpringBootTest(classes = Array(classOf[StartWebApplication]))
+@RunWith(classOf[SpringRunner])
+@SpringBootTest(classes = Array(classOf[StartWebApplication]))
 class TestAdd  {
   @Autowired
   var pointService:PointService=_
@@ -44,6 +44,8 @@ class TestAdd  {
 
   @Test
   def add():Unit={
+    val ss=gisnservice.getCode("+8618011302985")
+    ss.seq
 
 //    val order = "{\n  \"id\": \"7276d189-1ea1-43c5-9d95-e2503f1f72f5\",\n  \"files\": [{\n    \"fileID\": \"A52B4686E173B0612B71148F7F9E099A\",\n    \"fileName\": \"申报指南.docx\",\n    \"layout\": 2,\n    \"copies\": 1,\n    \"size\": \"A4\",\n    \"caliper\": \"70g\",\n    \"color\": \"mono\",\n    \"side\": 1,\n    \"startPage\": 0,\n    \"endPage\": 0\n  }],\n  \"money\": 501.0,\n  \"couponID\": 0,\n  \"reduction\": {\n    \"newUser\": false,\n    \"full\": []\n  },\n  \"dispatching\": {\n    \"username\": \"\",\n    \"userPhone\": \"\",\n    \"address\": \"\",\n    \"leftMessage\": \"\"\n  }\n}"
 //

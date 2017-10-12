@@ -5,10 +5,11 @@
 <script>
 
     $.ajax({
-        url:"http://localhost:8080/API/point/address",
+        url:"http://localhost:8080/API/user/SMS/captcha",
         type: "POST",
-        datType: "JSON",
-        contentType: "application/json",
+        dataType: "json",
+        contentType: "application/json; charset=utf-8",
+        data: JSON.stringify({username:"+8618011302985"}),
         success:function (data) {
             console.log(data)
         }

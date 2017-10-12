@@ -45,7 +45,7 @@ class OrderAPIController extends BaseController {
       render(("orderID" -> x.getId) ~ ("orserDate" -> x.getOrderDate) ~ ("state" -> x.getPayState) ~ ("money" -> x.getMoney) ~ ("pointName" -> x.getPointName) ~ ("fileCount" -> count) ~ ("filePrename" -> name.toString))
     }.mkString("[",",","]")
 
-    parse(orderstr)
+    ("result"->"OK")~("info"->parse(orderstr))
 
   }
 
@@ -82,7 +82,8 @@ class OrderAPIController extends BaseController {
   @RequestMapping(value = Array("/order/verify"), method = Array(RequestMethod.GET, RequestMethod.POST, RequestMethod.OPTIONS))
   @ResponseBody
   @Acess(authorities = Array("user"))
-  def verify(order: java.util.HashMap[String,Object]): JsonNode = {
+  def verify(@RequestBody order: java.util.Map[String,Object]): JsonNode = {
+
 
     val user = getUser()
     import OrderAPIController.caculatePrice

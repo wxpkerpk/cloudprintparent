@@ -9,7 +9,7 @@ import com.wx.cloudprint.webserver.service.SignService
 import org.json4s.JsonAST.JValue
 import org.json4s.jackson.JsonMethods.asJsonNode
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.web.bind.annotation.{RequestMapping, RequestMethod, ResponseBody, RestController}
+import org.springframework.web.bind.annotation._
 import org.json4s.JsonAST.{JInt, JString, JValue}
 import org.json4s.JsonDSL._
 import org.json4s.jackson.JsonMethods._
@@ -17,10 +17,11 @@ import spray.json._
 import DefaultJsonProtocol._
 import com.fasterxml.jackson.databind.JsonNode
 import com.wx.cloudprint.message.Message
+import scala.collection.JavaConverters._
 
 @RestController
 @RequestMapping(value = Array("/API"))
-class UserAPIController {
+class UserAPIController extends BaseController{
   @Autowired
   var signService: SignService = _
 
@@ -31,7 +32,9 @@ class UserAPIController {
 
   @RequestMapping(value = Array("/user/logining"), method = Array(RequestMethod.GET, RequestMethod.POST, RequestMethod.OPTIONS))
   @ResponseBody
-  def login(request: HttpServletRequest, response: HttpServletResponse, username: String, password: String): JsonNode = {
+  def login(@RequestBody userInfo: java.util.Map[String,Object]): JsonNode = {
+    val username=userInfo.getOrDefault("username","").toString
+    val password=userInfo.getOrDefault("password","").toString
     val result = signService.signin(username, password)
     val status = result("status")("code")
     val message = result("status")("message")
@@ -80,7 +83,7 @@ class UserAPIController {
   }
   @RequestMapping(value = Array("/user/registerable"), method = Array(RequestMethod.GET, RequestMethod.POST, RequestMethod.OPTIONS))
   @ResponseBody
-  def registerable(username:String):JsonNode={
+  def registerable( username:String):JsonNode={
     val map=signService.signin(username,UUID.randomUUID().toString)
     val status = map("status")("code")
     val message=map("status")("message")
@@ -92,10 +95,27 @@ class UserAPIController {
 
     }
   }
+
+  @RequestMapping(value = Array("/user/signing"), method = Array(RequestMethod.GET, RequestMethod.POST, RequestMethod.OPTIONS))
+  @ResponseBody
+  def signing(@RequestBody userInfo: java.util.Map[String,Object]):JsonNode={
+    val map=    signService.register(userInfo.get("username").toString,userInfo.get("password").toString,userInfo.get("captcha").toString)
+
+    val status = map("status")("code")
+    val message=map("status")("message")
+    val result=status match {
+      case "200"=>"OK"
+      case _ =>"ERROR"
+    }
+
+    ("result" -> result) ~ ("info" -> message)
+
+
+  }
   @RequestMapping(value = Array("/user/SMS/captcha"), method = Array(RequestMethod.GET, RequestMethod.POST, RequestMethod.OPTIONS))
   @ResponseBody
-  def captcha(username:String)= {
-    val map = signService. getCode(username)
+  def captcha(@RequestBody username: java.util.Map[String,Object]):JsonNode= {
+    val map = signService.getCode(username.getOrDefault("username","").toString)
     val status = map("code")
     val result = status match {
       case "200" => "OK"

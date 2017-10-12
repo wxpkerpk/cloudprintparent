@@ -58,8 +58,7 @@ class UserAPIController extends BaseController{
         }
         request.getSession.setAttribute("user", user)
         ("result" -> "OK") ~ ("info" -> (("nickname" -> user.getNickName) ~ ("uid" -> user.getId) ~ ("phone" -> user.getTel) ~ ("avatar" -> user.getHeadPic) ~ ("lastPoint" -> "")))
-      case "300" => ("result" -> "OK") ~ ("info" -> "用户不存在")
-      case _ => ("result" -> "OK") ~ ("info" -> "账号或密码错误")
+      case _ => ("result" -> "ERROR") ~ ("info" ->message)
 
     }
 

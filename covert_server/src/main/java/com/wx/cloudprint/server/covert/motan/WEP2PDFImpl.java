@@ -5,11 +5,10 @@ import com.jacob.activeX.ActiveXComponent;
 import com.jacob.com.ComThread;
 import com.jacob.com.Dispatch;
 import com.jacob.com.Variant;
+import com.sunreal.util.MyDocument;
 import com.weibo.api.motan.config.springsupport.annotation.MotanService;
 
-import org.apache.pdfbox.pdmodel.PDDocument;
 
-import org.apache.pdfbox.rendering.PDFRenderer;
 import org.icepdf.core.pobjects.Document;
 import org.icepdf.core.pobjects.Page;
 import org.icepdf.core.util.GraphicsRenderingHints;
@@ -43,8 +42,8 @@ public class WEP2PDFImpl implements WEP2PDF {
     public static void main(String[] s) {
 
 
-        String source = "C:\\Users\\wx\\Downloads\\高等数学 第7版 下_同济大学.pdf";
-        String target = "C:\\Users\\wx\\Downloads\\toimages";
+        String source = "C:\\Users\\wx\\Downloads\\荣威i6用户手册.pdf";
+        String target = "C:\\Users\\wx\\Downloads\\toimage";
         String prefix = source.split("\\.")[1];
 
 
@@ -117,13 +116,11 @@ public class WEP2PDFImpl implements WEP2PDF {
     static byte[][] pdfBytes2ImgsBytes(byte[] pdfBytes) throws IOException {
 
         int dpi = 216;
-        Document document = null;
+        Document document;
 
         float scale = dpi / 72f;
-        document = new Document();
+        document = new MyDocument();
         try {
-
-
             document.setByteArray(pdfBytes, 0, pdfBytes.length, UUID.randomUUID().toString() + ".pdf");
         } catch (Exception e1) {
             e1.printStackTrace();
@@ -133,41 +130,42 @@ public class WEP2PDFImpl implements WEP2PDF {
 
         int pages = document.getNumberOfPages();
         byte[][] result = new byte[pages][];
+        ByteArrayOutputStream arrayOutputStream = new ByteArrayOutputStream();
         for (int i = 0; i < pages; i++) {
 
             BufferedImage img = (BufferedImage) document.getPageImage(i,
                     GraphicsRenderingHints.SCREEN, Page.BOUNDARY_CROPBOX, 0,
                     scale);
-            ByteArrayOutputStream arrayOutputStream = new ByteArrayOutputStream();
 
             ImageIO.write(img, "jpg", arrayOutputStream);
             result[i] = arrayOutputStream.toByteArray();
+            arrayOutputStream.reset();
             arrayOutputStream.close();
         }
 
         return result;
     }
 
-    public static byte[][] pdf2Img(byte[] pdfBytes, int dpi) throws IOException {
-
-        PDDocument doc = PDDocument.load(pdfBytes);
-        int pageCount = doc.getNumberOfPages();
-        byte[][] result = new byte[pageCount][];
-        System.out.println(pageCount);
-        PDFRenderer renderer = new PDFRenderer(doc);
-        for (int i = 0; i < pageCount; i++) {
-            BufferedImage image = renderer.renderImageWithDPI(i, dpi);
-            ByteArrayOutputStream arrayOutputStream = new ByteArrayOutputStream();
-
-            ImageIO.write(image, "jpg", arrayOutputStream);
-            result[i] = arrayOutputStream.toByteArray();
-            arrayOutputStream.close();
-
-        }
-        doc.close();
-        System.out.println("over");
-        return result;
-    }
+//    public static byte[][] pdf2Img(byte[] pdfBytes, int dpi) throws IOException {
+//
+//        PDDocument doc = PDDocument.load(pdfBytes);
+//        int pageCount = doc.getNumberOfPages();
+//        byte[][] result = new byte[pageCount][];
+//        System.out.println(pageCount);
+//        PDFRenderer renderer = new PDFRenderer(doc);
+//        for (int i = 0; i < pageCount; i++) {
+//            BufferedImage image = renderer.renderImageWithDPI(i, dpi);
+//            ByteArrayOutputStream arrayOutputStream = new ByteArrayOutputStream();
+//
+//            ImageIO.write(image, "jpg", arrayOutputStream);
+//            result[i] = arrayOutputStream.toByteArray();
+//            arrayOutputStream.close();
+//
+//        }
+//        doc.close();
+//        System.out.println("over");
+//        return result;
+//    }
 
 
     byte[] officeFile2PdfBytes(byte[] source, String prefix) throws Exception {

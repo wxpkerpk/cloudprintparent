@@ -25,6 +25,30 @@
     <dependencies>
 
         <dependency>
+            <groupId>com.ice</groupId>
+            <artifactId>icepdf-extra</artifactId>
+            <version>6.2.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.ice</groupId>
+            <artifactId>icepdf-pro</artifactId>
+            <version>6.2.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.ice</groupId>
+            <artifactId>icepdf-pro-intl</artifactId>
+            <version>6.2.0</version>
+        </dependency>
+        <dependency>
+        <groupId>com.ice</groupId>
+        <artifactId>icepdf-viewer</artifactId>
+        <version>6.2.0</version>
+    </dependency> <dependency>
+        <groupId>com.ice</groupId>
+        <artifactId>icepdf-core</artifactId>
+        <version>6.2.0</version>
+    </dependency>
+        <dependency>
             <groupId>com.wx.cloudprint</groupId>
             <artifactId>commens</artifactId>
             <version>1.0</version>
@@ -74,11 +98,11 @@
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/org.apache.pdfbox/pdfbox -->
-        <dependency>
-            <groupId>org.apache.pdfbox</groupId>
-            <artifactId>pdfbox</artifactId>
-            <version>2.0.7</version>
-        </dependency>
+        <!--<dependency>-->
+            <!--<groupId>org.apache.pdfbox</groupId>-->
+            <!--<artifactId>pdfbox</artifactId>-->
+            <!--<version>2.0.7</version>-->
+        <!--</dependency>-->
 
 
 

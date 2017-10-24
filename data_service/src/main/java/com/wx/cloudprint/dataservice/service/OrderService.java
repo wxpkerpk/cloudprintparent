@@ -44,8 +44,15 @@ public class OrderService {
         if("ALL".equals(type)){
             sql=String.format("from "+ EntityNameUtil.getEntityName(Order.class) +"",type);
 
-        }else {
-            sql = String.format("from " + EntityNameUtil.getEntityName(Order.class) + " u where u.payState='%s'", type);
+        }else if("FINISH".equals(type)){
+            sql = "from " + EntityNameUtil.getEntityName(Order.class) + " u where u.payState='FINISH' OR u.payState='CANCEL' ";
+        }else if("REFUND".equals("type")){
+            sql = "from " + EntityNameUtil.getEntityName(Order.class) + " u where u.payState='REFUNDING ' OR u.payState='REFUNDED' ";
+
+        }
+        else{
+            sql=String.format("from " + EntityNameUtil.getEntityName(Order.class) + " u where u.payState='%s' ",type);
+
         }
         List<Order>orderList= (List<Order>) session.createQuery(sql).setFirstResult((page-1)*rows).setMaxResults(rows).list();
         session.close();

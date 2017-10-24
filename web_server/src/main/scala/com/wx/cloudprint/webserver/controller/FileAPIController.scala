@@ -5,7 +5,7 @@ import java.io.Serializable
 import com.fasterxml.jackson.databind.JsonNode
 import org.springframework.context.annotation.ComponentScan
 import org.springframework.web.bind.annotation._
-import org.json4s.JsonAST.{JInt, JString, JValue}
+import org.json4s.JsonAST.{JBool, JInt, JString, JValue}
 import org.json4s.JsonDSL._
 import org.json4s.jackson.JsonMethods._
 import spray.json._
@@ -28,7 +28,6 @@ import com.wx.cloudprint.server.covert.motan.GetIp //
 @RestController
 @RequestMapping(value = Array("/API"))
 class WebAPPController {
-  implicit def autoAsJsonNode(value: JValue) = asJsonNode(value)
 
 
   val gson=new Gson()
@@ -46,6 +45,8 @@ class WebAPPController {
 
 
   var serverIp: String = _
+
+  implicit def autoAsJsonNode(value: JValue) = asJsonNode(value)
 
 
 
@@ -75,31 +76,26 @@ class WebAPPController {
 
 
   @RequestMapping(value = Array("file/pic/preview"), method = Array(RequestMethod.GET, RequestMethod.POST, RequestMethod.OPTIONS))
-  @ResponseBody def Preview(request: HttpServletRequest, response: HttpServletResponse, @RequestParam md5: String, @RequestParam size: String, @RequestParam row: Int, @RequestParam col: Int, @RequestParam(required = false) page: Integer, @RequestParam(required = false) isMono: Boolean): Message = {
+  @ResponseBody def Preview(request: HttpServletRequest, response: HttpServletResponse, @RequestParam md5: String, @RequestParam size: String, @RequestParam row: Int, @RequestParam col: Int, @RequestParam(required = false) page: Integer, @RequestParam(required = false) isMono: Boolean): JsonNode = {
     val res = resService.getByMD5(md5)
     if (res != null) {
       val url = genRestfulUrl(res.getHost, res.getPort, "/API/file/pic/get/preview?" + s"md5=$md5&size=$size&row=$row&col=$col&page=$page")
-      val map = new util.LinkedHashMap[String, String]
-      map.put("img", url)
-      return Message.createMessage(Message.success_state, map)
+      ("result"->"OK")~("info"->("img"->url))
+    }else{
+      ("result"->"ERROR")~("message"->"该资源不存在")
     }
-    null
+
   }
 
 
   @RequestMapping(value = Array("file/page"), method = Array(RequestMethod.GET, RequestMethod.POST, RequestMethod.OPTIONS))
-  def getPage(@RequestParam md5: String) = {
+  def getPage(@RequestParam md5: String) :JsonNode= {
     val res = resService.getByMD5(md5)
-    val message = new util.LinkedHashMap[String, AnyRef]
     if (res != null) {
-      message.put("result", "EXISTED")
-      message.put("pageCount", res.getPage.toString)
-      message.put("direction", res.getDirection)
-    }
-    else message.put("result", "NO_EXIST")
-    message
+      val isDirect=JBool(res.getDirection)
+      ("result"->"OK")~("info"->(("state"->"EXISTED")~("pageCount"->res.getPage)~("direction"->isDirect)))
+    }else  ("result"->"OK")~("info"-> ("state" -> "NO_EXIST"))
   }
-
 
 }
 

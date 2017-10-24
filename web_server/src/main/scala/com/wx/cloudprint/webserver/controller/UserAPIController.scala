@@ -58,7 +58,7 @@ class UserAPIController extends BaseController{
         }
         request.getSession.setAttribute("user", user)
         ("result" -> "OK") ~ ("info" -> (("nickname" -> user.getNickName) ~ ("uid" -> user.getId) ~ ("phone" -> user.getTel) ~ ("avatar" -> user.getHeadPic) ~ ("lastPoint" -> "")))
-      case _ => ("result" -> "ERROR") ~ ("info" ->message)
+      case _ => ("result" -> "ERROR") ~ ("message" ->message)
 
     }
 
@@ -84,13 +84,12 @@ class UserAPIController extends BaseController{
   @ResponseBody
   def registerable( username:String):JsonNode={
     val map=signService.signin(username,UUID.randomUUID().toString)
-    val status = map("status")("code")
     val message=map("status")("message")
     if(message.contains("用户不存在")){
       ("result" -> "OK") ~ ("info" -> "")
 
     }else{
-      ("result" -> "ERROR") ~ ("info" -> "该用户已经注册过")
+      ("result" -> "ERROR") ~ ("message" -> "该用户已经注册过")
 
     }
   }
@@ -107,7 +106,7 @@ class UserAPIController extends BaseController{
       case _ =>"ERROR"
     }
 
-    ("result" -> result) ~ ("info" -> message)
+    ("result" -> result) ~ ("info" -> message)~("message"->message)
 
 
   }

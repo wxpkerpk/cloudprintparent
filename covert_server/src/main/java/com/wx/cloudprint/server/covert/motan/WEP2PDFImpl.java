@@ -37,25 +37,25 @@ public class WEP2PDFImpl implements WEP2PDF {
     public static final int PPT_SAVEAS_JPG = 17;
 
     @Value("${file.tempPath}")
-    private String tempFilePath = "C:\\Users\\wx\\Desktop\\LIB";
+    private String tempFilePath = "D:\\temp";
 
     public static void main(String[] s) {
 
 
-        String source = "C:\\Users\\wx\\Downloads\\荣威i6用户手册.pdf";
+        String source = "C:\\Users\\wx\\Documents\\线性代数课件(完整版)同济大学.pptx";
         String target = "C:\\Users\\wx\\Downloads\\toimage";
         String prefix = source.split("\\.")[1];
-
-
-        try {
-           byte [][]result=  pdfBytes2ImgsBytes(FileUtils.readByte(source));
-           int i=1;
-           for(byte[]bs:result){
-               FileUtils.writeByte(new File(target,(i++)+".jpg" ).getPath(),bs);
-           }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+      new WEP2PDFImpl().offceBytes2imgsBytes(FileUtils.readByte(source),"ppt");
+//
+//        try {
+//           byte [][]result=  pdfBytes2ImgsBytes(FileUtils.readByte(source));
+//           int i=1;
+//           for(byte[]bs:result){
+//               FileUtils.writeByte(new File(target,(i++)+".jpg" ).getPath(),bs);
+//           }
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
     }
 
     @Override

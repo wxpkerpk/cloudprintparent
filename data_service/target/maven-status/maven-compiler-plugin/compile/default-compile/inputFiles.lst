@@ -5,10 +5,15 @@ C:\Users\wx\Desktop\cloudprintparent\data_service\src\main\java\com\wx\cloudprin
 C:\Users\wx\Desktop\cloudprintparent\data_service\src\main\java\com\wx\cloudprint\dataservice\entity\Dispatch.java
 C:\Users\wx\Desktop\cloudprintparent\data_service\src\main\java\com\wx\cloudprint\dataservice\service\AddressService.java
 C:\Users\wx\Desktop\cloudprintparent\data_service\src\main\java\com\wx\cloudprint\dataservice\service\UserService.java
+C:\Users\wx\Desktop\cloudprintparent\data_service\src\main\java\com\wx\cloudprint\dataservice\service\OrderService.java
 C:\Users\wx\Desktop\cloudprintparent\data_service\src\main\java\com\wx\cloudprint\dataservice\service\ResService.java
 C:\Users\wx\Desktop\cloudprintparent\data_service\src\main\java\com\wx\cloudprint\dataservice\dao\UserDao.java
 C:\Users\wx\Desktop\cloudprintparent\data_service\src\main\java\com\wx\cloudprint\dataservice\dao\PointDao.java
+C:\Users\wx\Desktop\cloudprintparent\data_service\src\main\java\com\wx\cloudprint\dataservice\dao\OrderDao.java
+C:\Users\wx\Desktop\cloudprintparent\data_service\src\main\java\com\wx\cloudprint\dataservice\utils\EntityNameUtil.java
+C:\Users\wx\Desktop\cloudprintparent\data_service\src\main\java\com\wx\cloudprint\dataservice\entity\Order.java
 C:\Users\wx\Desktop\cloudprintparent\data_service\src\main\java\com\wx\cloudprint\dataservice\entity\Point.java
 C:\Users\wx\Desktop\cloudprintparent\data_service\src\main\java\com\wx\cloudprint\dataservice\entity\Res.java
 C:\Users\wx\Desktop\cloudprintparent\data_service\src\main\java\com\wx\cloudprint\dataservice\entity\UserAddress.java
+C:\Users\wx\Desktop\cloudprintparent\data_service\src\main\java\com\wx\cloudprint\dataservice\init\InitSessionFactory.java
 C:\Users\wx\Desktop\cloudprintparent\data_service\src\main\java\com\wx\cloudprint\dataservice\dao\AddressDao.java

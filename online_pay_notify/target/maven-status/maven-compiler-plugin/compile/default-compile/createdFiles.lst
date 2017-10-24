@@ -1,0 +1,3 @@
+com\wx\cloudprint\notifyserver\alilpay\AlipayConfig.class
+com\wx\cloudprint\notifyserver\alilpay\cotroller\NotifyController.class
+com\wx\cloudprint\notifyserver\alilpay\register\StartNotifyApplication.class

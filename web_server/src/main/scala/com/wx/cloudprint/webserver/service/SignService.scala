@@ -22,10 +22,27 @@ class SignService {
   def signin(userName:String,password:String)={
     val body=Http(signinUrl).postForm(Seq("userName" -> userName, "password" -> password)).asString.body
     var map = parse(body)
-    val message = convert((map \ "message").extract[String])
-    val data = (map \ "data").extract[Map[String, String]]
-    val code = (map \ "code").extract[String]
-    (code, message, data)
+    val status = (map \ "status").extract[Map[String, String]]
+    val code = status("code")
+
+    val message = status("message")
+    if ("200".equals(code)) {
+      val data = (map \ "data" \ "user").extract[Map[String, String]]
+      (code, message, data)
+
+    } else {
+
+      (code, message, Map("" -> ""))
+
+    }
+  }
+
+  def isRegister(userName: String) = {
+
+    val body = Http(getUserInfo).postForm(Seq("userName" -> userName)).asString.body
+    body
+
+
   }
 
   @inline def convert(utfString: String): String = {
@@ -53,8 +70,7 @@ class SignService {
   def register(userName:String,password:String,code:String)={
     val body=Http(registerUrl).postForm(Seq("userName" -> userName, "password" -> password,"code"->code)).asString.body
 
-    var map = parse(body).extract[Map[String, String]]
-    map += ("message" -> convert(map("message")))
+    var map = parse(body)
     map
 
   }

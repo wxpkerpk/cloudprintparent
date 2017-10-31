@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.JsonNode
 import com.wx.cloudprint.dataservice.entity.User
 import com.wx.cloudprint.dataservice.service.UserService
 import com.wx.cloudprint.webserver.service.SignService
+import org.json4s.DefaultFormats
 import org.json4s.JsonAST.JValue
 import org.json4s.JsonDSL._
 import org.json4s.jackson.JsonMethods.asJsonNode
@@ -21,6 +22,7 @@ class UserAPIController extends BaseController{
 
   @Autowired
   var userService: UserService = _
+  implicit val formats = DefaultFormats
 
   implicit def autoAsJsonNode(value: JValue) = asJsonNode(value)
 
@@ -93,8 +95,8 @@ class UserAPIController extends BaseController{
   def signing(@RequestBody userInfo: java.util.Map[String,Object]):JsonNode={
     val map=    signService.register(userInfo.get("username").toString,userInfo.get("password").toString,userInfo.get("captcha").toString)
 
-    val status = map("code")
-    val message = map("data")
+    val status = (map \ "code").extract[String]
+    val message = (map \ "message").extract[String]
     val result=status match {
       case "200"=>"OK"
       case _ =>"ERROR"

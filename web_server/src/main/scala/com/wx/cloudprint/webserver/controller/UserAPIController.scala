@@ -3,21 +3,15 @@ package com.wx.cloudprint.webserver.controller
 import java.util.UUID
 import javax.servlet.http.{HttpServletRequest, HttpServletResponse}
 
+import com.fasterxml.jackson.databind.JsonNode
 import com.wx.cloudprint.dataservice.entity.User
 import com.wx.cloudprint.dataservice.service.UserService
 import com.wx.cloudprint.webserver.service.SignService
 import org.json4s.JsonAST.JValue
+import org.json4s.JsonDSL._
 import org.json4s.jackson.JsonMethods.asJsonNode
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation._
-import org.json4s.JsonAST.{JInt, JString, JValue}
-import org.json4s.JsonDSL._
-import org.json4s.jackson.JsonMethods._
-import spray.json._
-import DefaultJsonProtocol._
-import com.fasterxml.jackson.databind.JsonNode
-import com.wx.cloudprint.message.Message
-import scala.collection.JavaConverters._
 
 @RestController
 @RequestMapping(value = Array("/API"))
@@ -36,11 +30,11 @@ class UserAPIController extends BaseController{
     val username=userInfo.getOrDefault("username","").toString
     val password=userInfo.getOrDefault("password","").toString
     val result = signService.signin(username, password)
-    val status = result("status")("code")
-    val message = result("status")("message")
+    val status = result._1
+    val message = result._2
     val info = status match {
       case "200" => //登录成功
-        val data = result("data")
+        val data = result._3
 
         val userId = data("userId")
         var user = userService.findByShulianId(userId)
@@ -84,7 +78,7 @@ class UserAPIController extends BaseController{
   @ResponseBody
   def registerable( username:String):JsonNode={
     val map=signService.signin(username,UUID.randomUUID().toString)
-    val message=map("status")("message")
+    val message = map._2
     if(message.contains("用户不存在")){
       ("result" -> "OK") ~ ("info" -> "")
 
@@ -99,8 +93,8 @@ class UserAPIController extends BaseController{
   def signing(@RequestBody userInfo: java.util.Map[String,Object]):JsonNode={
     val map=    signService.register(userInfo.get("username").toString,userInfo.get("password").toString,userInfo.get("captcha").toString)
 
-    val status = map("status")("code")
-    val message=map("status")("message")
+    val status = map("code")
+    val message = map("data")
     val result=status match {
       case "200"=>"OK"
       case _ =>"ERROR"

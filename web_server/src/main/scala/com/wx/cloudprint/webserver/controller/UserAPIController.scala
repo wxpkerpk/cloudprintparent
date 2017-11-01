@@ -81,11 +81,12 @@ class UserAPIController extends BaseController{
   def registerable( username:String):JsonNode={
     val map=signService.signin(username,UUID.randomUUID().toString)
     val message = map._2
-    if(message.contains("用户不存在")){
-      ("result" -> "OK") ~ ("info" -> "")
+    if (message.contains("已注册")) {
+      ("result" -> "ERROR") ~ ("message" -> "该用户已经注册过")
+
 
     }else{
-      ("result" -> "ERROR") ~ ("message" -> "该用户已经注册过")
+      ("result" -> "OK") ~ ("info" -> "")
 
     }
   }

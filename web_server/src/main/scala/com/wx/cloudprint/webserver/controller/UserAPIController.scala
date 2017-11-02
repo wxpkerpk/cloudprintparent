@@ -28,7 +28,7 @@ class UserAPIController extends BaseController{
 
   @RequestMapping(value = Array("/user/logining"), method = Array(RequestMethod.GET, RequestMethod.POST, RequestMethod.OPTIONS))
   @ResponseBody
-  def login(@RequestBody userInfo: java.util.Map[String,Object]): JsonNode = {
+  def login(@RequestBody userInfo: java.util.Map[String, String]): JsonNode = {
     val username=userInfo.getOrDefault("username","").toString
     val password=userInfo.getOrDefault("password","").toString
     val result = signService.signin(username, password)
@@ -93,7 +93,7 @@ class UserAPIController extends BaseController{
 
   @RequestMapping(value = Array("/user/signing"), method = Array(RequestMethod.GET, RequestMethod.POST, RequestMethod.OPTIONS))
   @ResponseBody
-  def signing(@RequestBody userInfo: java.util.Map[String,Object]):JsonNode={
+  def signing(@RequestBody userInfo: java.util.Map[String, String]): JsonNode = {
     val map=    signService.register(userInfo.get("username").toString,userInfo.get("password").toString,userInfo.get("captcha").toString)
 
     val status = (map \ "code").extract[String]

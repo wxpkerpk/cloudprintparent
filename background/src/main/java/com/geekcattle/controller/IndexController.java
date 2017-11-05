@@ -19,7 +19,7 @@ public class IndexController {
 
     @RequestMapping
     public String index(Model model) {
-        return "index";
+        return "/console/login";
     }
 
     @RequestMapping(value = "/test",method = {RequestMethod.GET})

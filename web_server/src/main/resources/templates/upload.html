@@ -8,10 +8,10 @@
 </form>
 <script>
     $.ajax({
-        url: "http://39.108.239.191:8080/API/user/logining",
+        url: "http://localhost:8080/API/user/logining",
         type: "POST",
-        dataType: "json",
-        data: {username: "18011302985", password: "666666pk"},
+        contentType: "application/json; charset=utf-8",
+        data: JSON.stringify({username: "18011302985", password: "666666pk"}),
         success: function (data) {
             console.log(data)
         }

@@ -53,7 +53,7 @@ class UserAPIController extends BaseController{
 
         }
         request.getSession.setAttribute("user", user)
-        ("result" -> "OK") ~ ("info" -> (("nickname" -> user.getNickName) ~ ("uid" -> user.getId) ~ ("phone" -> user.getTel) ~ ("avatar" -> user.getHeadPic) ~ ("lastPoint" -> "")))
+        ("result" -> "OK") ~ ("info" -> (("nickname" -> user.getNickName) ~ ("uid" -> user.getId) ~ ("phone" -> user.getTel) ~ ("avatar" -> user.getHeadPic) ~ ("lastPoint" -> "") ~ ("access" -> "user")))
       case _ => ("result" -> "ERROR") ~ ("message" ->message)
 
     }

@@ -25,11 +25,11 @@ public class AuthenticationInterceptor extends HandlerInterceptorAdapter {
             }
             if (access.authorities().length > 0) {
                 // 如果权限配置不为空, 则取出配置值
-                if (request.getAttribute("user") == null) return false;
+                if (request.getSession().getAttribute("user") == null) return false;
 
             }
             // 拦截之后应该返回公共结果, 这里没做处理
-            return false;
+            return true;
         }else{
             return true;
         }

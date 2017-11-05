@@ -10,7 +10,8 @@ import scala.util.Random
 
 class BaseController {
   @Autowired var request: HttpServletRequest = _
-  def getUser()= request.getSession.getAttribute("User").asInstanceOf[User]
+
+  def getUser() = request.getSession.getAttribute("user").asInstanceOf[User]
 
 
 }

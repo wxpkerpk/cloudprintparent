@@ -1,20 +1,16 @@
 package com.wx.cloudprint.webserver.controller
 import com.fasterxml.jackson.databind.JsonNode
-import org.json4s._
-import org.json4s.jackson.JsonMethods._
-import com.google.gson.Gson
 import com.wx.cloudprint.alipay.Alipay
-import com.wx.cloudprint.dataservice.entity.{Dispatch, Order, Point}
-import com.wx.cloudprint.dataservice.service.{AddressService, OrderService, PointService}
-import com.wx.cloudprint.message.Message
-import com.wx.cloudprint.webserver.anotation.Acess
+import com.wx.cloudprint.dataservice.entity.Order
+import com.wx.cloudprint.dataservice.service.OrderService
 import org.json4s.JsonAST.JValue
+import org.json4s.JsonDSL._
+import org.json4s.jackson.JsonMethods._
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation._
-import org.json4s.JsonDSL._
 
-import scala.collection.JavaConverters._
-import scala.collection.mutable.ArrayBuffer
+@RequestMapping(value = Array("/API"))
+@RestController
 class PayController extends BaseController{
 
 
@@ -31,7 +27,9 @@ class PayController extends BaseController{
       val re = new Alipay().open(orderID, order.getMoney.toString, "test", "")
       order.setPayState(Order.States.PAYING.toString)
       orderService.add(order)
-      ("result"->"OK")~("info"->re)
+
+      val s = 2
+      ("result" -> "OK") ~ ("info" -> re) ~ ("test" -> 1)
     }else{
       ("result"->"ERROR")~("info"->"没有开放这个支付")
     }

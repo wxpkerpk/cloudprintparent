@@ -1,11 +1,10 @@
 package com.wx.cloudprint.dataservice.entity;
 
-import org.hibernate.annotations.GenericGenerator;
-
 import javax.persistence.*;
+import java.io.Serializable;
 
 @Entity(name = "orders")
-public class Order {
+public class Order implements Serializable {
 
     public  static enum States{
         PAYING("PAYING"),PAID("PAID"),CANCEL("CANCEL"),REFUNDING("REFUNDING"),REFUNDED("REFUNDED"),FINISH("FINISH"),PRINTED("PRINTED");

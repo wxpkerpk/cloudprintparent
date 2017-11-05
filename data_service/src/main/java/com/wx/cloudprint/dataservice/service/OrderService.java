@@ -1,17 +1,11 @@
 package com.wx.cloudprint.dataservice.service;
 
 import com.wx.cloudprint.dataservice.dao.OrderDao;
-import com.wx.cloudprint.dataservice.dao.UserDao;
 import com.wx.cloudprint.dataservice.entity.Order;
-import com.wx.cloudprint.dataservice.entity.User;
 import com.wx.cloudprint.dataservice.utils.EntityNameUtil;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.orm.hibernate5.HibernateTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -47,7 +41,7 @@ public class OrderService {
         }else if("FINISH".equals(type)){
             sql = "from " + EntityNameUtil.getEntityName(Order.class) + " u where u.payState='FINISH' OR u.payState='CANCEL' ";
         }else if("REFUND".equals("type")){
-            sql = "from " + EntityNameUtil.getEntityName(Order.class) + " u where u.payState='REFUNDING ' OR u.payState='REFUNDED' ";
+            sql = "from " + EntityNameUtil.getEntityName(Order.class) + " u where u.payState='REFUNDING' OR u.payState='REFUNDED' ";
 
         }
         else{

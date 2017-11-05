@@ -1,10 +1,12 @@
 package com.wx.cloudprint.dataservice.entity;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import java.io.Serializable;
 import java.util.Date;
-import javax.persistence.*;
 
 @Entity(name = "res")
-public class Res {
+public class Res implements Serializable {
     @Id
     String md5;
 

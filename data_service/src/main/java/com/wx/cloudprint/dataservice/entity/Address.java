@@ -1,14 +1,15 @@
 package com.wx.cloudprint.dataservice.entity;
 
+import com.wx.cloudprint.util.JsonUtil;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
-import com.wx.cloudprint.util.JsonUtil;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.*;
 
 @Entity
-public class Address {
+public class Address implements Serializable {
 
 
     @Id

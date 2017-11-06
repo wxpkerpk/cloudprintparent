@@ -3,17 +3,7 @@ package com.wx.cloudprint.alipay;
 import com.alipay.api.AlipayApiException;
 import com.alipay.api.AlipayClient;
 import com.alipay.api.DefaultAlipayClient;
-import com.alipay.api.domain.ExtendParams;
-import com.alipay.api.request.AlipayOpenPublicTemplateMessageIndustryModifyRequest;
 import com.alipay.api.request.AlipayTradePagePayRequest;
-import com.alipay.api.response.AlipayOpenPublicTemplateMessageIndustryModifyResponse;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.RequestParam;
-
-import java.util.HashMap;
-import java.util.Map;
 
 public class Alipay {
     public String open(String trade_no, String amount, String name, String descr) {
@@ -45,8 +35,11 @@ public class Alipay {
         		+ "\"total_amount\":\""+ total_amount +"\","
         		+ "\"subject\":\""+ subject +"\","
         		+ "\"body\":\""+ body +"\","
-        		+ "\"timeout_express\":\"10m\","
-        		+ "\"product_code\":\"FAST_INSTANT_TRADE_PAY\"}");
+                + "\"qr_pay_mode\":\"" + 0 + "\","
+                + "\"payment_type\":\"" + 1 + "\","
+
+                + "\"timeout_express\":\"10m\","
+                + "\"product_code\":\"FAST_INSTANT_TRADE_PAY\"}");
 
         //请求
         String result = null;

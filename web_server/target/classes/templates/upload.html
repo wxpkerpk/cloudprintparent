@@ -1,20 +1,7 @@
-<script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
-<form action=http://39.108.239.191:8080/API/user/logining" method="post">
-
-    <input name="userName" value="18011302985"/>
-    <input name="password" value="666666pk"/>
-    <input name="code" value="903394"/>
-    <input type="submit">
+<form name="punchout_form" method="post"
+      action="https://openapi.alipaydev.com/gateway.do?charset=utf-8&method=alipay.trade.page.pay&sign=M%2BqipNnVtY32fwKYuMPj7S%2FpYuOrVf0Pwwh2rs3TADihnHeH%2BEVhTT5sxPX0uSjkK4TXXcRe5hYagQkTgoKAOW%2BmGGrX8wXmR36Wbu3sv5%2FyLTnmxdmHOncV3fSChahZubblDGRpbz%2BfOZ0IAkj6j6jPHcUmXk1GRDJf%2B5wGlM0bP2DUGphRaH6Md3M5QoIigssIBpqgHarIGr7Wf%2FHDoOVtYKTWHcYRf%2FKGeh1eGf%2F%2Fcod8CYyFK0aO%2BO4vyaDTVPHouXdiM4FJgqQPxDfFkSeaUcpD0vD8cFJzWkcdkjejGvxlwl4Nw5Pn7swfw0MOt%2FyUT2mY8OaxsaUTYhJAvg%3D%3D&return_url=http%3A%2F%2F127.0.0.1%2Falipay.trade.page.pay-JAVA-UTF-8%2Freturn_url.jsp&notify_url=http%3A%2F%2F127.0.0.1%2Falipay.trade.page.pay-JAVA-UTF-8%2Fnotify_url.jsp&version=1.0&app_id=2016080700190999&sign_type=RSA2&timestamp=2017-11-06+22%3A42%3A14&alipay_sdk=alipay-sdk-java-dynamicVersionNo&format=json">
+    <input type="hidden" name="biz_content"
+           value="{&quot;out_trade_no&quot;:&quot;150997648164950875&quot;,&quot;total_amount&quot;:&quot;3.0&quot;,&quot;subject&quot;:&quot;test&quot;,&quot;body&quot;:&quot;&quot;,&quot;timeout_express&quot;:&quot;10m&quot;,&quot;product_code&quot;:&quot;FAST_INSTANT_TRADE_PAY&quot;}">
+    <input type="submit" value="立即支付" style="display:none">
 </form>
-<script>
-    $.ajax({
-        url: "http://localhost:8080/API/user/logining",
-        type: "POST",
-        contentType: "application/json; charset=utf-8",
-        data: JSON.stringify({username: "18011302985", password: "666666pk"}),
-        success: function (data) {
-            console.log(data)
-        }
-
-    })
-</script>
+<script>document.forms[0].submit();</script>

@@ -126,7 +126,7 @@ class OrderAPIController extends BaseController {
       order.setPayWay(Order.States.PAYING.toString)
       if (dispatch != null) order.setDispatching(compact(render(dispatch)))
       orderService.add(order)
-      ("result" -> Message.success_state) ~ ("info" -> (("orderID" -> "") ~ ("desc" -> "")))
+      ("result" -> Message.success_state) ~ ("info" -> (("orderID" -> order.getId) ~ ("desc" -> "")))
 
     }
 

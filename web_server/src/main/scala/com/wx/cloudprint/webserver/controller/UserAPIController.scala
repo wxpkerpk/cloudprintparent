@@ -66,7 +66,11 @@ class UserAPIController extends BaseController{
   def getState(request: HttpServletRequest, response: HttpServletResponse): JsonNode = {
     if (request.getSession.getAttribute("user") == null) {
       ("result" -> "OK") ~ ("info" -> "LOGINING")
-    } else ("result" -> "OK") ~ ("info" -> "NOT_LOGINING")
+    } else {
+      val user = getUser()
+      ("result" -> "OK") ~ ("info" -> (("nickname" -> user.getNickName) ~ ("uid" -> user.getId) ~ ("phone" -> user.getTel) ~ ("avatar" -> user.getHeadPic) ~ ("lastPoint" -> "") ~ ("access" -> "user")))
+    }
+
 
   }
 

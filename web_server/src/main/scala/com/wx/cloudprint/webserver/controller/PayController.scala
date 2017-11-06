@@ -28,10 +28,9 @@ class PayController extends BaseController{
       order.setPayState(Order.States.PAYING.toString)
       orderService.add(order)
 
-      val s = 2
-      ("result" -> "OK") ~ ("info" -> re) ~ ("test" -> 1)
+      ("result" -> "OK") ~ ("info" -> ("payform" -> re)) ~ ("test" -> 1)
     }else{
-      ("result"->"ERROR")~("info"->"没有开放这个支付")
+      ("result" -> "ERROR") ~ ("message" -> "没有开放这个支付")
     }
 
   }

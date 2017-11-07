@@ -6,6 +6,9 @@ package com.geekcattle;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.domain.EntityScan;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
@@ -13,6 +16,9 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 @EnableWebMvc//启动MVC
 @EnableTransactionManagement // 启注解事务管理
 @SpringBootApplication//SpringBoot启动核心
+@EntityScan(value = "com.wx.cloudprint.dataservice.entity")
+@ComponentScan({"com.wx.cloudprint", "com.geekcattle"})
+@EnableJpaRepositories(basePackages = "com.wx.cloudprint.dataservice.dao")
 public class StartBackgroudApplication extends WebMvcConfigurerAdapter {
 
     /**

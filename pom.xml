@@ -23,11 +23,7 @@
 
 
 
-            <dependency>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-devtools</artifactId>
-                <optional>true</optional>
-            </dependency>
+
 
 
         </dependencies>
@@ -38,6 +34,7 @@
         <module>image_server</module>
         <module>commens</module>
         <module>web_server</module>
+        <module>background</module>
 
         <module>online_pay_notify</module>
         <module>data_service</module>
@@ -53,7 +50,7 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
-                    <fork>true</fork>//该配置必须
+                    <fork>true</fork>
                 </configuration>
             </plugin>
             <plugin>

@@ -25,7 +25,7 @@ class PayController extends BaseController{
     val order=orderService.get(orderID)
     if("ALIPAY".equals(payway)){
       val re = new Alipay().open(orderID, order.getMoney.toString, "test", "")
-      order.setPayState(Order.States.PAYING.toString)
+      order.setPayState(Order.States.PAID.toString) //测试用
       orderService.add(order)
 
       ("result" -> "OK") ~ ("info" -> ("payform" -> re)) ~ ("test" -> 1)

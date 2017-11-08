@@ -22,6 +22,8 @@ public class PointService {
     public void delete(Point point){
         pointDao.delete(point);
     }
+
+
     public Point get(String id){
         return pointDao.findOne(id);
     }

@@ -8,6 +8,7 @@ import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import scala.collection.mutable.StringBuilder;
 
 import javax.annotation.Resource;
 import java.util.HashMap;
@@ -51,6 +52,28 @@ public class OrderService {
         List<Order>orderList= (List<Order>) session.createQuery(sql).setFirstResult((page-1)*rows).setMaxResults(rows).list();
         session.close();
         return orderList;
+    }
+    public List<Order>search(String tel,String pointId,Long start,Long end,String state,String orderCol,String orderMethod,int page,int rows){
+
+        Session session= sessionFactory.openSession();
+        StringBuilder sqlBuider=new StringBuilder(60);
+        sqlBuider.append("from ").append(EntityNameUtil.getEntityName(Order.class)).append(" o where 1=1 ");
+        if(tel!=null) sqlBuider.append(" and o.user.tel =  ").append(String.format("'%s'",tel));
+        if(pointId!=null) sqlBuider.append(" and o.pointId =  ").append(String.format("'%s'",pointId));
+        if(start!=null) sqlBuider.append(" and o.orderDate >=  ").append(start);
+        if(end!=null) sqlBuider.append(" and o.orderDate <=  ").append(end);
+        if(state!=null) sqlBuider.append(" and o.payState =  ").append(String.format("'%s'",state));
+        sqlBuider.append(" order by o.").append(orderCol).append(" ").append(orderMethod);
+        String sql=sqlBuider.toString();
+        List<Order>orderList=  session.createQuery(sql).setMaxResults(rows).setFirstResult((page-1)*rows).list();
+        session.close();
+        return  orderList;
+
+
+
+
+
+
     }
     public Map<String,Integer>getStatics(String userId){
 

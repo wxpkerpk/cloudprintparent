@@ -22,31 +22,53 @@
     $(function () {
         initDataGrid();
     });
+    var datePick = function (elem) {
+        jQuery(elem).datepicker({dateFormat: 'yyyy-mm-dd'});
+    }
 
     function initDataGrid() {
         $table.bootstrapTable({
             height: tableModel.getHeight(),
             idField: "roleId",
             columns: [[
-                {title: "角色名称", field: "roleName"},
-                {title: "角色描述", field: "roleDesc"},
-                {title: "启用状态", field: "enable", formatter: tableModel.getState},
-                {title: "创建时间", field: "createdAt", sortable: true},
-                {title: "更新日期", field: "updatedAt", sortable: true},
-                {title: "操作", field: "operate", align: 'center', events: operateEvents, formatter: operateFormatter}
+                {
+                    title: "订单日期", field: "orderData", sorttype: "date",
+                    searchoptions: {dataInit: datePick, attr: {title: '选择日期'}}
+                },
+                {
+                    title: "订单电话", field: "tel", search: true,
+                    searchoptions: {sopt: ['eq']}
+                },
+                {
+                    name: '订单状态',
+                    index: 'ship',
+                    width: 90,
+                    editable: false,
+                    search: true,
+                    searchoptions: {
+                        sopt: ["eq"],
+                        value: "'':全部;PAYING:正在支付;PAID:已经支付;PRINTED:已经打印;FINISH:已完成"
+                    },
+                    edittype: "select",
+                    editoptions: {value: "PAYING:正在支付;PAID:已经支付;PRINTED:已经打印;FINISH:已完成"}
+                },
+                {title: "打印", field: "operate1", align: 'center', events: operateEvents, formatter: printFormatter},
+
+                {title: "操作", field: "operate2", align: 'center', events: operateEvents, formatter: operateFormatter}
             ]],
             url: '/console/role/list',
             queryParams: function (params) {
+                console.log(params)
                 return params;
             },
-            responseHandler: function (res) {
-                return {
-                    rows: res.result.pageInfo.list,
-                    total: res.result.pageInfo.total
-                }
-            },
-            sortName: 'createdAt',
-            sortOrder: 'asc',
+            // responseHandler: function (res) {
+            //     return {
+            //         rows: res.result.pageInfo.list,
+            //         total: res.result.pageInfo.total
+            //     }
+            // },
+            sortName: 'id',
+            sortOrder: 'desc',
             pagination: true,
             sidePagination: 'server',
             pageSize: 20,
@@ -59,15 +81,23 @@
 
     function operateFormatter(value, row, index) {
         return [
-            '<a class="grant" href="javascript:void(0);" >',
-            '<i class="glyphicon glyphicon-edit"></i>授权',
+            '<a class="print" href="javascript:void(0);" >',
+            '<i class="glyphicon glyphicon-edit"></i>已打印',
             '</a>  ',
             '<a href="/console/role/from?roleId=' + row.roleId + '" >',
-            '<i class="glyphicon glyphicon-edit"></i>修改',
+            '<i class="glyphicon glyphicon-remove"></i>取消订单',
             '</a>  ',
             '<a class="remove" href="javascript:void(0);">',
-            '<i class="glyphicon glyphicon-remove"></i>删除',
+            '<i class="glyphicon glyphicon-edit"></i>已经完成',
             '</a>'
+        ].join('');
+    }
+
+    function printFormatter(value, row, index) {
+        return [
+            '<a class="print" href="javascript:void(0);" >',
+            '<i class="glyphicon glyphicon-edit"></i>打印',
+            '</a>  '
         ].join('');
     }
 
@@ -75,7 +105,7 @@
         'click .remove': function (e, value, row, index) {
             operaModel.delRow(row.roleId, '/console/role/delete', 'roleId');
         },
-        'click .grant': function (e, value, row, index) {
+        'click .print': function (e, value, row, index) {
             layer.open({
                 type: 2,
                 title: '角色授权',

@@ -1,8 +1,10 @@
 package com.wx.cloudprint.dataservice.service;
 
+import com.wx.cloudprint.dataservice.dao.AbstractDBCommonOperate;
 import com.wx.cloudprint.dataservice.dao.OrderDao;
 import com.wx.cloudprint.dataservice.entity.Order;
 import com.wx.cloudprint.dataservice.utils.EntityNameUtil;
+import com.wx.cloudprint.dataservice.utils.QueryResult;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +14,7 @@ import scala.collection.mutable.StringBuilder;
 
 import javax.annotation.Resource;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -20,6 +23,8 @@ public class OrderService {
     @Resource
     private OrderDao orderDao;
 
+    @Autowired
+    AbstractDBCommonOperate abstractDBCommonOperate;
     @Transactional
     public void add(Order order){
         orderDao.save(order);
@@ -53,24 +58,22 @@ public class OrderService {
         session.close();
         return orderList;
     }
-    public List<Order>search(String tel,String pointId,Long start,Long end,String state,String orderCol,String orderMethod,int page,int rows){
 
-        Session session= sessionFactory.openSession();
+    public QueryResult<Order> search(String tel, String pointId, Long start, Long end, String state, String orderCol, String orderMethod, int page, int rows) {
+
+
         StringBuilder sqlBuider=new StringBuilder(60);
-        sqlBuider.append("from ").append(EntityNameUtil.getEntityName(Order.class)).append(" o where 1=1 ");
+        LinkedHashMap<String, String> sortCondition = new LinkedHashMap<>();
+        sortCondition.put(orderCol, orderMethod);
+        sqlBuider.append("  1=1 ");
         if(tel!=null) sqlBuider.append(" and o.user.tel =  ").append(String.format("'%s'",tel));
         if(pointId!=null) sqlBuider.append(" and o.pointId =  ").append(String.format("'%s'",pointId));
         if(start!=null) sqlBuider.append(" and o.orderDate >=  ").append(start);
         if(end!=null) sqlBuider.append(" and o.orderDate <=  ").append(end);
         if(state!=null) sqlBuider.append(" and o.payState =  ").append(String.format("'%s'",state));
-        sqlBuider.append(" order by o.").append(orderCol).append(" ").append(orderMethod);
+
         String sql=sqlBuider.toString();
-        List<Order>orderList=  session.createQuery(sql).setMaxResults(rows).setFirstResult((page-1)*rows).list();
-        session.close();
-        return  orderList;
-
-
-
+        return abstractDBCommonOperate.getScrollData(Order.class, (page - 1) * rows, rows, sql, null, sortCondition);
 
 
 

@@ -55,6 +55,8 @@
                     },
                     formatter:stateFormatter
                 },
+                {title: "详情", field: "operate3", align: 'center', events: operateEvents, formatter: detailFormatter},
+
                 {title: "打印", field: "operate1", align: 'center', events: operateEvents, formatter: printFormatter},
 
                 {title: "操作", field: "operate2", align: 'center', events: operateEvents, formatter: operateFormatter}
@@ -74,8 +76,8 @@
             sortOrder: 'desc',
             pagination: true,
             sidePagination: 'server',
-            pageSize: 20,
-            pageList: [20, 40, 50, 100],
+            pageSize: 5,
+            pageList: [5, 40, 50, 100],
             toolbar: "#toolbar",
             showRefresh: true,
             showToggle: true
@@ -83,6 +85,14 @@
     }
 //                        value: "'':全部;PAYING:正在支付;PAID:已经支付;PRINTED:已经打印;FINISH:已完成"
 
+
+    function detailFormatter(value, row, index) {
+        return [
+            '<a class="detail" href="javascript:void(0);" >',
+            '<i class="glyphicon glyphicon-zoom-out"></i>详情',
+            '</a>'
+        ].join('');
+    }
     function stateFormatter(value,row,index) {
             var map={
                 "PAYING":"正在支付",
@@ -94,14 +104,14 @@
     }
     function operateFormatter(value, row, index) {
         return [
-            '<a class="print" href="javascript:void(0);" >',
-            '<i class="glyphicon glyphicon-edit"></i>已打印',
+            '<a class="printed" href="javascript:void(0);">',
+            '<i class="glyphicon glyphicon-check"></i>已打印',
             '</a>  ',
             '<a href="/console/role/from?roleId=' + row.roleId + '" >',
             '<i class="glyphicon glyphicon-remove"></i>取消订单',
             '</a>  ',
             '<a class="remove" href="javascript:void(0);">',
-            '<i class="glyphicon glyphicon-edit"></i>已经完成',
+            '<i class="glyphicon glyphicon-ok"></i>已经完成',
             '</a>'
         ].join('');
     }
@@ -109,8 +119,8 @@
     function printFormatter(value, row, index) {
         return [
             '<a class="print" href="javascript:void(0);" >',
-            '<i class="glyphicon glyphicon-edit"></i>打印',
-            '</a>  '
+            '<i class="glyphicon glyphicon-print"></i>打印',
+            '</a>'
         ].join('');
     }
 
@@ -125,7 +135,18 @@
                 shadeClose: true,
                 shade: false,
                 maxmin: true, //开启最大化最小化按钮
-                area: ['500px', '600px'],
+                area: ['1200px', '600px'],
+                content: '/console/role/grant/?roleId=' + row.roleId
+            });
+        },
+        'click .detail': function (e, value, row, index) {
+            layer.open({
+                type: 2,
+                title: '角色授权',
+                shadeClose: true,
+                shade: false,
+                maxmin: true, //开启最大化最小化按钮
+                area: ['1200px', '600px'],
                 content: '/console/role/grant/?roleId=' + row.roleId
             });
         }

@@ -26,8 +26,9 @@ class OrdersController {
 
     val list=orderservice.search(null,null,null,null,null,"id","desc",1,10)
     val jqGridPageView=new JqGridPageView[Order]()
-    jqGridPageView.setMaxResults(list.getTotalCount)
+    //    jqGridPageView.setMaxResults(list.getTotalCount)
     jqGridPageView.setRows(list.getResultList)
+    jqGridPageView.setTotal(list.getTotalCount)
     jqGridPageView
 
   }

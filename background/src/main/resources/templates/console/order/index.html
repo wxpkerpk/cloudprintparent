@@ -15,7 +15,7 @@
     <a href="/console/role/from" class="btn btn-primary">添加角色</a>
 </div>
 <div th:include="console/footer"></div>
-
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqgrid/4.6.0/css/ui.jqgrid.css"/>
 
 <script type="text/javascript">
     $table = $("#dataGrid");
@@ -25,38 +25,41 @@
     var datePick = function (elem) {
         jQuery(elem).datepicker({dateFormat: 'yyyy-mm-dd'});
     }
-
+    function getLocalTime(nS,row,index) {
+        return new Date(parseInt(nS) ).toLocaleString().replace(/:\d{1,2}$/,' ');
+    }
     function initDataGrid() {
         $table.bootstrapTable({
             height: tableModel.getHeight(),
             idField: "roleId",
             columns: [[
                 {
-                    title: "订单日期", field: "orderData", sorttype: "date",
+                    title: "订单日期", field: "orderDate",formatter:getLocalTime, sorttype: "date",searchable:true, name:"orderDate",index:"orderDate",
                     searchoptions: {dataInit: datePick, attr: {title: '选择日期'}}
                 },
                 {
-                    title: "订单电话", field: "tel", search: true,
+                    title: "订单电话", field: "user.tel", search: true,
                     searchoptions: {sopt: ['eq']}
                 },
                 {
-                    name: '订单状态',
-                    index: 'ship',
+                    name: 'payState',
+                    title:'订单状态',
+                    index: 'payState',
                     width: 90,
                     editable: false,
                     search: true,
+                    field: "payState",
                     searchoptions: {
                         sopt: ["eq"],
                         value: "'':全部;PAYING:正在支付;PAID:已经支付;PRINTED:已经打印;FINISH:已完成"
                     },
-                    edittype: "select",
-                    editoptions: {value: "PAYING:正在支付;PAID:已经支付;PRINTED:已经打印;FINISH:已完成"}
+                    formatter:stateFormatter
                 },
                 {title: "打印", field: "operate1", align: 'center', events: operateEvents, formatter: printFormatter},
 
                 {title: "操作", field: "operate2", align: 'center', events: operateEvents, formatter: operateFormatter}
             ]],
-            url: '/console/role/list',
+            url: '/console/order/search',
             queryParams: function (params) {
                 console.log(params)
                 return params;
@@ -78,7 +81,17 @@
             showToggle: true
         });
     }
+//                        value: "'':全部;PAYING:正在支付;PAID:已经支付;PRINTED:已经打印;FINISH:已完成"
 
+    function stateFormatter(value,row,index) {
+            var map={
+                "PAYING":"正在支付",
+                "PAID":"已经支付",
+                "PRINTED":"已经打印",
+                "FINISH":"已结束"
+            }
+            return map[value]
+    }
     function operateFormatter(value, row, index) {
         return [
             '<a class="print" href="javascript:void(0);" >',

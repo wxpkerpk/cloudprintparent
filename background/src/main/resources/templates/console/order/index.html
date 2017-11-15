@@ -16,7 +16,21 @@
 </div>
 <div th:include="console/footer"></div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqgrid/4.6.0/css/ui.jqgrid.css"/>
+<table class="table table-striped">
+    <tr>
+        <td>用户名字</td>
+        <td>xx</td>
+    </tr>
+    <tr>
+        <td>手机号码</td>
+        <td>18011</td>
 
+    </tr>
+    <tr>
+        <td>价格</td>
+        <td>0.3</td>
+    </tr>
+</table>
 <script type="text/javascript">
     $table = $("#dataGrid");
     $(function () {
@@ -40,6 +54,12 @@
                 {
                     title: "订单电话", field: "user.tel", search: true,
                     searchoptions: {sopt: ['eq']}
+                },
+                {
+                    title: "价格", field: "money", formatter: function (value, row, index) {
+
+                        return (parseFloat(value) / 100).toFixed(2)
+                    }
                 },
                 {
                     name: 'payState',
@@ -87,11 +107,18 @@
 
 
     function detailFormatter(value, row, index) {
+        console.log(row)
         return [
             '<a class="detail" href="javascript:void(0);" >',
             '<i class="glyphicon glyphicon-zoom-out"></i>详情',
             '</a>'
         ].join('');
+    }
+
+
+    function showDetail(value) {
+
+
     }
     function stateFormatter(value,row,index) {
             var map={

@@ -1,6 +1,10 @@
 package com.wx.cloudprint.webserver.register;
 
-import com.weibo.api.motan.config.springsupport.*;
+import com.weibo.api.motan.config.springsupport.AnnotationBean;
+import com.weibo.api.motan.config.springsupport.BasicRefererConfigBean;
+import com.weibo.api.motan.config.springsupport.ProtocolConfigBean;
+import com.weibo.api.motan.config.springsupport.RegistryConfigBean;
+import com.wx.cloudprint.util.PropertiesUtil;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -27,7 +31,9 @@ public class WebClient {
     public RegistryConfigBean registryConfig() {
         RegistryConfigBean config = new RegistryConfigBean();
         config.setRegProtocol("zookeeper");
-        config.setAddress("139.199.202.40:2181");
+        String url = PropertiesUtil.GetValueByKey("application.properties", "motan.register.url");
+
+        config.setAddress(url);
         return config;
     }
 

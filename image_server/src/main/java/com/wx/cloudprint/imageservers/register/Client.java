@@ -1,6 +1,7 @@
 package com.wx.cloudprint.imageservers.register;
 
 import com.weibo.api.motan.config.springsupport.*;
+import com.wx.cloudprint.util.PropertiesUtil;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -25,9 +26,10 @@ public class Client {
 
     @Bean(name = "registry")
     public RegistryConfigBean registryConfig() {
+        String url = PropertiesUtil.GetValueByKey("application.properties", "motan.register.url");
         RegistryConfigBean config = new RegistryConfigBean();
         config.setRegProtocol("zookeeper");
-        config.setAddress("139.199.202.40:2181");
+        config.setAddress(url);
         return config;
     }
 

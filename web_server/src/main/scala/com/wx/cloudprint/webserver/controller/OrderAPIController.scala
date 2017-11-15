@@ -123,7 +123,7 @@ class OrderAPIController extends BaseController {
       val settlesStr = settles.map { x => compact(render(x)) }.mkString("[", ",", "]")
       order.setSettle(settlesStr)
       order.setPointId(pointId.extract[String])
-      order.setPayWay(Order.States.PAYING.toString)
+      order.setPayState(Order.States.PAYING.toString)
       if (dispatch != null) order.setDispatching(compact(render(dispatch)))
       orderService.add(order)
       ("result" -> Message.success_state) ~ ("info" -> (("orderID" -> order.getId) ~ ("desc" -> "")))

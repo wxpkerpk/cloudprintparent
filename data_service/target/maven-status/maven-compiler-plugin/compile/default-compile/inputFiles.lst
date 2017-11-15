@@ -6,9 +6,13 @@ C:\Users\wx\Desktop\cloudprintparent\data_service\src\main\java\com\wx\cloudprin
 C:\Users\wx\Desktop\cloudprintparent\data_service\src\main\java\com\wx\cloudprint\dataservice\service\AddressService.java
 C:\Users\wx\Desktop\cloudprintparent\data_service\src\main\java\com\wx\cloudprint\dataservice\service\UserService.java
 C:\Users\wx\Desktop\cloudprintparent\data_service\src\main\java\com\wx\cloudprint\dataservice\service\OrderService.java
+C:\Users\wx\Desktop\cloudprintparent\data_service\src\main\java\com\wx\cloudprint\dataservice\utils\QueryResult.java
 C:\Users\wx\Desktop\cloudprintparent\data_service\src\main\java\com\wx\cloudprint\dataservice\service\ResService.java
+C:\Users\wx\Desktop\cloudprintparent\data_service\src\main\java\com\wx\cloudprint\dataservice\utils\JqGridPageView.java
 C:\Users\wx\Desktop\cloudprintparent\data_service\src\main\java\com\wx\cloudprint\dataservice\dao\UserDao.java
 C:\Users\wx\Desktop\cloudprintparent\data_service\src\main\java\com\wx\cloudprint\dataservice\dao\PointDao.java
+C:\Users\wx\Desktop\cloudprintparent\data_service\src\main\java\com\wx\cloudprint\dataservice\dao\HibernateTemplateConfig.java
+C:\Users\wx\Desktop\cloudprintparent\data_service\src\main\java\com\wx\cloudprint\dataservice\dao\AbstractDBCommonOperate.java
 C:\Users\wx\Desktop\cloudprintparent\data_service\src\main\java\com\wx\cloudprint\dataservice\dao\OrderDao.java
 C:\Users\wx\Desktop\cloudprintparent\data_service\src\main\java\com\wx\cloudprint\dataservice\utils\EntityNameUtil.java
 C:\Users\wx\Desktop\cloudprintparent\data_service\src\main\java\com\wx\cloudprint\dataservice\entity\Order.java

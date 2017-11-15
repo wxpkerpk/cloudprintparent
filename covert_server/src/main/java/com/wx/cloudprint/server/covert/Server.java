@@ -4,16 +4,13 @@ import com.weibo.api.motan.config.springsupport.AnnotationBean;
 import com.weibo.api.motan.config.springsupport.BasicServiceConfigBean;
 import com.weibo.api.motan.config.springsupport.ProtocolConfigBean;
 import com.weibo.api.motan.config.springsupport.RegistryConfigBean;
-import org.springframework.beans.factory.annotation.Value;
+import com.wx.cloudprint.util.PropertiesUtil;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class Server {
-    @Value("${register.address}")
-    private String address;
-    @Value("${register.protocol}")
-    private String protocol;
+
     @Bean
     public AnnotationBean motanAnnotationBean() {
         AnnotationBean motanAnnotationBean = new AnnotationBean();
@@ -36,7 +33,9 @@ public class Server {
     public RegistryConfigBean registryConfig() {
         RegistryConfigBean config = new RegistryConfigBean();
         config.setRegProtocol("zookeeper");
-        config.setAddress("139.199.202.40:2181");
+        String url = PropertiesUtil.GetValueByKey("application.properties", "motan.register.url");
+
+        config.setAddress(url);
         return config;
     }
 

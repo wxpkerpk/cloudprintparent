@@ -11,26 +11,10 @@
 <section class="content table-content">
     <table id="dataGrid"></table>
 </section>
-<div id="toolbar">
-    <a href="/console/role/from" class="btn btn-primary">添加角色</a>
-</div>
+
 <div th:include="console/footer"></div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqgrid/4.6.0/css/ui.jqgrid.css"/>
-<table class="table table-striped">
-    <tr>
-        <td>用户名字</td>
-        <td>xx</td>
-    </tr>
-    <tr>
-        <td>手机号码</td>
-        <td>18011</td>
 
-    </tr>
-    <tr>
-        <td>价格</td>
-        <td>0.3</td>
-    </tr>
-</table>
 <script type="text/javascript">
     $table = $("#dataGrid");
     $(function () {
@@ -39,16 +23,50 @@
     var datePick = function (elem) {
         jQuery(elem).datepicker({dateFormat: 'yyyy-mm-dd'});
     }
-    function getLocalTime(nS,row,index) {
-        return new Date(parseInt(nS) ).toLocaleString().replace(/:\d{1,2}$/,' ');
+
+    function getLocalTime(nS, row, index) {
+        return new Date(parseInt(nS)).toLocaleString().replace(/:\d{1,2}$/, ' ');
     }
+
+    function listFiles(value) {
+
+        var files = JSON.parse(value['files'])
+
+        var content = '<table class="table table-striped">\n'
+
+        for (var file in files) {
+            content += ('    <tr>\n' +
+                '        <td>文件名称</td>\n' +
+                '        <td>' + file['fileName'] + '</td>\n' +
+                '    </tr>\n' +
+
+                '        <td>打印份数</td>\n' +
+                '        <td>' + file['copies'] + '</td>\n' +
+                '        <td>配送号码</td>\n' +
+                '        <td>' + phone + '</td>\n' +
+                '    <tr>\n' +
+                '        <td>价格</td>\n' +
+                '        <td>' + (parseFloat(value['money']) / 100).toFixed(2) + '</td>\n' +
+                '    </tr>\n')
+
+
+        }
+
+    }
+
     function initDataGrid() {
         $table.bootstrapTable({
             height: tableModel.getHeight(),
-            idField: "roleId",
+            idField: "id",
             columns: [[
                 {
-                    title: "订单日期", field: "orderDate",formatter:getLocalTime, sorttype: "date",searchable:true, name:"orderDate",index:"orderDate",
+                    title: "订单日期",
+                    field: "orderDate",
+                    formatter: getLocalTime,
+                    sorttype: "date",
+                    searchable: true,
+                    name: "orderDate",
+                    index: "orderDate",
                     searchoptions: {dataInit: datePick, attr: {title: '选择日期'}}
                 },
                 {
@@ -56,14 +74,14 @@
                     searchoptions: {sopt: ['eq']}
                 },
                 {
-                    title: "价格", field: "money", formatter: function (value, row, index) {
+                    title: "价格(元)", field: "money", formatter: function (value, row, index) {
 
                         return (parseFloat(value) / 100).toFixed(2)
                     }
                 },
                 {
                     name: 'payState',
-                    title:'订单状态',
+                    title: '订单状态',
                     index: 'payState',
                     width: 90,
                     editable: false,
@@ -73,7 +91,7 @@
                         sopt: ["eq"],
                         value: "'':全部;PAYING:正在支付;PAID:已经支付;PRINTED:已经打印;FINISH:已完成"
                     },
-                    formatter:stateFormatter
+                    formatter: stateFormatter
                 },
                 {title: "详情", field: "operate3", align: 'center', events: operateEvents, formatter: detailFormatter},
 
@@ -103,7 +121,8 @@
             showToggle: true
         });
     }
-//                        value: "'':全部;PAYING:正在支付;PAID:已经支付;PRINTED:已经打印;FINISH:已完成"
+
+    //                        value: "'':全部;PAYING:正在支付;PAID:已经支付;PRINTED:已经打印;FINISH:已完成"
 
 
     function detailFormatter(value, row, index) {
@@ -118,17 +137,64 @@
 
     function showDetail(value) {
 
+        var name = value['dispatching'] == null ? value['user']['nickName'] : value["dispatching"]['nickname']
+        var phone = value['dispatching'] == null ? value['user']['tel'] : value["dispatching"]['phone']
+        var content = '<table class="table table-striped">\n' +
+            '    <tr>\n' +
+            '        <td>用户名字</td>\n' +
+            '        <td>' + name + '</td>\n' +
+            '    </tr>\n' +
+            '    <tr>\n' +
+            '        <td>订单日期</td>\n' +
+            '        <td>' + getLocalTime(value['orderDate']) + '</td>\n' +
+            '    </tr>\n' +
+            '    <tr>\n' +
+            '        <td>配送号码</td>\n' +
+            '        <td>' + phone + '</td>\n' +
+            '    </tr>\n' +
+            '    <tr>\n' +
+            '        <td>价格</td>\n' +
+            '        <td>' + (parseFloat(value['money']) / 100).toFixed(2) + '</td>\n' +
+            '    </tr>\n'
+
+        if (value['dispatching'] == null) {
+            content += ('    <tr>\n' +
+                '        <td >配送方式</td>' +
+                '        <td>上门自取</td>' +
+                '    </tr>'
+            )
+
+        } else {
+            content += ('    <tr>\n' +
+                '        <td >配送方式</td>' +
+                '        <td>送货上门</td>' +
+                '    </tr>'
+            )
+            content += ('    <tr>\n' +
+                '        <td>配送地址</td>\n' +
+                '        <td>' + value["dispatching"]['address'] + '</td>\n' +
+                '    </tr>\n' +
+                '    <tr>\n' +
+                '        <td>配送留言</td>\n' +
+                '        <td>' + value["dispatching"]['message'] + '</td>\n' +
+                '    </tr>\n')
+        }
+        content += '</table>'
+
+        return content
 
     }
-    function stateFormatter(value,row,index) {
-            var map={
-                "PAYING":"正在支付",
-                "PAID":"已经支付",
-                "PRINTED":"已经打印",
-                "FINISH":"已结束"
-            }
-            return map[value]
+
+    function stateFormatter(value, row, index) {
+        var map = {
+            "PAYING": "正在支付",
+            "PAID": "已经支付",
+            "PRINTED": "已经打印",
+            "FINISH": "已结束"
+        }
+        return map[value]
     }
+
     function operateFormatter(value, row, index) {
         return [
             '<a class="printed" href="javascript:void(0);">',
@@ -168,13 +234,14 @@
         },
         'click .detail': function (e, value, row, index) {
             layer.open({
-                type: 2,
-                title: '角色授权',
+                type: 1,
+
+                title: '订单详情',
                 shadeClose: true,
                 shade: false,
                 maxmin: true, //开启最大化最小化按钮
-                area: ['1200px', '600px'],
-                content: '/console/role/grant/?roleId=' + row.roleId
+                area: ['500px', '500px'],
+                content: showDetail(row)
             });
         }
     };

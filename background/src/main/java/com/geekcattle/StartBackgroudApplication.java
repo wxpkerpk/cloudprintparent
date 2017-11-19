@@ -10,15 +10,17 @@ import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
-@EnableWebMvc//启动MVC
-@EnableTransactionManagement // 启注解事务管理
-@SpringBootApplication//SpringBoot启动核心
+@EnableTransactionManagement
+@SpringBootApplication
+@RestController
 @EntityScan(value = "com.wx.cloudprint.dataservice.entity")
-@ComponentScan({"com.wx.cloudprint", "com.geekcattle"})
 @EnableJpaRepositories(basePackages = "com.wx.cloudprint.dataservice.dao")
+@EnableWebMvc//启动MVC
+@ComponentScan({"com.wx.cloudprint", "com.geekcattle"})
 public class StartBackgroudApplication extends WebMvcConfigurerAdapter {
 
     /**

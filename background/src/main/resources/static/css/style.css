@@ -21,12 +21,12 @@
 
 .lines {
     /* the lines overflow the container. This creates a continuous flow of the background */
-    width: 200%;
+    width: 180%;
     /* We use a SVG file as the background */
     background: url('lines.svg') repeat-x;
-    height: 120%;
+    height: 160%;
     text-align: center;
-    margin-top: -15px;
+    margin-top: -27px;
     /* Any overflow is hidden */
     overflow: hidden;
     border-radius: 50px;
@@ -36,6 +36,7 @@
     -ms-animation: moveBars 1s linear infinite;
     -o-animation: moveBars 1s linear infinite;
     animation: moveBars 1s linear infinite;
+    javascript:;
     font-weight: bold;
     color: #fff;
     color: 1px;

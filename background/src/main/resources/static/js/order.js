@@ -90,14 +90,14 @@ function makePage(data) {
     var content = []
     for (var index in data) {
         var url = data[index]
-        content.push('<img src="' + url + '" >')
+        content.push('<img src="' + url + '" height="100%" width="100%">')
     }
     return content.join("")
 
 }
 
 function convertImgToBase64(url, callback, index) {
-    if (cache[url] == null) {
+    if (cache[url[index]] == null) {
         var canvas = document.createElement('CANVAS'),
             ctx = canvas.getContext('2d'),
             img = new Image;
@@ -108,13 +108,13 @@ function convertImgToBase64(url, callback, index) {
             canvas.width = img.width;
             ctx.drawImage(img, 0, 0);
             var dataURL = canvas.toDataURL('image/png');
-            cache[url] = dataURL
-            callback.call(this, dataURL, index);
+            cache[url[index]] = dataURL
+            callback.call(this, dataURL, index + 1);
             canvas = null;
         };
-        img.src = url;
+        img.src = url[index];
     } else {
-        callback.call(this, cache[url], index);
+        callback.call(this, cache[url[index]], index + 1);
     }
 
 }
@@ -131,27 +131,29 @@ function print(dom) {
         success: function (array) {
             var base64Array = []
             var len = array.length
-            for (var index in array) {
-                convertImgToBase64(array[index], function (dataUrl, i) {
-                    base64Array.push([dataUrl, i])
-                    var step = parseFloat("1") / len * 0.8
-                    var loader = $(dom).parent().parent().find('.amount')
-                    loader.find('.loaded').text((step / 0.8) * base64Array.length * 100)
-                    $(loader).css('width', ((100 * step * base64Array.length + 20) + "%"))
-                    // $(loader).text((step/0.8)*base64Array.length*100)
-                    if (base64Array.length === len) {
-                        base64Array.sort(function (a, b) {
-                            return a[1] - b[1]
-                        })
-                        for (var i in base64Array) {
-                            base64Array[i] = base64Array[i][0]
-                        }
-                        var content = makePage(base64Array)
-                        $(content).jqprint()
-                    }
+            var callbackfunction = function (dataUrl, i) {
+                console.log("图片加载回调" + i)
+                base64Array.push(dataUrl)
+                var step = parseFloat("1") / len * 0.8
+                var loader = $(dom).parent().parent().find('.amount')
+                loader.find('.loaded').text(Math.ceil((step / 0.8) * base64Array.length * 100))
+                $(loader).css('width', ((100 * step * base64Array.length + 20) + "%"))
+                // $(loader).text((step/0.8)*base64Array.length*100)
+                if (base64Array.length === len) {
 
-                }, index)
+                    var content = makePage(base64Array)
+                    // $('#images').empty()
+                    //
+                    // $('#images').append(content)
+                    $(content).jqprint()
+                } else {
+
+
+                    convertImgToBase64(array, callbackfunction, i)
+                }
+
             }
+            convertImgToBase64(array, callbackfunction, 0)
 
 
         }

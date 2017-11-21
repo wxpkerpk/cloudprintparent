@@ -53,7 +53,7 @@
             if (tab) {
                 tab.close();
             }
-        }, 1000);
+        }, 2600);
     }
 
     $.fn.jqprint.defaults = {

@@ -33,5 +33,16 @@ class OrdersController {
 
   }
 
+  @RequestMapping(value = Array("/edit"), method = Array(RequestMethod.GET))
+  @ResponseBody
+  def edit(orderId: String, state: String) = {
+
+    val order = orderservice.get(orderId)
+    order.setPayWay(state)
+    orderservice.add(order)
+    "success"
+
+
+  }
 
 }

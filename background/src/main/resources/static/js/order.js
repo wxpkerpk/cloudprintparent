@@ -165,6 +165,16 @@ function print(dom) {
 
 function initDataGrid() {
     $table.bootstrapTable({
+        queryParams: function queryParams(params) {   //设置查询参数
+            var param = {
+                pageNumber: params.pageNumber,
+                pageSize: params.pageSize,
+                orderNum : $("#orderNum").val()
+            };
+            return param;
+        },
+        search: true,//是否显示右上角的搜索框
+
         height: tableModel.getHeight(),
         idField: "id",
         columns: [[

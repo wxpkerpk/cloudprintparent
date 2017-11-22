@@ -16,7 +16,7 @@ function listFiles(value) {
 
     var files = JSON.parse(value['files'])
 
-    var content = '<table class="table table-striped text-center table-bordered">\n'
+    var content = '<table class="table table-striped text-center table-bordered table-hover">\n'
     content += '<link rel="stylesheet" href="/static/css/style.css"/>\n'
     content += '  <thead>\n' +
         '                <tr>\n' +
@@ -173,10 +173,13 @@ function initDataGrid() {
             };
             return param;
         },
-        search: true,//是否显示右上角的搜索框
+        search: false,//是否显示右上角的搜索框
 
         height: tableModel.getHeight(),
         idField: "id",
+
+        showRefresh: false,
+        showToggle: false,
         columns: [[
             {
                 title: "订单日期",
@@ -236,8 +239,7 @@ function initDataGrid() {
         pageSize: 5,
         pageList: [5, 40, 50, 100],
         toolbar: "#toolbar",
-        showRefresh: true,
-        showToggle: true
+
     });
 }
 

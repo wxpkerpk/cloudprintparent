@@ -9,31 +9,43 @@
 </section>
 <section class="content-header">
 </section>
-<section class="content table-content">
-    <form class="form-inline">
-        <div class="form-group">
-            <label for="tel">电话号码</label>
+<form style="float: right;width: 80%">
+    <div class="container-fluid">
+
+        <div class="form-group col-md-3">
+            <!--<label for="tel">电话号码</label>-->
+
             <input type="text" class="form-control" id="tel" placeholder="电话号码"/>
         </div>
-        <div class="form-group">
-            <label for="exampleInputEmail2">Email</label>
-            <input type="email" class="form-control" id="exampleInputEmail2" placeholder="jane.doe@example.com"/>
-        </div>
-        <div class="form-group">
+        <div class="form-group  col-md-2">
+            <!--<label for="start">起始时间</label>-->
 
-            <select class="form-control">
+            <input type="date" class="form-control" id="start" placeholder="起始时间"/>
+        </div>
+        <div class="form-group  col-md-2">
+            <!--<label for="end">终止时间</label>-->
+
+            <input type="date" class="form-control" id="end" placeholder="终止时间"/>
+        </div>
+        <div class="form-group col-md-3">
+            <!--<label for="state">状态</label>-->
+
+            <select class="form-control" id="state">
                 <option>1</option>
                 <option>2</option>
                 <option>3</option>
                 <option>4</option>
                 <option>5</option>
             </select>
-
         </div>
-        <button type="submit" class="btn btn-default">Send invitation</button>
-    </form>
-    <table id="dataGrid"></table>
-</section>
+        <div class="form-group  col-md-2">
+
+            <button class="btn btn-default" id="doSearch" onclick="console.log('click')">搜索</button>
+        </div>
+
+    </div>
+</form>
+<table id="dataGrid"></table>
 <div style="display: none">
     <div id="images"></div>
 </div>

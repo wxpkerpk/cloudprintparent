@@ -59,11 +59,11 @@ function listFiles(value) {
             '        <td>' + (f['endPage'] - f['startPage'] + 1) + '</td>\n' +
             '        <td>' + f['copies'] + '</td>\n' +
             '        <td>' + f['size'] + '</td>\n' +
-
-            '        <td>' + text[f['color']] + '</td>\n' +
-            '        <td>' + (f['row'] * f['col']) + '</td>\n' +
             '        <td>' + f['caliper'] + '</td>\n' +
             '        <td>' + text[f['side']] + '</td>\n' +
+
+            '        <td>' + text[f['color']] + '</td>\n' +
+            '        <td>' + f['row'] + '*' + f['col'] + '</td>\n' +
             '        <td>' + '\t<div class="loading-bar" style="width: 110">\n' +
             '<div class="amount blue" style="width: 20%;">\n' +
             '<div class="loaded">\n' +
@@ -122,6 +122,8 @@ function convertImgToBase64(url, callback, index) {
 var imageCache = {}
 
 function print(dom) {
+    layer.tips('正在加载打印文件，请耐心等待进度条加载完成', $(dom));
+
     var data = $(dom).attr("md5");
     data = cache[data]
 
@@ -163,14 +165,22 @@ function print(dom) {
     console.log(data)
 }
 
+function search() {
+    $table.bootstrapTable('refresh');
+
+}
 function initDataGrid() {
     $table.bootstrapTable({
         queryParams: function queryParams(params) {   //设置查询参数
             var param = {
-                pageNumber: params.pageNumber,
-                pageSize: params.pageSize,
-                orderNum : $("#orderNum").val()
+                tel: $('#tel').val(),
+                start: $('#start').val(),
+                end: $('#end').val(),
+                pageNumber: params.offset,
+                pageSize: params.limit,
+                state: $('#state').val()
             };
+            console.log(param)
             return param;
         },
         search: false,//是否显示右上角的搜索框
@@ -222,10 +232,7 @@ function initDataGrid() {
             {title: "操作", field: "operate2", align: 'center', events: operateEvents, formatter: operateFormatter}
         ]],
         url: '/console/order/search',
-        queryParams: function (params) {
-            console.log(params)
-            return params;
-        },
+
         // responseHandler: function (res) {
         //     return {
         //         rows: res.result.pageInfo.list,
@@ -236,8 +243,8 @@ function initDataGrid() {
         sortOrder: 'desc',
         pagination: true,
         sidePagination: 'server',
-        pageSize: 5,
-        pageList: [5, 40, 50, 100],
+        pageSize: 2,
+        pageList: [2, 40, 50, 100],
         toolbar: "#toolbar",
 
     });
@@ -318,15 +325,29 @@ function operateFormatter(value, row, index) {
         '<a class="printed" href="javascript:void(0);">',
         '<i class="glyphicon glyphicon-check"></i>已打印',
         '</a>  ',
-        '<a href="/console/role/from?roleId=' + row.roleId + '" >',
-        '<i class="glyphicon glyphicon-remove"></i>取消订单',
-        '</a>  ',
-        '<a class="remove" href="javascript:void(0);">',
+        // '<a href="javascript:void(0);" >',
+        // '<i class="glyphicon glyphicon-remove"></i>取消订单',
+        // '</a>  ',
+        '<a class="finish" href="javascript:void(0);">',
         '<i class="glyphicon glyphicon-ok"></i>已经完成',
         '</a>'
     ].join('');
 }
 
+
+function edit(orderId, state, callback) {
+    $.ajax({
+        url: "/console/order/edit",
+        data: {'orderId': orderId, 'state': state},
+        success: function (data) {
+            $table.bootstrapTable('refresh');
+            callback()
+
+        }
+
+
+    })
+}
 function printFormatter(value, row, index) {
     return [
         '<a class="print" href="javascript:void(0);" >',
@@ -336,8 +357,16 @@ function printFormatter(value, row, index) {
 }
 
 window.operateEvents = {
-    'click .remove': function (e, value, row, index) {
-        operaModel.delRow(row.roleId, '/console/role/delete', 'roleId');
+    'click .cancel': function (e, value, row, index) {
+        var index = layer.confirm('确定已打印？', {
+            btn: ['确定', '取消'] //按钮
+        }, function () {
+            edit(row.id, 'PRINTED', function () {
+                search()
+                layer.close(index)
+            })
+
+        });
     },
     'click .print': function (e, value, row, index) {
         layer.open({
@@ -360,6 +389,32 @@ window.operateEvents = {
             maxmin: true, //开启最大化最小化按钮
             area: ['500px', '500px'],
             content: showDetail(row)
+        });
+    },
+    'click .finish': function (e, value, row, index) {
+        var index = layer.confirm('确认完成订单？', {
+            btn: ['确定', '取消'] //按钮
+        }, function () {
+            edit(row.id, 'FINISH', function () {
+                search()
+                layer.close(index)
+                layer.msg('已结束');
+
+            })
+
+        });
+    },
+    'click .printed': function (e, value, row, index) {
+        var index = layer.confirm('确定已打印？', {
+            btn: ['确定', '取消'] //按钮
+        }, function () {
+            edit(row.id, 'PRINTED', function () {
+                search()
+                layer.close(index)
+                layer.msg('已打印');
+
+            })
+
         });
     }
 }

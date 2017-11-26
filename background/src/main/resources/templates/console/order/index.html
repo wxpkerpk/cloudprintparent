@@ -9,7 +9,7 @@
 </section>
 <section class="content-header">
 </section>
-<form style="float: right;width: 80%">
+<div style="float: right;width: 80%">
     <div class="container-fluid">
 
         <div class="form-group col-md-3">
@@ -31,20 +31,20 @@
             <!--<label for="state">状态</label>-->
 
             <select class="form-control" id="state">
-                <option>1</option>
-                <option>2</option>
-                <option>3</option>
-                <option>4</option>
-                <option>5</option>
+                <option value="" selected="selected">全部</option>
+                <option value="PAYING">正在支付</option>
+                <option value="PAID">已经支付</option>
+                <option value="PRINTED">已经结束</option>
+                <option value="FINISH">已经结束</option>
             </select>
         </div>
         <div class="form-group  col-md-2">
 
-            <button class="btn btn-default" id="doSearch" onclick="console.log('click')">搜索</button>
+            <button class="btn btn-default" id="doSearch" onclick="search()">搜索</button>
         </div>
 
     </div>
-</form>
+</div>
 <table id="dataGrid"></table>
 <div style="display: none">
     <div id="images"></div>

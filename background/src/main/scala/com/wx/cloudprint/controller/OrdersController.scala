@@ -1,5 +1,7 @@
 package com.wx.cloudprint.controller
 
+import java.text.SimpleDateFormat
+
 import com.wx.cloudprint.dataservice.entity.Order
 import com.wx.cloudprint.dataservice.service.OrderService
 import com.wx.cloudprint.dataservice.utils.JqGridPageView
@@ -22,12 +24,22 @@ class OrdersController {
 
   @RequestMapping(value = Array("/search"), method = Array(RequestMethod.GET))
   @ResponseBody
-  def search()={
+  def search(state: String, start: String, end: String, pageNumber: Int, pageSize: Int, tel: String) = {
 
-    val list=orderservice.search(null,null,null,null,null,"id","desc",1,10)
+    val dataFormat = new SimpleDateFormat("yyyy-MM-dd")
+
+    val startDate = if (start.equals("")) 0l else dataFormat.parse(start).getTime
+    val endDate = if (start.equals("")) 0l else dataFormat.parse(end).getTime
+    val telStr = if (tel.equals("")) null else tel
+
+
+    val stateStr = if (state.equals("")) null else state
+    //    orderservice.search(tel,null,)
+    val list = orderservice.search(telStr, null, startDate, endDate, stateStr, "id", "desc", pageNumber, pageSize)
     val jqGridPageView=new JqGridPageView[Order]()
     //    jqGridPageView.setMaxResults(list.getTotalCount)
     jqGridPageView.setRows(list.getResultList)
+    jqGridPageView.setPage(math.ceil(list.getTotalCount.toDouble / pageSize).toInt)
     jqGridPageView.setTotal(list.getTotalCount)
     jqGridPageView
 
@@ -36,10 +48,11 @@ class OrdersController {
   @RequestMapping(value = Array("/edit"), method = Array(RequestMethod.GET))
   @ResponseBody
   def edit(orderId: String, state: String) = {
+    orderservice.get("1")
 
     val order = orderservice.get(orderId)
-    order.setPayWay(state)
-    orderservice.add(order)
+    order.setPayState(state)
+    orderservice.update(order)
     "success"
 
 

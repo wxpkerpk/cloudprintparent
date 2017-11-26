@@ -36,8 +36,16 @@ public class OrderService {
         orderDao.delete(order);
     }
     public Order get(String id){
-        return orderDao.findOne(id);
+        return abstractDBCommonOperate.find(Order.class, id);
     }
+
+    @Transactional
+    public void update(Order order) {
+//        abstractDBCommonOperate.
+//        abstractDBCommonOperate.getHibernateTemplate().getSessionFactory().getCurrentSession().setFlushMode(FlushMode.AUTO);
+        abstractDBCommonOperate.update(Order.class, order);
+    }
+
     public List<Order> getOrders(Integer page,Integer rows,String type){
         Session session= sessionFactory.openSession();
         String sql;
@@ -68,12 +76,12 @@ public class OrderService {
         sqlBuider.append("  1=1 ");
         if(tel!=null) sqlBuider.append(" and o.user.tel =  ").append(String.format("'%s'",tel));
         if(pointId!=null) sqlBuider.append(" and o.pointId =  ").append(String.format("'%s'",pointId));
-        if(start!=null) sqlBuider.append(" and o.orderDate >=  ").append(start);
-        if(end!=null) sqlBuider.append(" and o.orderDate <=  ").append(end);
+        if (start > 0) sqlBuider.append(" and o.orderDate >=  ").append(start);
+        if (end > 0) sqlBuider.append(" and o.orderDate <=  ").append(end);
         if(state!=null) sqlBuider.append(" and o.payState =  ").append(String.format("'%s'",state));
 
         String sql=sqlBuider.toString();
-        return abstractDBCommonOperate.getScrollData(Order.class, (page - 1) * rows, rows, sql, null, sortCondition);
+        return abstractDBCommonOperate.getScrollData(Order.class, page, rows, sql, null, sortCondition);
 
 
 

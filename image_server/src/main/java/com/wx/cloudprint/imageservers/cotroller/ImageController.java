@@ -8,6 +8,7 @@ import com.wx.cloudprint.message.Message;
 import com.wx.cloudprint.server.covert.motan.WEP2PDF;
 import com.wx.cloudprint.util.FileUtils;
 import com.wx.cloudprint.util.MD5Util;
+import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
@@ -107,17 +108,25 @@ public class ImageController {
 
         isMono = false;
         String sourcePath = new File(filePath, md5).getPath();
-        Res res=resService.getByMD5(md5);
-        if(res!=null) {
+        Res res = resService.getByMD5(md5);
+        if (res != null) {
+            OutputStream toClient = new BufferedOutputStream(response.getOutputStream());
+
 
             byte[][] result = imageService.combineImg(sourcePath, row, col, size, --page, res.getDirection(), isMono);
             response.setContentType("image/png");
-            OutputStream outputStream = response.getOutputStream();
-            if(result!=null)
-            outputStream.write(result[0]);
+            if (result != null) {
+                ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(result[0]);
+
+                IOUtils.copy(byteArrayInputStream, toClient);
+                toClient.flush();
+
+                byteArrayInputStream.close();
+                toClient.close();
+            }
+
+
         }
-
-
     }
 
 

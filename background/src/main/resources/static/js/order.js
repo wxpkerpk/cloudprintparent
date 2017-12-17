@@ -60,7 +60,7 @@ function listFiles(value) {
             '        <td>' + f['copies'] + '</td>\n' +
             '        <td>' + f['size'] + '</td>\n' +
             '        <td>' + f['caliper'] + '</td>\n' +
-            '        <td>' + text[f['side']] + '</td>\n' +
+            '        <td>' + text[f['side']] + '</td>-\n' +
 
             '        <td>' + text[f['color']] + '</td>\n' +
             '        <td>' + f['row'] + '*' + f['col'] + '</td>\n' +

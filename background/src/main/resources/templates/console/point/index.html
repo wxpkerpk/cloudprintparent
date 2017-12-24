@@ -5,14 +5,14 @@
 </head>
 <body>
 <section class="content-header">
-    <h1>管理员管理</h1>
-    <small>列表管理</small>
+    <h1>打印店管理</h1>
+    <small>打印店管理</small>
 </section>
 <section class="content table-content">
     <table id="dataGrid"></table>
 </section>
 <div id="toolbar">
-    <a href="/console/admin/from" class="btn btn-primary">添加用户</a>
+    <a href="/console/admin/from" class="btn btn-primary">添加打印店</a>
 </div>
 <div th:include="console/footer"></div>
 </body>
@@ -74,6 +74,8 @@
             return [
                 '<a href="/console/admin/from?uid=' + row.uid + '" >',
                 '<i class="glyphicon glyphicon-edit"></i>修改',
+
+
                 '</a>  ',
                 '<a class="remove" href="javascript:void(0);">',
                 '<i class="glyphicon glyphicon-remove"></i>删除',

@@ -5,7 +5,7 @@ import com.wx.cloudprint.dataservice.service.PointService
 import com.wx.cloudprint.dataservice.utils.JqGridPageView
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Controller
-import org.springframework.web.bind.annotation.{RequestMapping, RequestMethod}
+import org.springframework.web.bind.annotation.{RequestMapping, RequestMethod, ResponseBody}
 
 @Controller
 @RequestMapping(value = Array("/console/point"))
@@ -19,6 +19,7 @@ class PointController {
   }
 
   @RequestMapping(value = Array("/search"), method = Array(RequestMethod.GET))
+  @ResponseBody
   def search() = {
 
 

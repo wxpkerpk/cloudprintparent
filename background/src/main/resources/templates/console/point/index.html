@@ -27,47 +27,30 @@
             height: tableModel.getHeight(),
             idField: "uid",
             columns: [[
-                {title: "用户名", field: "username"},
-                {title: "角色", field: "roleList", formatter: getRole},
-                {title: "状态", field: "state", formatter: tableModel.getState},
-                {title: "创建时间", field: "createdAt", sortable: true},
-                {title: "更新日期", field: "updatedAt", sortable: true},
+                {title: "名称", field: "pointName"},
+                {title: "地址", field: "address"},
+                {title: "配送范围", field: "delivery_scope"},
+                {title: "电话号码", field: "phone", sortable: true},
+                {title: "起送金额", field: "minCharge", sortable: true},
                 {title: "操作", field: "operate", align: 'center', events: operateEvents, formatter: operateFormatter}
             ]],
-            url: '/console/admin/list',
+            url: '/console/point/search',
             queryParams: function (params) {
                 return params;
             },
-            responseHandler: function (res) {
-                return {
-                    rows: res.result.pageInfo.list,
-                    total: res.result.pageInfo.total
-                }
-            },
-            search: true,
+            search: false,
             searchOnEnterKey: true,
             sortName: 'createdAt',
             sortOrder: 'asc',
-            pagination: true,
+            pagination: false,
             sidePagination: 'server',
-            pageSize: 20,
-            pageList: [20, 40, 50, 100],
             toolbar: "#toolbar",
             showRefresh: true,
             showToggle: true
         });
     }
 
-    function getRole(value, row, index) {
-        if (row.isSystem == 1) {
-            return "超级管理（不受角色限制）"
-        } else {
-            return $.map(value, function (v) {
-                return v.roleName;
-            }).join(",");
-        }
 
-    }
 
     function operateFormatter(value, row, index) {
         if (row.isSystem == 0) {

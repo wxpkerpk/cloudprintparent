@@ -5,9 +5,7 @@
 package com.geekcattle.controller.member;
 
 import com.geekcattle.model.member.Member;
-import com.sun.org.apache.xpath.internal.operations.Bool;
 import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.session.Session;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;

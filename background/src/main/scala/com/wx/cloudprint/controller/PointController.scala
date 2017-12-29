@@ -18,6 +18,10 @@ class PointController {
     "console/point/index"
   }
 
+  @RequestMapping(value = Array("/address"), method = Array(RequestMethod.GET))
+  def address(): String = {
+    "console/point/address"
+  }
   @RequestMapping(value = Array("/search"), method = Array(RequestMethod.GET))
   @ResponseBody
   def search() = {

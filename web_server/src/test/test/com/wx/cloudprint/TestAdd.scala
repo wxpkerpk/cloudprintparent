@@ -2,15 +2,11 @@ package com.wx.cloudprint
 
 import com.wx.cloudprint.dataservice.service.{AddressService, OrderService, PointService}
 import com.wx.cloudprint.webserver.controller.{OrderAPIController, UserAPIController}
-import com.wx.cloudprint.webserver.register.StartWebApplication
 import com.wx.cloudprint.webserver.service.SignService
-import org.junit.Test
-import org.junit.runner.RunWith
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.test.context.junit4.SpringRunner
-@RunWith(classOf[SpringRunner])
-@SpringBootTest(classes = Array(classOf[StartWebApplication]))
+
+//@RunWith(classOf[SpringRunner])
+//@SpringBootTest(classes = Array(classOf[StartWebApplication]))
 class TestAdd  {
   @Autowired
   var pointService:PointService=_
@@ -28,7 +24,7 @@ class TestAdd  {
   @Autowired
   var userController: UserAPIController = _
 
-  @Test
+  //  @Test
   def add():Unit={
     //     val ss=gisnservice.getCode("18011302985")
     //    val map=gisnservice.signin("18011302985","666666pk")

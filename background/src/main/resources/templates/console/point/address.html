@@ -9,190 +9,229 @@
 </head>
 <HEAD>
 
-    <link rel="stylesheet" href="/static/css/zTreeStyle/zTreeStyle.css" type="text/css">
+    <link rel="stylesheet" href="/static/css/metroStyle/metroStyle.css" type="text/css">
 
     <script type="text/javascript" src="/static/js/ztree/jquery.ztree.all.min.js"></script>
 
     <style type="text/css">
-        .button.add {
+        /*.ztree * {font-size: 10pt;font-family:"Microsoft Yahei",Verdana,Simsun,"Segoe UI Web Light","Segoe UI Light","Segoe UI Web Regular","Segoe UI","Segoe UI Symbol","Helvetica Neue",Arial}*/
+        /*.ztree li ul{ margin:0; padding:0}*/
+        /*!*.ztree li {line-height:30px;}*!*/
+        /*.ztree li a {width:200px;height:30px;padding-top: 0px;}*/
+        /*.ztree li a:hover {text-decoration:none; background-color: #E7E7E7;}*/
+        /*.ztree li a span.button.switch {visibility:hidden}*/
+        /*.ztree.showIcon li a span.button.switch {visibility:visible}*/
+        /*.ztree li a.curSelectedNode {background-color:#D4D4D4;border:0;height:30px;}*/
+        /*.ztree li span {line-height:30px;}*/
+        /*.ztree li span.button {margin-top: 6px;}*/
+        /*.ztree li span.button.switch {width: 16px;height: 16px;}*/
+
+        /*.ztree li a.level0 span {font-size: 100%;font-weight: bold;}*/
+        /*!*!*.ztree li span.button {background-image:url("/static/css/zTreeStyle/img/left_menuForOutLook.png"); *background-image:url("./left_menuForOutLook.gif")}*!*!*/
+        /*.ztree li span.button.switch.level0 {width: 20px; height:20px}*/
+        /*.ztree li span.button.switch.level1 {width: 20px; height:20px}*/
+        /*.ztree li span.button.noline_open {background-position: 0 0;}*/
+        /*.ztree li span.button.noline_close {background-position: -18px 0;}*/
+        /*.ztree li span.button.noline_open.level0 {background-position: 0 -18px;}*/
+        /*.ztree li span.button.noline_close.level0 {background-position: -18px -18px;}*/
+        .ztree li span.button.add {
             margin-left: 2px;
             margin-right: -1px;
             background-position: -144px 0;
             vertical-align: top;
+            margin-top: 0px;
             *vertical-align: middle;
-            background-image: url(/static/css/zTreeStyle/img/zTreeStandard.pngg);
+            background-image: url(/static/css/metroStyle/img/metro.png);
+        }
+
+        /*.ztree li span.button.edit {*/
+        /*margin-left: 2px;*/
+        /*margin-right: -1px;*/
+        /*background-position: -144px 0;*/
+        /*vertical-align: top;*/
+        /*margin-top: 6px;*/
+        /**vertical-align: middle;*/
+        /*background-image: url(/static/css/zTreeStyle/img/zTreeStandard.png);*/
         }
     </style>
     <SCRIPT type="text/javascript">
 
         $(function () {
-            var curMenu = null, zTree_Menu = null;
-            var setting = {
-                view: {
-                    addHoverDom: addHoverDom,
-                    removeHoverDom: removeHoverDom,
-                    showLine: false,
-                    showIcon: false,
-                    selectedMulti: false,
-                    dblClickExpand: false,
-                    addDiyDom: addDiyDom
-                },
-                edit: {
-                    enable: true,
-                    editNameSelectAll: true,
-                    showRemoveBtn: showRemoveBtn,
-                    showRenameBtn: showRenameBtn
-                },
-                callback: {
-                    beforeEditName: beforeEditName,
-                    beforeRemove: beforeRemove,
-                    beforeRename: beforeRename,
-                    onRemove: onRemove,
-                    beforeClick: beforeClick,
 
-                    onRename: onRename
-                },
-                data: {
-                    simpleData: {
-                        enable: true
+
+            $.ajax({
+                url: "/console/point/getAllAddress",
+                method: "get",
+                success: function (data) {
+                    var array = []
+                    for (var i in data) {
+                        var value = data[i]
+                        var newValue = {}
+                        newValue["id"] = (value[0])
+                        newValue['name'] = value[1]
+                        if (value[4]) newValue['pId'] = (value[4])
+                        else newValue['pId'] = 0
+                        newValue['open'] = true
+                        array.push(newValue)
                     }
+
+
+                    initTree(array)
                 }
-            };
 
-            var zNodes = [
-                {id: 1, pId: 0, name: "文件夹", open: true},
-                {id: 11, pId: 1, name: "收件箱"},
-                {id: 111, pId: 11, name: "收件箱1"},
-                {id: 112, pId: 111, name: "收件箱2"},
-                {id: 113, pId: 112, name: "收件箱3"},
-                {id: 114, pId: 113, name: "收件箱4"},
-                {id: 12, pId: 1, name: "垃圾邮件"},
-                {id: 13, pId: 1, name: "草稿"},
-                {id: 14, pId: 1, name: "已发送邮件"},
-                {id: 15, pId: 1, name: "已删除邮件"},
-                {id: 3, pId: 0, name: "快速视图"},
-                {id: 31, pId: 3, name: "文档"},
-                {id: 32, pId: 3, name: "照片"}
-            ];
+            })
 
-            function getTime() {
-                var now = new Date(),
-                    h = now.getHours(),
-                    m = now.getMinutes(),
-                    s = now.getSeconds(),
-                    ms = now.getMilliseconds();
-                return (h + ":" + m + ":" + s + " " + ms);
-            }
 
-            function showLog(str) {
-                if (!log) log = $("#log");
-                log.append("<li class='" + className + "'>" + str + "</li>");
-                if (log.children("li").length > 8) {
-                    log.get(0).removeChild(log.children("li")[0]);
+            function initTree(data) {
+                var curMenu = null, zTree_Menu = null;
+                var setting = {
+                    view: {
+                        // addHoverDom: addHoverDom,
+                        removeHoverDom: removeHoverDom,
+                        showLine: false,
+                        showIcon: false,
+                        selectedMulti: false,
+                        dblClickExpand: false,
+                        addDiyDom: addDiyDom
+                    },
+                    edit: {
+                        enable: true,
+                        editNameSelectAll: true,
+                        showRemoveBtn: showRemoveBtn,
+                        showRenameBtn: showRenameBtn
+                    },
+                    callback: {
+                        beforeEditName: beforeEditName,
+                        beforeRemove: beforeRemove,
+                        beforeRename: beforeRename,
+                        onRemove: onRemove,
+                        beforeClick: beforeClick,
+
+                        onRename: onRename
+                    },
+                    data: {
+                        simpleData: {
+                            enable: true
+                        }
+                    }
+                };
+
+                var zNodes = data
+
+                function getTime() {
+                    var now = new Date(),
+                        h = now.getHours(),
+                        m = now.getMinutes(),
+                        s = now.getSeconds(),
+                        ms = now.getMilliseconds();
+                    return (h + ":" + m + ":" + s + " " + ms);
                 }
-            }
 
-            function beforeEditName(treeId, treeNode) {
-                className = (className === "dark" ? "" : "dark");
-                showLog("[ " + getTime() + " beforeEditName ]&nbsp;&nbsp;&nbsp;&nbsp; " + treeNode.name);
-                var zTree = $.fn.zTree.getZTreeObj("treeDemo");
-                zTree.selectNode(treeNode);
-                setTimeout(function () {
-                    if (confirm("进入节点 -- " + treeNode.name + " 的编辑状态吗？")) {
+                var className = ""
+
+                function showLog(str) {
+
+                    console.log(str)
+                }
+
+                function beforeEditName(treeId, treeNode) {
+                    showLog("[ " + getTime() + " beforeEditName ]&nbsp;&nbsp;&nbsp;&nbsp; " + treeNode.name);
+                    var zTree = $.fn.zTree.getZTreeObj("treeDemo");
+                    zTree.selectNode(treeNode);
+                    setTimeout(function () {
                         setTimeout(function () {
                             zTree.editName(treeNode);
                         }, 0);
-                    }
-                }, 0);
-                return false;
-            }
-
-            function beforeRemove(treeId, treeNode) {
-                className = (className === "dark" ? "" : "dark");
-                showLog("[ " + getTime() + " beforeRemove ]&nbsp;&nbsp;&nbsp;&nbsp; " + treeNode.name);
-                var zTree = $.fn.zTree.getZTreeObj("treeDemo");
-                zTree.selectNode(treeNode);
-                return confirm("确认删除 节点 -- " + treeNode.name + " 吗？");
-            }
-
-            function onRemove(e, treeId, treeNode) {
-                showLog("[ " + getTime() + " onRemove ]&nbsp;&nbsp;&nbsp;&nbsp; " + treeNode.name);
-            }
-
-            function beforeRename(treeId, treeNode, newName, isCancel) {
-                className = (className === "dark" ? "" : "dark");
-                showLog((isCancel ? "<span style='color:red'>" : "") + "[ " + getTime() + " beforeRename ]&nbsp;&nbsp;&nbsp;&nbsp; " + treeNode.name + (isCancel ? "</span>" : ""));
-                if (newName.length == 0) {
-                    setTimeout(function () {
-                        var zTree = $.fn.zTree.getZTreeObj("treeDemo");
-                        zTree.cancelEditName();
-                        alert("节点名称不能为空.");
                     }, 0);
                     return false;
                 }
-                return true;
-            }
 
-            var newCount = 0
-
-            function onRename(e, treeId, treeNode, isCancel) {
-                showLog((isCancel ? "<span style='color:red'>" : "") + "[ " + getTime() + " onRename ]&nbsp;&nbsp;&nbsp;&nbsp; " + treeNode.name + (isCancel ? "</span>" : ""));
-            }
-
-            function showRemoveBtn(treeId, treeNode) {
-                return !treeNode.isFirstNode;
-            }
-
-            function showRenameBtn(treeId, treeNode) {
-                return !treeNode.isLastNode;
-            }
-
-            function addHoverDom(treeId, treeNode) {
-                var sObj = $("#" + treeNode.tId + "_span");
-                if (treeNode.editNameFlag || $("#addBtn_" + treeNode.tId).length > 0) return;
-                var addStr = "<span class='button add' id='addBtn_" + treeNode.tId
-                    + "' title='add node' onfocus='this.blur();'></span>";
-                sObj.after(addStr);
-                var btn = $("#addBtn_" + treeNode.tId);
-                if (btn) btn.bind("click", function () {
+                function beforeRemove(treeId, treeNode) {
+                    showLog("[ " + getTime() + " beforeRemove ]&nbsp;&nbsp;&nbsp;&nbsp; " + treeNode.name);
                     var zTree = $.fn.zTree.getZTreeObj("treeDemo");
-                    zTree.addNodes(treeNode, {id: (100 + newCount), pId: treeNode.id, name: "new node" + (newCount++)});
-                    return false;
-                });
-            };
-
-            function removeHoverDom(treeId, treeNode) {
-                $("#addBtn_" + treeNode.tId).unbind().remove();
-            };
-
-            function addDiyDom(treeId, treeNode) {
-                var spaceWidth = 5;
-                var switchObj = $("#" + treeNode.tId + "_switch"),
-                    icoObj = $("#" + treeNode.tId + "_ico");
-                switchObj.remove();
-                icoObj.before(switchObj);
-
-                if (treeNode.level > 1) {
-                    var spaceStr = "<span style='display: inline-block;width:" + (spaceWidth * treeNode.level) + "px'></span>";
-                    switchObj.before(spaceStr);
+                    zTree.selectNode(treeNode);
+                    return confirm("确认删除  " + treeNode.name + " 吗？");
                 }
-            }
 
-            function beforeClick(treeId, treeNode) {
-                if (treeNode.level == 0) {
-                    var zTree = $.fn.zTree.getZTreeObj("treeDemo");
-                    zTree.expandNode(treeNode);
-                    return false;
+                function onRemove(e, treeId, treeNode) {
+                    $.ajax({
+                        url: "/console/point/deleteAddress",
+                        method: "get",
+                        data: {id: treeNode.id},
+                        success: function (data) {
+
+                        }
+
+                    })
+                    showLog("[ " + getTime() + " onRemove ]&nbsp;&nbsp;&nbsp;&nbsp; " + treeNode.name);
                 }
-                return true;
-            }
 
-            $(document).ready(function () {
+                function beforeRename(treeId, treeNode, newName, isCancel) {
+                    showLog((isCancel ? "<span style='color:red'>" : "") + "[ " + getTime() + " beforeRename ]&nbsp;&nbsp;&nbsp;&nbsp; " + treeNode.name + (isCancel ? "</span>" : ""));
+                    if (newName.length == 0) {
+                        setTimeout(function () {
+                            var zTree = $.fn.zTree.getZTreeObj("treeDemo");
+                            zTree.cancelEditName();
+                            alert("节点名称不能为空.");
+                        }, 0);
+                        return false;
+                    }
+
+                    $.ajax({
+                        url: "/console/point/editAddress",
+                        method: "get",
+                        data: {id: treeNode.id, name: newName},
+                        success: function (data) {
+
+                        }
+
+                    })
+                    return true;
+                }
+
+                var newCount = 0
+
+                function onRename(e, treeId, treeNode, isCancel) {
+                    showLog((isCancel ? "<span style='color:red'>" : "") + "[ " + getTime() + " onRename ]&nbsp;&nbsp;&nbsp;&nbsp; " + treeNode.name + (isCancel ? "</span>" : ""));
+                }
+
+                function showRemoveBtn(treeId, treeNode) {
+                    return !treeNode.isParent;
+                }
+
+                function showRenameBtn(treeId, treeNode) {
+                    return true;
+                }
+
+
+                function removeHoverDom(treeId, treeNode) {
+                    $("#addBtn_" + treeNode.tId).unbind().remove();
+                };
+
+                function addDiyDom(treeId, treeNode) {
+                    var spaceWidth = 5;
+                    var switchObj = $("#" + treeNode.tId + "_switch"),
+                        icoObj = $("#" + treeNode.tId + "_ico");
+                    switchObj.remove();
+                    icoObj.before(switchObj);
+
+                    if (treeNode.level > 1) {
+                        var spaceStr = "<span style='display: inline-block;width:" + (spaceWidth * treeNode.level) + "px'></span>";
+                        switchObj.before(spaceStr);
+                    }
+                }
+
+                function beforeClick(treeId, treeNode) {
+                    if (treeNode.level == 0) {
+                        var zTree = $.fn.zTree.getZTreeObj("treeDemo");
+                        zTree.expandNode(treeNode);
+                        return false;
+                    }
+                    return true;
+                }
                 var treeObj = $("#treeDemo");
                 $.fn.zTree.init(treeObj, setting, zNodes);
-                zTree_Menu = $.fn.zTree.getZTreeObj("treeDemo");
-                curMenu = zTree_Menu.getNodes()[0].children[0].children[0];
-                zTree_Menu.selectNode(curMenu);
+
 
                 treeObj.hover(function () {
                     if (!treeObj.hasClass("showIcon")) {
@@ -201,32 +240,51 @@
                 }, function () {
                     treeObj.removeClass("showIcon");
                 });
-            });
+
+
+            }
         })
 
+        function add() {
 
+            var timestamp = Date.parse(new Date());
+            var name = "新地区"
+
+            var zTree = $.fn.zTree.getZTreeObj("treeDemo"),
+                nodes = zTree.getSelectedNodes(),
+                treeNode = nodes[0];
+            var pid
+            if (treeNode) {
+                if (treeNode.level >= 2) {
+                    alert("最多只能3层");
+                    return false;
+
+                }
+                pid = treeNode.id
+                treeNode = zTree.addNodes(treeNode, {id: timestamp, pId: treeNode.id + "", name: name});
+            } else {
+                treeNode = zTree.addNodes(null, {id: timestamp, pId: 0 + "", name: name});
+                pid = "0"
+            }
+            $.ajax({
+                url: "/console/point/addAddress",
+                method: "get",
+                async: false,
+                data: {id: timestamp, name: name, parentId: pid},
+                success: function (data) {
+
+                }
+
+            })
+            if (treeNode) {
+                zTree.editName(treeNode[0]);
+            } else {
+                alert("叶子节点被锁定，无法增加子节点");
+            }
+        };
     </SCRIPT>
     <style type="text/css">
-        .ztree * {font-size: 10pt;font-family:"Microsoft Yahei",Verdana,Simsun,"Segoe UI Web Light","Segoe UI Light","Segoe UI Web Regular","Segoe UI","Segoe UI Symbol","Helvetica Neue",Arial}
-        .ztree li ul{ margin:0; padding:0}
-        .ztree li {line-height:30px;}
-        .ztree li a {width:200px;height:30px;padding-top: 0px;}
-        .ztree li a:hover {text-decoration:none; background-color: #E7E7E7;}
-        .ztree li a span.button.switch {visibility:hidden}
-        .ztree.showIcon li a span.button.switch {visibility:visible}
-        .ztree li a.curSelectedNode {background-color:#D4D4D4;border:0;height:30px;}
-        .ztree li span {line-height:30px;}
-        .ztree li span.button {margin-top: -7px;}
-        .ztree li span.button.switch {width: 16px;height: 16px;}
 
-        .ztree li a.level0 span {font-size: 150%;font-weight: bold;}
-        .ztree li span.button {background-image:url("/static/css/zTreeStyle/img/left_menuForOutLook.png"); *background-image:url("./left_menuForOutLook.gif")}
-        .ztree li span.button.switch.level0 {width: 20px; height:20px}
-        .ztree li span.button.switch.level1 {width: 20px; height:20px}
-        .ztree li span.button.noline_open {background-position: 0 0;}
-        .ztree li span.button.noline_close {background-position: -18px 0;}
-        .ztree li span.button.noline_open.level0 {background-position: 0 -18px;}
-        .ztree li span.button.noline_close.level0 {background-position: -18px -18px;}
     </style>
 </HEAD>
 
@@ -235,11 +293,20 @@
 <section class="content-header">
     <h1>地点管理</h1>
 </section>
-<div class="content_wrap">
+
+<section class="content-header">
+    <div id="toolbar">
+        <a href="#" class="btn btn-primary" onclick="add()">添加地址</a>
+    </div>
+</section>
+
+<section class="content-header">
     <div class="zTreeDemoBackground left">
         <ul id="treeDemo" class="ztree"></ul>
     </div>
-</div>
+</section>
+
+
 <ul id="log" class="log"></ul>
 
 

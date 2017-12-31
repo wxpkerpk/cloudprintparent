@@ -56,194 +56,192 @@
     </style>
     <SCRIPT type="text/javascript">
 
-        $(function () {
+        $.ajax({
+            url: "/console/point/getAllAddress",
+            method: "get",
+            success: function (data) {
+                var array = []
+                for (var i in data) {
+                    var value = data[i]
+                    var newValue = {}
+                    newValue["id"] = (value[0])
+                    newValue['name'] = value[1]
+                    if (value[4]) newValue['pId'] = (value[4])
+                    else newValue['pId'] = 0
+                    newValue['open'] = true
+                    array.push(newValue)
+                }
 
 
-            $.ajax({
-                url: "/console/point/getAllAddress",
-                method: "get",
-                success: function (data) {
-                    var array = []
-                    for (var i in data) {
-                        var value = data[i]
-                        var newValue = {}
-                        newValue["id"] = (value[0])
-                        newValue['name'] = value[1]
-                        if (value[4]) newValue['pId'] = (value[4])
-                        else newValue['pId'] = 0
-                        newValue['open'] = true
-                        array.push(newValue)
+                initTree(array)
+            }
+
+        })
+
+
+        function initTree(data) {
+            var curMenu = null, zTree_Menu = null;
+            var setting = {
+                view: {
+                    // addHoverDom: addHoverDom,
+                    removeHoverDom: removeHoverDom,
+                    showLine: false,
+                    showIcon: false,
+                    selectedMulti: false,
+                    dblClickExpand: false,
+                    addDiyDom: addDiyDom
+                },
+                edit: {
+                    enable: true,
+                    editNameSelectAll: true,
+                    showRemoveBtn: showRemoveBtn,
+                    showRenameBtn: showRenameBtn
+                },
+                callback: {
+                    beforeEditName: beforeEditName,
+                    beforeRemove: beforeRemove,
+                    beforeRename: beforeRename,
+                    onRemove: onRemove,
+                    beforeClick: beforeClick,
+
+                    onRename: onRename
+                },
+                data: {
+                    simpleData: {
+                        enable: true
                     }
-
-
-                    initTree(array)
                 }
+            };
 
-            })
+            var zNodes = data
 
+            function getTime() {
+                var now = new Date(),
+                    h = now.getHours(),
+                    m = now.getMinutes(),
+                    s = now.getSeconds(),
+                    ms = now.getMilliseconds();
+                return (h + ":" + m + ":" + s + " " + ms);
+            }
 
-            function initTree(data) {
-                var curMenu = null, zTree_Menu = null;
-                var setting = {
-                    view: {
-                        // addHoverDom: addHoverDom,
-                        removeHoverDom: removeHoverDom,
-                        showLine: false,
-                        showIcon: false,
-                        selectedMulti: false,
-                        dblClickExpand: false,
-                        addDiyDom: addDiyDom
-                    },
-                    edit: {
-                        enable: true,
-                        editNameSelectAll: true,
-                        showRemoveBtn: showRemoveBtn,
-                        showRenameBtn: showRenameBtn
-                    },
-                    callback: {
-                        beforeEditName: beforeEditName,
-                        beforeRemove: beforeRemove,
-                        beforeRename: beforeRename,
-                        onRemove: onRemove,
-                        beforeClick: beforeClick,
+            var className = ""
 
-                        onRename: onRename
-                    },
-                    data: {
-                        simpleData: {
-                            enable: true
-                        }
-                    }
-                };
+            function showLog(str) {
 
-                var zNodes = data
+                console.log(str)
+            }
 
-                function getTime() {
-                    var now = new Date(),
-                        h = now.getHours(),
-                        m = now.getMinutes(),
-                        s = now.getSeconds(),
-                        ms = now.getMilliseconds();
-                    return (h + ":" + m + ":" + s + " " + ms);
-                }
-
-                var className = ""
-
-                function showLog(str) {
-
-                    console.log(str)
-                }
-
-                function beforeEditName(treeId, treeNode) {
-                    showLog("[ " + getTime() + " beforeEditName ]&nbsp;&nbsp;&nbsp;&nbsp; " + treeNode.name);
-                    var zTree = $.fn.zTree.getZTreeObj("treeDemo");
-                    zTree.selectNode(treeNode);
+            function beforeEditName(treeId, treeNode) {
+                showLog("[ " + getTime() + " beforeEditName ]&nbsp;&nbsp;&nbsp;&nbsp; " + treeNode.name);
+                var zTree = $.fn.zTree.getZTreeObj("treeDemo");
+                zTree.selectNode(treeNode);
+                setTimeout(function () {
                     setTimeout(function () {
-                        setTimeout(function () {
-                            zTree.editName(treeNode);
-                        }, 0);
+                        zTree.editName(treeNode);
+                    }, 0);
+                }, 0);
+                return false;
+            }
+
+            function beforeRemove(treeId, treeNode) {
+                showLog("[ " + getTime() + " beforeRemove ]&nbsp;&nbsp;&nbsp;&nbsp; " + treeNode.name);
+                var zTree = $.fn.zTree.getZTreeObj("treeDemo");
+                zTree.selectNode(treeNode);
+                return confirm("确认删除  " + treeNode.name + " 吗？");
+            }
+
+            function onRemove(e, treeId, treeNode) {
+                $.ajax({
+                    url: "/console/point/deleteAddress",
+                    method: "get",
+                    data: {id: treeNode.id},
+                    success: function (data) {
+
+                    }
+
+                })
+                showLog("[ " + getTime() + " onRemove ]&nbsp;&nbsp;&nbsp;&nbsp; " + treeNode.name);
+            }
+
+            function beforeRename(treeId, treeNode, newName, isCancel) {
+                showLog((isCancel ? "<span style='color:red'>" : "") + "[ " + getTime() + " beforeRename ]&nbsp;&nbsp;&nbsp;&nbsp; " + treeNode.name + (isCancel ? "</span>" : ""));
+                if (newName.length == 0) {
+                    setTimeout(function () {
+                        var zTree = $.fn.zTree.getZTreeObj("treeDemo");
+                        zTree.cancelEditName();
+                        alert("节点名称不能为空.");
                     }, 0);
                     return false;
                 }
 
-                function beforeRemove(treeId, treeNode) {
-                    showLog("[ " + getTime() + " beforeRemove ]&nbsp;&nbsp;&nbsp;&nbsp; " + treeNode.name);
-                    var zTree = $.fn.zTree.getZTreeObj("treeDemo");
-                    zTree.selectNode(treeNode);
-                    return confirm("确认删除  " + treeNode.name + " 吗？");
-                }
+                $.ajax({
+                    url: "/console/point/editAddress",
+                    method: "get",
+                    data: {id: treeNode.id, name: newName},
+                    success: function (data) {
 
-                function onRemove(e, treeId, treeNode) {
-                    $.ajax({
-                        url: "/console/point/deleteAddress",
-                        method: "get",
-                        data: {id: treeNode.id},
-                        success: function (data) {
-
-                        }
-
-                    })
-                    showLog("[ " + getTime() + " onRemove ]&nbsp;&nbsp;&nbsp;&nbsp; " + treeNode.name);
-                }
-
-                function beforeRename(treeId, treeNode, newName, isCancel) {
-                    showLog((isCancel ? "<span style='color:red'>" : "") + "[ " + getTime() + " beforeRename ]&nbsp;&nbsp;&nbsp;&nbsp; " + treeNode.name + (isCancel ? "</span>" : ""));
-                    if (newName.length == 0) {
-                        setTimeout(function () {
-                            var zTree = $.fn.zTree.getZTreeObj("treeDemo");
-                            zTree.cancelEditName();
-                            alert("节点名称不能为空.");
-                        }, 0);
-                        return false;
                     }
 
-                    $.ajax({
-                        url: "/console/point/editAddress",
-                        method: "get",
-                        data: {id: treeNode.id, name: newName},
-                        success: function (data) {
-
-                        }
-
-                    })
-                    return true;
-                }
-
-                var newCount = 0
-
-                function onRename(e, treeId, treeNode, isCancel) {
-                    showLog((isCancel ? "<span style='color:red'>" : "") + "[ " + getTime() + " onRename ]&nbsp;&nbsp;&nbsp;&nbsp; " + treeNode.name + (isCancel ? "</span>" : ""));
-                }
-
-                function showRemoveBtn(treeId, treeNode) {
-                    return !treeNode.isParent;
-                }
-
-                function showRenameBtn(treeId, treeNode) {
-                    return true;
-                }
-
-
-                function removeHoverDom(treeId, treeNode) {
-                    $("#addBtn_" + treeNode.tId).unbind().remove();
-                };
-
-                function addDiyDom(treeId, treeNode) {
-                    var spaceWidth = 5;
-                    var switchObj = $("#" + treeNode.tId + "_switch"),
-                        icoObj = $("#" + treeNode.tId + "_ico");
-                    switchObj.remove();
-                    icoObj.before(switchObj);
-
-                    if (treeNode.level > 1) {
-                        var spaceStr = "<span style='display: inline-block;width:" + (spaceWidth * treeNode.level) + "px'></span>";
-                        switchObj.before(spaceStr);
-                    }
-                }
-
-                function beforeClick(treeId, treeNode) {
-                    if (treeNode.level == 0) {
-                        var zTree = $.fn.zTree.getZTreeObj("treeDemo");
-                        zTree.expandNode(treeNode);
-                        return false;
-                    }
-                    return true;
-                }
-                var treeObj = $("#treeDemo");
-                $.fn.zTree.init(treeObj, setting, zNodes);
-
-
-                treeObj.hover(function () {
-                    if (!treeObj.hasClass("showIcon")) {
-                        treeObj.addClass("showIcon");
-                    }
-                }, function () {
-                    treeObj.removeClass("showIcon");
-                });
-
-
+                })
+                return true;
             }
-        })
+
+            var newCount = 0
+
+            function onRename(e, treeId, treeNode, isCancel) {
+                showLog((isCancel ? "<span style='color:red'>" : "") + "[ " + getTime() + " onRename ]&nbsp;&nbsp;&nbsp;&nbsp; " + treeNode.name + (isCancel ? "</span>" : ""));
+            }
+
+            function showRemoveBtn(treeId, treeNode) {
+                return !treeNode.isParent;
+            }
+
+            function showRenameBtn(treeId, treeNode) {
+                return true;
+            }
+
+
+            function removeHoverDom(treeId, treeNode) {
+                $("#addBtn_" + treeNode.tId).unbind().remove();
+            };
+
+            function addDiyDom(treeId, treeNode) {
+                var spaceWidth = 5;
+                var switchObj = $("#" + treeNode.tId + "_switch"),
+                    icoObj = $("#" + treeNode.tId + "_ico");
+                switchObj.remove();
+                icoObj.before(switchObj);
+
+                if (treeNode.level > 1) {
+                    var spaceStr = "<span style='display: inline-block;width:" + (spaceWidth * treeNode.level) + "px'></span>";
+                    switchObj.before(spaceStr);
+                }
+            }
+
+            function beforeClick(treeId, treeNode) {
+                if (treeNode.level == 0) {
+                    var zTree = $.fn.zTree.getZTreeObj("treeDemo");
+                    zTree.expandNode(treeNode);
+                    return false;
+                }
+                return true;
+            }
+
+            var treeObj = $("#treeDemo");
+            $.fn.zTree.init(treeObj, setting, zNodes);
+
+
+            treeObj.hover(function () {
+                if (!treeObj.hasClass("showIcon")) {
+                    treeObj.addClass("showIcon");
+                }
+            }, function () {
+                treeObj.removeClass("showIcon");
+            });
+
+
+        }
+
 
         function add() {
 

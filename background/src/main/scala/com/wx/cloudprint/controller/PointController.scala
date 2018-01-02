@@ -20,6 +20,11 @@ class PointController {
     "console/point/index"
   }
 
+  @RequestMapping(value = Array("/from"), method = Array(RequestMethod.GET))
+  def from(): String = {
+    "console/point/from"
+  }
+
   @RequestMapping(value = Array("/address"), method = Array(RequestMethod.GET))
   def address(): String = {
     "console/point/address"
@@ -75,6 +80,17 @@ class PointController {
     "成功"
 
   }
+
+  @RequestMapping(value = Array("/save"), method = Array(RequestMethod.GET))
+  @ResponseBody
+  def save(pointName: String, delivery_scope: String, phone: String, price: Float, minCharge: Float, delivery_time: String, descr: String): String = {
+
+    //    addressSErvice.delete(id)
+
+    "成功"
+
+  }
+
 
   @RequestMapping(value = Array("/editAddress"), method = Array(RequestMethod.GET))
   @ResponseBody

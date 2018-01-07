@@ -10,7 +10,7 @@
             <div class="box box-primary">
 
                 <div class="box-body">
-                    <form class="form-horizontal js-ajax-form" action="/console/admin/save" method="post">
+                    <form class="form-horizontal js-ajax-form" action="/console/point/save" method="post">
                         <div class="form-group">
                             <label for="pointName" class="col-sm-2 control-label">打印店名称</label>
                             <div class="col-sm-10">
@@ -30,9 +30,9 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="price" class="col-sm-2 control-label">配送费用</label>
+                            <label for="address" class="col-sm-2 control-label">最小起送金额</label>
                             <div class="col-sm-10">
-                                <input type="number" name="price" class="form-control" id="price"/>
+                                <input type="text" name="address" class="form-control" id="address"/>
                             </div>
                         </div>
                         <div class="form-group">
@@ -47,10 +47,24 @@
                                 <input type="text" name="delivery_time" class="form-control" id="delivery_time"/>
                             </div>
                         </div>
+
+
                         <div class="form-group">
-                            <label for="descr" class="col-sm-2 control-label">描述</label>
-                            <div class="col-sm-10">
-                                <input type="text" name="descr" class="form-control" id="descr"/>
+                            <label for="address3" class="col-sm-2 control-label">地区</label>
+                            <div class="col-sm-3">
+                                <select class="form-control" id="address1" name="address1">
+
+                                </select>
+                            </div>
+                            <div class="col-sm-3">
+                                <select class="form-control" id="address2" name="address2">
+
+                                </select>
+                            </div>
+                            <div class="col-sm-4">
+                                <select name="addressId" class="form-control" id="address3">
+
+                                </select>
                             </div>
                         </div>
                         <div class="form-group">
@@ -65,5 +79,86 @@
     </div>
 </section>
 <div th:include="console/footer"></div>
+<script>
+
+    var map = {}
+
+    function changeSelect(domId, nextId) {
+        var pID = $("#" + domId).val()
+        if (pID == null) pID = "0"
+
+        var array = map[pID]
+        var str = ""
+        str += '<option value="empty"></option>'
+        for (var i in array) {
+            var value = array[i]
+            str += '<option value="' + value["id"] + '">' + value['name'] + '</option>'
+        }
+        $("#" + nextId).html(str)
+        $("#" + nextId).trigger("change");
+
+    }
+
+    function initArea() {
+
+
+        $.ajax({
+            url: "/console/point/getAllAddress",
+            method: "get",
+            success: function (dataArray) {
+                var data = {}
+
+                var array = []
+                for (var i in dataArray) {
+
+                    var value = dataArray[i]
+                    var newValue = {}
+                    newValue["id"] = (value[0])
+                    newValue['name'] = value[1]
+                    if (value[4]) newValue['pId'] = (value[4])
+                    else newValue['pId'] = 0
+                    newValue['open'] = true
+                    array.push(newValue)
+                }
+
+                for (var i in array) {
+                    var value2 = array[i]
+
+                    if (data[value2.pId] == undefined) {
+                        data[value2.pId] = []
+
+                        for (var j in array) {
+                            var value3 = array[j]
+                            if (value3.pId == value2.pId) data[value2.pId].push(value3)
+                        }
+                    }
+
+
+                }
+                map = data
+                changeSelect('address1', 'address1')
+            }
+
+
+        })
+    }
+
+    $(function () {
+
+
+        initArea()
+        $('#address1').change(function () {
+
+            changeSelect('address1', 'address2')
+        })
+        $('#address2').change(function () {
+
+            changeSelect('address2', 'address3')
+        })
+
+    })
+
+
+</script>
 </body>
 </html>

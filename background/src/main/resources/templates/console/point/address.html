@@ -34,15 +34,15 @@
         /*.ztree li span.button.noline_close {background-position: -18px 0;}*/
         /*.ztree li span.button.noline_open.level0 {background-position: 0 -18px;}*/
         /*.ztree li span.button.noline_close.level0 {background-position: -18px -18px;}*/
-        .ztree li span.button.add {
-            margin-left: 2px;
-            margin-right: -1px;
-            background-position: -144px 0;
-            vertical-align: top;
-            margin-top: 0px;
-            *vertical-align: middle;
-            background-image: url(/static/css/metroStyle/img/metro.png);
-        }
+        /*.ztree li span.button.add {*/
+        /*margin-left: 2px;*/
+        /*margin-right: -1px;*/
+        /*background-position: -144px 0;*/
+        /*vertical-align: top;*/
+        /*margin-top: 0px;*/
+        /**vertical-align: middle;*/
+        /*background-image: url(/static/css/metroStyle/img/metro.png);*/
+        /*}*/
 
         /*.ztree li span.button.edit {*/
         /*margin-left: 2px;*/
@@ -219,11 +219,7 @@
             }
 
             function beforeClick(treeId, treeNode) {
-                if (treeNode.level == 0) {
-                    var zTree = $.fn.zTree.getZTreeObj("treeDemo");
-                    zTree.expandNode(treeNode);
-                    return false;
-                }
+
                 return true;
             }
 

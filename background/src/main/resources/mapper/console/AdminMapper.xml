@@ -10,6 +10,8 @@
         <result column="is_system" jdbcType="INTEGER" property="isSystem"/>
         <result column="created_at" jdbcType="DATE" property="createdAt"/>
         <result column="updated_at" jdbcType="DATE" property="updatedAt"/>
+        <result column="pointId" jdbcType="VARCHAR" property="pointId"/>
+
         <!-- 关联查询角色信息 -->
         <!--<collection property="roleList" resultMap="com.geekcattle.mapper.console.Role">
             <id column="roleid" jdbcType="VARCHAR" property="id" />

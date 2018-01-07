@@ -8,7 +8,11 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.geekcattle.model.BaseEntity;
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.validator.constraints.NotEmpty;
-import javax.persistence.*;
+
+import javax.persistence.Column;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Transient;
 import java.util.List;
 
 public class Admin extends BaseEntity {
@@ -23,6 +27,7 @@ public class Admin extends BaseEntity {
 
     private String password;
 
+    private String pointId;
     private String salt;
 
     private Integer state;
@@ -46,6 +51,14 @@ public class Admin extends BaseEntity {
 
     @Transient
     private List<Role> roleList;
+
+    public String getPointId() {
+        return pointId;
+    }
+
+    public void setPointId(String pointId) {
+        this.pointId = pointId;
+    }
 
     public String getUid() {
         return uid;

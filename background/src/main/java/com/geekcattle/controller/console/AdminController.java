@@ -10,8 +10,13 @@ import com.geekcattle.model.console.Role;
 import com.geekcattle.service.console.AdminRoleService;
 import com.geekcattle.service.console.AdminService;
 import com.geekcattle.service.console.RoleService;
-import com.geekcattle.util.*;
+import com.geekcattle.util.DateUtil;
+import com.geekcattle.util.PasswordUtil;
+import com.geekcattle.util.ReturnUtil;
+import com.geekcattle.util.UuidUtil;
 import com.github.pagehelper.PageInfo;
+import com.wx.cloudprint.dataservice.entity.Point;
+import com.wx.cloudprint.dataservice.service.PointService;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.apache.shiro.crypto.SecureRandomNumberGenerator;
@@ -22,7 +27,9 @@ import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 import tk.mybatis.mapper.entity.Example;
 
 import javax.validation.Valid;
@@ -45,6 +52,8 @@ public class AdminController {
 
     @Autowired
     private RoleService roleService;
+    @Autowired
+    private PointService pointService;
 
     @RequiresPermissions("admin:index")
     @RequestMapping(value = "/index", method = {RequestMethod.GET})
@@ -72,6 +81,9 @@ public class AdminController {
         }else {
             admin.setIsSystem(0);
         }
+        List<Point> points = pointService.getAll();
+        model.addAttribute("points", points);
+
         model.addAttribute("checkRoleId", checkRoleId);
         model.addAttribute("roleLists", this.getRoleList());
         model.addAttribute("admin", admin);
@@ -94,6 +106,7 @@ public class AdminController {
             List<Role> rolelist = roleService.selectRoleListByAdminId(list.getUid());
             list.setRoleList(rolelist);
         }
+
         map.put("pageInfo", new PageInfo<Admin>(Lists));
         map.put("queryParam", admin);
         return ReturnUtil.Success("加载成功", map, null);

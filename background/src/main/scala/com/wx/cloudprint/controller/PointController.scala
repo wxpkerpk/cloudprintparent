@@ -81,10 +81,20 @@ class PointController {
 
   }
 
-  @RequestMapping(value = Array("/save"), method = Array(RequestMethod.GET))
+  @RequestMapping(value = Array("/save"), method = Array(RequestMethod.POST))
   @ResponseBody
-  def save(pointName: String, delivery_scope: String, phone: String, price: Float, minCharge: Float, delivery_time: String, descr: String): String = {
+  def save(address: String, addressId: String, pointName: String, delivery_scope: String, phone: String, minCharge: Float, delivery_time: String): String = {
 
+    val point = new Point
+    point.setPointName(pointName)
+    point.setAddress(address)
+    point.setAddress(addressId)
+    point.setAddressId(addressId)
+    point.setDelivery_scope(delivery_scope)
+    point.setDelivery_time(delivery_time)
+    point.setMinCharge(minCharge)
+    point.setPhone(phone)
+    pointService.add(point)
     //    addressSErvice.delete(id)
 
     "成功"
@@ -103,5 +113,11 @@ class PointController {
     "成功"
 
   }
+
+  @RequestMapping(value = Array("/getAllPoint"), method = Array(RequestMethod.GET))
+  @ResponseBody
+  def getAllPoint() = pointService.getAll
+
+
 
 }

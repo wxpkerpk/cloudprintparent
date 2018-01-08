@@ -1,5 +1,6 @@
 package com.wx.cloudprint.controller
 
+import com.geekcattle.util.ReturnUtil
 import com.wx.cloudprint.dataservice.entity.{Address, Point}
 import com.wx.cloudprint.dataservice.service.{AddressService, PointService}
 import com.wx.cloudprint.dataservice.utils.JqGridPageView
@@ -83,7 +84,7 @@ class PointController {
 
   @RequestMapping(value = Array("/save"), method = Array(RequestMethod.POST))
   @ResponseBody
-  def save(address: String, addressId: String, pointName: String, delivery_scope: String, phone: String, minCharge: Float, delivery_time: String): String = {
+  def save(address: String, addressId: String, pointName: String, delivery_scope: String, phone: String, minCharge: Float, delivery_time: String) = {
 
     val point = new Point
     point.setPointName(pointName)
@@ -97,20 +98,21 @@ class PointController {
     pointService.add(point)
     //    addressSErvice.delete(id)
 
-    "成功"
+    ReturnUtil.Success("操作成功", null, null)
+
 
   }
 
 
   @RequestMapping(value = Array("/editAddress"), method = Array(RequestMethod.GET))
   @ResponseBody
-  def edit(id: String, name: String): String = {
+  def edit(id: String, name: String) = {
 
     val address = addressSErvice.get(id)
     address.setName(name)
     addressSErvice.add(address)
 
-    "成功"
+    ReturnUtil.Success("操作成功", null, null)
 
   }
 

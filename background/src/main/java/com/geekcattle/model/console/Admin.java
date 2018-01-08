@@ -185,6 +185,8 @@ public class Admin extends BaseEntity {
                 ", sort='" + sort + '\'' +
                 ", order='" + order + '\'' +
                 ", roleList=" + roleList +
+                ", pointId=" + pointId +
+
                 '}';
     }
 

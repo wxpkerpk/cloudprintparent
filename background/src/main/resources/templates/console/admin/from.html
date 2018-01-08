@@ -6,7 +6,7 @@
 <body>
 <section class="content">
     <div class="row">
-        <input style="display: none" th:value="${admin.pointId}">
+        <input style="display: none" th:value="${admin.pointId}" id="point">
         <div class="col-md-6 col-md-offset-3">
             <div class="box box-primary">
                 <div class="box-header with-border">
@@ -54,7 +54,7 @@
                         <div class="form-group">
                             <label for="password" class="col-sm-2 control-label">打印店</label>
                             <div class="col-sm-10">
-                                <select name="state" class="form-control" id="pointId">
+                                <select name="pointId" class="form-control" id="pointId">
 
                                 </select>
                             </div>
@@ -89,6 +89,11 @@
                     str += '<option value="' + value.id + '">' + value.pointName + '</option>'
                 }
                 $('#pointId').html(str)
+                var point = $('#point').val()
+                if (point) {
+                    $('#pointId').val(point)
+
+                }
             }
 
         })

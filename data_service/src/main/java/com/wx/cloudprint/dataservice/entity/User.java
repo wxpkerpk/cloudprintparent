@@ -19,7 +19,16 @@ public class User implements Serializable {
     String tel;
     String nickName;
     String headPic;
+    String address;
 
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
 
     public String getHeadPic() {
         return headPic;

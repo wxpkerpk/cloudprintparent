@@ -9,6 +9,7 @@ import com.wx.cloudprint.message.Message
 import com.wx.cloudprint.util.JsonUtil
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.{RequestMapping, RequestMethod, ResponseBody, RestController}
+
 import scala.collection.JavaConverters._
 
 @RestController
@@ -26,7 +27,7 @@ class PointAPIController {
     def point2Map(point: Point) = {
       val pointJson = JsonUtil.toJson(point)
       val map = gson.fromJson(pointJson, classOf[util.Map[String, Object]])
-      val priceJson = map.get("price")
+      val priceJson = Option(map.get("price")).getOrElse("[]")
       val price = gson.fromJson(priceJson.toString, classOf[util.List[Object]])
       map.put("price", price)
       map

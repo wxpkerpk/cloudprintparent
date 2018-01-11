@@ -74,6 +74,19 @@ class UserAPIController extends BaseController{
 
   }
 
+  @RequestMapping(value = Array("/user/info"), method = Array(RequestMethod.PUT, RequestMethod.POST))
+  @ResponseBody
+  def update(nickname: String, // 用户昵称
+             avatar: String, // 头像 url 或 base64 data url，为空时表示不更新头像
+             address: String): JsonNode = {
+    val user = getUser()
+    val currentUser = userService.get(user.getId)
+    currentUser.setHeadPic(avatar)
+    currentUser.setNickName(nickname)
+    currentUser.setAddress(address)
+    userService.add(user)
+    ("result" -> "ok") ~ ("info" -> "")
+  }
   @RequestMapping(value = Array("/user/logout"), method = Array(RequestMethod.GET, RequestMethod.POST, RequestMethod.OPTIONS))
   @ResponseBody
   def logout(request: HttpServletRequest, response: HttpServletResponse): JsonNode = {

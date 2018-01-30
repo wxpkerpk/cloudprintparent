@@ -85,6 +85,7 @@ public class PublicController {
         //验证是否登录成功
         if(currentUser.isAuthenticated()){
             Session session = SecurityUtils.getSubject().getSession();
+            request.getSession().setAttribute("currentUser",username);
             session.setAttribute("loginType",LoginEnum.ADMIN.toString());
             logger.info("用户[" + username + "]登录认证通过(这里可以进行一些认证通过后的一些系统参数初始化操作)");
             String ip = IpUtil.getIpAddr(request);

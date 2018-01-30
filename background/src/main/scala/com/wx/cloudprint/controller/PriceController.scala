@@ -1,8 +1,13 @@
 package com.wx.cloudprint.controller
 
+import javax.servlet.http.HttpServletRequest
+
+import com.geekcattle.model.console.Admin
+import com.geekcattle.service.console.AdminService
+import com.geekcattle.service.member.MemberService
 import com.geekcattle.util.ReturnUtil
 import com.wx.cloudprint.dataservice.entity.Point
-import com.wx.cloudprint.dataservice.service.PointService
+import com.wx.cloudprint.dataservice.service.{PointService, UserService}
 import com.wx.cloudprint.dataservice.utils.JqGridPageView
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Controller
@@ -67,9 +72,18 @@ class PriceController {
   }
 
 
-  @RequestMapping(value = Array("/getAllPoint"), method = Array(RequestMethod.GET))
+  @Autowired
+  var adminService:AdminService=_
+  @RequestMapping(value = Array("/getPrice"), method = Array(RequestMethod.GET))
   @ResponseBody
-  def getAllPoint() = pointService.getAll
+  def getAllPoint(request: HttpServletRequest) = {
+    val userName=request.getSession.getAttribute("currentUser").asInstanceOf[String]
+    val userInfo = adminService.findByUsername(userName)
+     val pointId=   userInfo.getPointId
+    val point =pointService.get(pointId)
+    point
+
+  }
 
 
 }

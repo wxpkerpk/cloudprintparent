@@ -2,6 +2,7 @@ package com.wx.cloudprint.dataservice.entity;
 
 import org.hibernate.annotations.GenericGenerator;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -19,6 +20,7 @@ public class User implements Serializable {
     String tel;
     String nickName;
     String headPic;
+    @Column(length = 400, name = "address")
     String address;
 
 

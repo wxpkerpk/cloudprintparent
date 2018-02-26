@@ -2,12 +2,11 @@ package com.wx.cloudprint.controller
 
 import javax.servlet.http.HttpServletRequest
 
-import com.geekcattle.model.console.Admin
 import com.geekcattle.service.console.AdminService
-import com.geekcattle.service.member.MemberService
 import com.geekcattle.util.ReturnUtil
+import com.google.gson.Gson
 import com.wx.cloudprint.dataservice.entity.Point
-import com.wx.cloudprint.dataservice.service.{PointService, UserService}
+import com.wx.cloudprint.dataservice.service.PointService
 import com.wx.cloudprint.dataservice.utils.JqGridPageView
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Controller
@@ -22,7 +21,7 @@ class PriceController {
 
   @RequestMapping(value = Array("/index"), method = Array(RequestMethod.GET))
   def index(): String = {
-    "console/point/index"
+    "console/price/index"
   }
 
   @RequestMapping(value = Array("/from"), method = Array(RequestMethod.GET))
@@ -72,16 +71,28 @@ class PriceController {
   }
 
 
+  val gson = new Gson()
   @Autowired
   var adminService:AdminService=_
   @RequestMapping(value = Array("/getPrice"), method = Array(RequestMethod.GET))
   @ResponseBody
-  def getAllPoint(request: HttpServletRequest) = {
+  def getPrice(request: HttpServletRequest) = {
     val userName=request.getSession.getAttribute("currentUser").asInstanceOf[String]
     val userInfo = adminService.findByUsername(userName)
      val pointId=   userInfo.getPointId
-    val point =pointService.get(pointId)
-    point
+    val jqGridPageView = new JqGridPageView[Object]()
+
+    if (pointId != null) {
+      val point = pointService.get(pointId)
+      if (!point.getPrice.equals("")) {
+        val list = gson.fromJson(point.getPrice, classOf[java.util.ArrayList[Object]])
+        //    jqGridPageView.setMaxResults(list.getTotalCount)
+        jqGridPageView.setRows(list)
+        jqGridPageView.setPage(1)
+        jqGridPageView.setTotal(list.size())
+      }
+    }
+    jqGridPageView
 
   }
 

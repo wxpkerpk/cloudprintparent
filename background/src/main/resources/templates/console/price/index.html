@@ -1,0 +1,72 @@
+<!DOCTYPE HTML>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+<head th:include="console/header">
+</head>
+<body>
+<section class="content-header">
+    <h1>价格设置</h1>
+    <small>商户价格设置</small>
+</section>
+<section class="content table-content">
+    <table id="dataGrid"></table>
+</section>
+<div id="toolbar">
+    <a href="/console/point/from" class="btn btn-primary">添加打印店</a>
+</div>
+<div th:include="console/footer"></div>
+</body>
+<script type="text/javascript">
+    $table = $("#dataGrid");
+    $(function () {
+        initDataGrid();
+    });
+
+    function initDataGrid() {
+        $table.bootstrapTable({
+            height: tableModel.getHeight(),
+            idField: "uid",
+            columns: [[
+                {title: "大小", field: "size"},
+                {title: "厚度", field: "caliper"},
+                {title: "黑白单页价格", field: "money.mono.oneside"},
+                {title: "黑白双页价格", field: "money.mono.duplex"},
+                {title: "彩色单页价格", field: "money.colorful.oneside"},
+                {title: "彩色双页价格", field: "money.colorful.duplex"},
+                {title: "操作", field: "operate", align: 'center', events: operateEvents, formatter: operateFormatter}
+            ]],
+            url: '/console/price/getPrice',
+            queryParams: function (params) {
+                return params;
+            },
+            search: false,
+            searchOnEnterKey: true,
+            sortName: 'createdAt',
+            sortOrder: 'asc',
+            pagination: false,
+            sidePagination: 'server',
+            toolbar: "#toolbar",
+            showRefresh: true,
+            showToggle: true
+        });
+    }
+
+
+    function operateFormatter(value, row, index) {
+
+        return [
+
+            '<a class="remove" href="javascript:void(0);">',
+            '<i class="glyphicon glyphicon-remove"></i>删除',
+            '</a>'
+        ].join('');
+    }
+
+
+    window.operateEvents = {
+        'click .remove': function (e, value, row, index) {
+            operaModel.delRow(row.uid, '/console/admin/delete', 'uid');
+        }
+    };
+</script>
+</html>

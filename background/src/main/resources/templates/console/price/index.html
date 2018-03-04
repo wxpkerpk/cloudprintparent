@@ -14,6 +14,20 @@
 <div id="toolbar">
     <a href="/console/point/from" class="btn btn-primary">添加打印店</a>
 </div>
+<div style="display: none;">
+    <form class="form-horizontal js-ajax-form" action="/console/point/save" method="post">
+        <div class="form-group">
+            <input style="display: none" id="id" name="id">
+
+            <label for="size" class="col-sm-2 control-label">纸张大小</label>
+            <div class="col-sm-10">
+                <input type="text" name="size" class="form-control" id="size"/>
+            </div>
+
+        </div>
+    </form>
+
+</div>
 <div th:include="console/footer"></div>
 </body>
 <script type="text/javascript">
@@ -51,7 +65,26 @@
         });
     }
 
+    function addPrice() {
+        var data = $table.bootstrapTable('getData');
 
+        data.push()
+    }
+
+    function save(pointId, data, callback) {
+        $.ajax({
+            url: "/console/price/save",
+            data: {'pointId': orderId, 'priceArray': data},
+            success: function (data) {
+                $table.bootstrapTable('refresh');
+                callback()
+
+            }
+
+
+        })
+    }
+    
     function operateFormatter(value, row, index) {
 
         return [

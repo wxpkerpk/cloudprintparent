@@ -1,7 +1,6 @@
 package com.wx.cloudprint.dataservice.entity;
 
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -22,7 +21,6 @@ public class Point implements Serializable {
      String message;
      String image;
      String price;
-     @JsonIgnore
      String addressId;
     public String getPrice() {
         return price;

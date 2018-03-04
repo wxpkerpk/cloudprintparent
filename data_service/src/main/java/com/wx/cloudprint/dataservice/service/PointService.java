@@ -21,8 +21,8 @@ public class PointService {
         pointDao.save(point);
     }
     @Transactional
-    public void delete(Point point){
-        pointDao.delete(point);
+    public void delete(String id) {
+        pointDao.delete(id);
     }
 
 

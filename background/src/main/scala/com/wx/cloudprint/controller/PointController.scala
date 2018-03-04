@@ -6,6 +6,7 @@ import com.wx.cloudprint.dataservice.service.{AddressService, PointService}
 import com.wx.cloudprint.dataservice.utils.JqGridPageView
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Controller
+import org.springframework.ui.Model
 import org.springframework.web.bind.annotation.{RequestMapping, RequestMethod, ResponseBody}
 
 @Controller
@@ -22,8 +23,36 @@ class PointController {
   }
 
   @RequestMapping(value = Array("/from"), method = Array(RequestMethod.GET))
-  def from(): String = {
+  def from(model: Model): String = {
+    val point = new Point
+    model.addAttribute("point", point)
+
     "console/point/from"
+  }
+
+  @RequestMapping(value = Array("/edit"), method = Array(RequestMethod.GET))
+  def edit(id: String
+           , model: Model): String = {
+    val point = pointService.get(id)
+    model.addAttribute("point", point)
+
+    "console/point/from"
+  }
+
+  @RequestMapping(value = Array("/delete"), method = Array(RequestMethod.GET))
+  @ResponseBody
+  def delete(ids: Array[String]
+            ) = {
+    ids.foreach(
+      try {
+        pointService.delete(_)
+      } finally {
+
+      }
+    )
+    ReturnUtil.Success("删除成功" +
+      "", null, null)
+
   }
 
   @RequestMapping(value = Array("/address"), method = Array(RequestMethod.GET))
@@ -72,24 +101,42 @@ class PointController {
 
   }
 
+  @RequestMapping(value = Array("/getAddress"), method = Array(RequestMethod.GET))
+  @ResponseBody
+  def getAddress(id: String) = {
+
+
+    if (id != null && !id.equals("")) {
+      val address = addressSErvice.get(id)
+      val parent1 = address.getParent.getId
+      val parent2 = address.getParent.getParent.getId
+      Array(parent2, parent1)
+    } else {
+      Array.empty[String]
+    }
+
+  }
+
+
   @RequestMapping(value = Array("/deleteAddress"), method = Array(RequestMethod.GET))
   @ResponseBody
-  def delete(id: String): String = {
+  def deleteAddress(id: String) = {
 
     addressSErvice.delete(id)
 
-    "成功"
+    ReturnUtil.Success("操作成功", null, null)
 
   }
 
   @RequestMapping(value = Array("/save"), method = Array(RequestMethod.POST))
   @ResponseBody
-  def save(address: String, addressId: String, pointName: String, delivery_scope: String, phone: String, minCharge: Float, delivery_time: String) = {
+  def save(id: String, address: String, addressId: String, pointName: String, delivery_scope: String, phone: String, minCharge: Float, delivery_time: String) = {
 
     val point = new Point
+    if (id != null && !id.equals(""))
+      point.setId(id)
     point.setPointName(pointName)
     point.setAddress(address)
-    point.setAddress(addressId)
     point.setAddressId(addressId)
     point.setDelivery_scope(delivery_scope)
     point.setDelivery_time(delivery_time)

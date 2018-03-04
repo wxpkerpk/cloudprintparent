@@ -5,14 +5,14 @@
 </head>
 <body>
 <section class="content-header">
-    <h1>打印店管理</h1>
-    <small>打印店管理</small>
+    <h1>打印店价格管理</h1>
+    <small>打印店价格管理</small>
 </section>
 <section class="content table-content">
     <table id="dataGrid"></table>
 </section>
 <div id="toolbar">
-    <a href="/console/point/from" class="btn btn-primary">添加打印店</a>
+    <a href="/console/point/from" class="btn btn-primary">添加价格条目</a>
 </div>
 <div th:include="console/footer"></div>
 </body>
@@ -25,7 +25,7 @@
     function initDataGrid() {
         $table.bootstrapTable({
             height: tableModel.getHeight(),
-            idField: "uid",
+            idField: "id",
             columns: [[
                 {title: "名称", field: "pointName"},
                 {title: "地址", field: "address"},
@@ -43,7 +43,6 @@
             sortName: 'createdAt',
             sortOrder: 'asc',
             pagination: false,
-            sidePagination: 'server',
             toolbar: "#toolbar",
             showRefresh: true,
             showToggle: true
@@ -52,9 +51,9 @@
 
 
     function operateFormatter(value, row, index) {
-        if (row.isSystem == 0) {
+
             return [
-                '<a href="/console/admin/from?uid=' + row.uid + '" >',
+                '<a href="/console/point/edit?id=' + row.id + '" >',
                 '<i class="glyphicon glyphicon-edit"></i>修改',
 
 
@@ -63,12 +62,12 @@
                 '<i class="glyphicon glyphicon-remove"></i>删除',
                 '</a>'
             ].join('');
-        }
+
     }
 
     window.operateEvents = {
         'click .remove': function (e, value, row, index) {
-            operaModel.delRow(row.uid, '/console/admin/delete', 'uid');
+            operaModel.delRow(row.id, '/console/point/delete', 'id');
         }
     };
 </script>

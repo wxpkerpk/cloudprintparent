@@ -51,25 +51,17 @@ class PriceController {
 
   @RequestMapping(value = Array("/save"), method = Array(RequestMethod.POST))
   @ResponseBody
-  def save(address: String, addressId: String, pointName: String, delivery_scope: String, phone: String, minCharge: Float, delivery_time: String) = {
+  def save(pointId: String, priceArray: String) = {
 
-    val point = new Point
-    point.setPointName(pointName)
-    point.setAddress(address)
-    point.setAddress(addressId)
-    point.setAddressId(addressId)
-    point.setDelivery_scope(delivery_scope)
-    point.setDelivery_time(delivery_time)
-    point.setMinCharge(minCharge)
-    point.setPhone(phone)
+
+    val point = pointService.get(pointId)
+    point.setPrice(priceArray)
     pointService.add(point)
     //    addressSErvice.delete(id)
-
     ReturnUtil.Success("操作成功", null, null)
 
 
   }
-
 
   val gson = new Gson()
   @Autowired
@@ -80,12 +72,20 @@ class PriceController {
     val userName=request.getSession.getAttribute("currentUser").asInstanceOf[String]
     val userInfo = adminService.findByUsername(userName)
      val pointId=   userInfo.getPointId
-    val jqGridPageView = new JqGridPageView[Object]()
+    val jqGridPageView = new JqGridPageView[java.util.Map[String, Object]]()
 
     if (pointId != null) {
       val point = pointService.get(pointId)
-      if (!point.getPrice.equals("")) {
-        val list = gson.fromJson(point.getPrice, classOf[java.util.ArrayList[Object]])
+      if (point.getPrice != null && !point.getPrice.equals("")) {
+        var i: Integer = 0
+        val list = gson.fromJson(point.getPrice, classOf[java.util.ArrayList[java.util.Map[String, Object]]])
+
+        while (i < list.size()) {
+          list.get(i).put("id", i)
+          i += 1
+
+        }
+
         //    jqGridPageView.setMaxResults(list.getTotalCount)
         jqGridPageView.setRows(list)
         jqGridPageView.setPage(1)

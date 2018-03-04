@@ -9,42 +9,53 @@
         <div class="col-md-6 col-md-offset-3">
             <div class="box box-primary">
 
+
                 <div class="box-body">
+                    <input style="display: none" id="addressId" th:value="${point.addressId}">
+
                     <form class="form-horizontal js-ajax-form" action="/console/point/save" method="post">
                         <div class="form-group">
+                            <input style="display: none" id="id" name="id" th:value="${point.id}">
+
                             <label for="pointName" class="col-sm-2 control-label">打印店名称</label>
                             <div class="col-sm-10">
-                                <input type="text" name="pointName" class="form-control" id="pointName"/>
+                                <input type="text" name="pointName" class="form-control" id="pointName"
+                                       th:value="${point.pointName}"/>
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="delivery_scope" class="col-sm-2 control-label">配送范围</label>
                             <div class="col-sm-10">
-                                <input type="text" name="delivery_scope" class="form-control" id="delivery_scope"/>
+                                <input type="text" name="address" class="form-control" id="address"
+                                       th:value="${point.address}"/>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="delivery_scope" class="col-sm-2 control-label">配送范围</label>
+                            <div class="col-sm-10">
+                                <input type="text" name="delivery_scope" class="form-control" id="delivery_scope"
+                                       th:value="${point.delivery_scope}"/>
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="phone" class="col-sm-2 control-label">电话</label>
                             <div class="col-sm-10">
-                                <input type="tel" name="phone" class="form-control" id="phone"/>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label for="address" class="col-sm-2 control-label">最小起送金额</label>
-                            <div class="col-sm-10">
-                                <input type="text" name="address" class="form-control" id="address"/>
+                                <input type="tel" name="phone" class="form-control" id="phone"
+                                       th:value="${point.phone}"/>
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="minCharge" class="col-sm-2 control-label">最小起送金额</label>
                             <div class="col-sm-10">
-                                <input type="text" name="minCharge" class="form-control" id="minCharge"/>
+                                <input type="text" name="minCharge" class="form-control" id="minCharge"
+                                       th:value="${point.minCharge}"/>
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="delivery_time" class="col-sm-2 control-label">配送时间</label>
                             <div class="col-sm-10">
-                                <input type="text" name="delivery_time" class="form-control" id="delivery_time"/>
+                                <input type="text" name="delivery_time" class="form-control" id="delivery_time"
+                                       th:value="${point.delivery_time}"/>
                             </div>
                         </div>
 
@@ -99,6 +110,27 @@
 
     }
 
+    function initAddress() {
+        var addressId = $("#addressId").val()
+
+        $.ajax({
+            url: "/console/point/getAddress",
+            method: "get",
+            data: {"id": addressId},
+            success: function (dataArray) {
+                if (dataArray.length > 1) {
+                    $("#address1").val(dataArray[0])
+                    $("#address1").trigger("change");
+
+                    $("#address2").val(dataArray[1])
+                    $("#address2").trigger("change");
+
+                    $("#address3").val(addressId)
+                }
+
+            }
+        })
+    }
     function initArea() {
 
 
@@ -137,6 +169,7 @@
                 }
                 map = data
                 changeSelect('address1', 'address1')
+                initAddress()
             }
 
 

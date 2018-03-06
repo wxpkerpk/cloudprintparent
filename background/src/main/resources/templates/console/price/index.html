@@ -5,25 +5,65 @@
 </head>
 <body>
 <section class="content-header">
-    <h1>价格设置</h1>
-    <small>商户价格设置</small>
+    <h1 th:text="${point.pointName}"></h1>
+    <input style="display: none" id="pointId" name="pointId" th:value="${point.id}">
+
 </section>
 <section class="content table-content">
     <table id="dataGrid"></table>
 </section>
 <div id="toolbar">
-    <a href="/console/point/from" class="btn btn-primary">添加打印店</a>
+    <a href="#" class="btn btn-primary" onclick="addPrice()">添加价格条目</a>
 </div>
 <div style="display: none;">
-    <form class="form-horizontal js-ajax-form" action="/console/point/save" method="post">
-        <div class="form-group">
-            <input style="display: none" id="id" name="id">
+    <form class="form-horizontal js-ajax-form" method="post" id="pricePanel">
+        <div class="row">
+            <div class="form-group ">
+                <div class="box-body">
+                    <input style="display: none" id="id" name="id">
+                    <div class="form-group">
+                        <label for="size" class="col-sm-2 control-label">纸张大小</label>
+                        <div class="col-sm-10">
+                            <select type="text" name="size" class="form-control" id="size">
+                                <option value="A4" selected="selected">A4</option>
+                                <option value="A3">A3</option>
 
-            <label for="size" class="col-sm-2 control-label">纸张大小</label>
-            <div class="col-sm-10">
-                <input type="text" name="size" class="form-control" id="size"/>
+                                <option value="A5">A5</option>
+
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+
+                        <label for="caliper" class="col-sm-2 control-label">纸张厚度</label>
+                        <div class="col-sm-10">
+                            <input type="text" name="caliper" class="form-control" id="caliper"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+
+                        <label for="mono_oneside" class="col-sm-2 control-label">黑白单页价格</label>
+                        <div class="col-sm-10">
+                            <input type="text" name="mono.oneside" class="form-control" id="mono_oneside"/>
+                        </div>
+                        <label for="mono_duplex" class="col-sm-2 control-label">黑白双页价格</label>
+                        <div class="col-sm-10">
+                            <input type="text" name="mono.duplex" class="form-control" id="mono_duplex"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="colorful_oneside" class="col-sm-2 control-label">彩色单页价格</label>
+                        <div class="col-sm-10">
+                            <input type="text" name="colorful.oneside" class="form-control" id="colorful_oneside"/>
+                        </div>
+                        <label for="colorful_duplex" class="col-sm-2 control-label">彩色单页价格</label>
+                        <div class="col-sm-10">
+                            <input type="text" name="colorful.duplex" class="form-control" id="colorful_duplex"/>
+                        </div>
+
+                    </div>
+                </div>
             </div>
-
         </div>
     </form>
 
@@ -65,16 +105,68 @@
         });
     }
 
-    function addPrice() {
-        var data = $table.bootstrapTable('getData');
+    function search() {
+        $table.bootstrapTable('refresh');
 
-        data.push()
     }
 
-    function save(pointId, data, callback) {
+    function addRow() {
+
+    }
+    function addPrice() {
+        var content = ($("#pricePanel").html())
+        layer.open({
+            type: 1,
+            title: '价格添加',
+            shadeClose: true,
+            shade: false,
+            maxmin: true, //开启最大化最小化按钮
+            area: ['800px', '400px'],
+            content: content,
+            success: function () {
+                content = $(content)
+                content.find("input").val("")
+            },
+            btn: ['确定', '取消'],
+            yes: function (index, layero) {
+                var content = $(layero)
+                var data = $table.bootstrapTable('getData');
+                var row = {}
+                var money = {}
+                row["money"] = money
+                row['size'] = content.find("#size").val()
+                row['caliper'] = content.find("#caliper").val()
+
+                if (content.find("#mono_oneside").val() !== "" && content.find("#mono_duplex").val() !== "") {
+                    money["mono"] = {}
+                    if (content.find("#mono_oneside").val() !== "") money['mono']['oneside'] = content.find("#mono_oneside").val()
+                    if (content.find("#mono_duplex").val() !== "") money["mono"]['duplex'] = content.find("#mono_duplex").val()
+                }
+                if (content.find("#colorful_oneside").val() !== "" && content.find("#colorful_duplex").val() !== "") {
+                    money["colorful"] = {}
+
+                    if (content.find("#colorful_oneside").val() !== "") money['colorful']['oneside'] = content.find("#colorful_oneside").val()
+                    if (content.find("#colorful_duplex").val() !== "") money["colorful"]['duplex'] = content.find("#colorful_duplex").val()
+                }
+                data.push(row)
+                save(data, search)
+                layer.close(index);
+            },
+            no: function (index) {
+                layer.close(index);
+
+            }
+        });
+
+
+    }
+
+    function save(data, callback) {
+        data = JSON.stringify(data)
         $.ajax({
             url: "/console/price/save",
-            data: {'pointId': orderId, 'priceArray': data},
+            data: {'priceArray': data, 'currentPointId': $("#pointId").val()},
+            method: "POST",
             success: function (data) {
                 $table.bootstrapTable('refresh');
                 callback()
@@ -84,7 +176,7 @@
 
         })
     }
-    
+
     function operateFormatter(value, row, index) {
 
         return [
@@ -98,7 +190,11 @@
 
     window.operateEvents = {
         'click .remove': function (e, value, row, index) {
-            operaModel.delRow(row.uid, '/console/admin/delete', 'uid');
+            var data = $table.bootstrapTable('getData');
+
+            var id = row.id
+            data.splice(id, 1)
+            save(data, search)
         }
     };
 </script>

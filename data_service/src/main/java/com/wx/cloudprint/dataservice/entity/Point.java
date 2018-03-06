@@ -12,7 +12,7 @@ public class Point implements Serializable {
     @GeneratedValue(generator = "uuid")
     @GenericGenerator(name = "uuid", strategy = "org.hibernate.id.UUIDGenerator")
     String id;
-    String status;
+    String status = "RUNNING";
     String delivery_scope;
     String delivery_time;
     String phone;

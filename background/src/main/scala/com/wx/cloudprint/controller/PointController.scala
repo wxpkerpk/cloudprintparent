@@ -44,11 +44,8 @@ class PointController {
   def delete(ids: Array[String]
             ) = {
     ids.foreach(
-      try {
         pointService.delete(_)
-      } finally {
 
-      }
     )
     ReturnUtil.Success("删除成功" +
       "", null, null)
@@ -66,7 +63,6 @@ class PointController {
 
     val list = pointService.getAll
     val jqGridPageView = new JqGridPageView[Point]()
-    //    jqGridPageView.setMaxResults(list.getTotalCount)
     jqGridPageView.setRows(list)
     jqGridPageView.setPage(1)
     jqGridPageView.setTotal(list.size())

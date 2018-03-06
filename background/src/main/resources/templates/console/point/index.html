@@ -5,14 +5,14 @@
 </head>
 <body>
 <section class="content-header">
-    <h1>打印店价格管理</h1>
-    <small>打印店价格管理</small>
+    <h1>打印店管理</h1>
+    <small>打印店管理</small>
 </section>
 <section class="content table-content">
     <table id="dataGrid"></table>
 </section>
 <div id="toolbar">
-    <a href="/console/point/from" class="btn btn-primary">添加价格条目</a>
+    <a href="/console/point/from" class="btn btn-primary">添加打印店</a>
 </div>
 <div th:include="console/footer"></div>
 </body>
@@ -25,7 +25,7 @@
     function initDataGrid() {
         $table.bootstrapTable({
             height: tableModel.getHeight(),
-            idField: "id",
+            idField: "uid",
             columns: [[
                 {title: "名称", field: "pointName"},
                 {title: "地址", field: "address"},
@@ -43,6 +43,7 @@
             sortName: 'createdAt',
             sortOrder: 'asc',
             pagination: false,
+            sidePagination: 'server',
             toolbar: "#toolbar",
             showRefresh: true,
             showToggle: true
@@ -52,16 +53,16 @@
 
     function operateFormatter(value, row, index) {
 
-            return [
-                '<a href="/console/point/edit?id=' + row.id + '" >',
-                '<i class="glyphicon glyphicon-edit"></i>修改',
+        return [
+            '<a href="/console/point/edit?id=' + row.id + '" >',
+            '<i class="glyphicon glyphicon-edit"></i>修改',
 
 
-                '</a>  ',
-                '<a class="remove" href="javascript:void(0);">',
-                '<i class="glyphicon glyphicon-remove"></i>删除',
-                '</a>'
-            ].join('');
+            '</a>  ',
+            '<a class="remove" href="javascript:void(0);">',
+            '<i class="glyphicon glyphicon-remove"></i>删除',
+            '</a>'
+        ].join('');
 
     }
 

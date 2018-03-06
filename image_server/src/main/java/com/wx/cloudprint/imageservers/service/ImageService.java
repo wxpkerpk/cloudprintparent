@@ -18,6 +18,9 @@ public class ImageService {
     public static final int A4_height = 297;
     public static final int A3_width = 297;
     public static final int A3_height = 420;
+    public static final int A5_width = 210;
+    public static final int A5_height = 148;
+
     public static float scala = 4;
     private static ColorConvertOp colorConvertOp = new ColorConvertOp(ColorSpace.getInstance(ColorSpace.CS_GRAY), null);
 
@@ -38,13 +41,30 @@ public class ImageService {
 
         int width = 0;
         int height = 0;
-        if (paperType.equals("A4")) {
-            width = (int) (A4_width * scala);
-            height = (int) (A4_height * scala);
-        } else if (paperType.equals("A3")) {
-            width = (int) (A3_width * scala);
-            height = (int) (A3_height * scala);
+
+
+        switch (paperType) {
+            case "A4": {
+                width = (int) (A4_width * scala);
+                height = (int) (A4_height * scala);
+                break;
+
+            }
+            case "A3": {
+                width = (int) (A3_width * scala);
+                height = (int) (A3_height * scala);
+                break;
+            }
+            case "A5": {
+
+                width = (int) (A5_width * scala);
+                height = (int) (A5_height * scala);
+
+            }
+
+
         }
+
         if ((col >= row && col >= 2) ||(col==row&&row==1&!isDirection)) {
             int temp = width;
             width = height;

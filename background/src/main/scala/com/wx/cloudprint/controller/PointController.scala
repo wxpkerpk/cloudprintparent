@@ -1,7 +1,7 @@
 package com.wx.cloudprint.controller
 
 import com.geekcattle.util.ReturnUtil
-import com.wx.cloudprint.dataservice.entity.{Address, Point}
+import com.wx.cloudprint.dataservice.entity.{Address, Dispatch, Point}
 import com.wx.cloudprint.dataservice.service.{AddressService, PointService}
 import com.wx.cloudprint.dataservice.utils.JqGridPageView
 import org.springframework.beans.factory.annotation.Autowired
@@ -25,6 +25,8 @@ class PointController {
   @RequestMapping(value = Array("/from"), method = Array(RequestMethod.GET))
   def from(model: Model): String = {
     val point = new Point
+    val dispatch = new Dispatch
+    point.setDispatch(dispatch)
     model.addAttribute("point", point)
 
     "console/point/from"
@@ -126,7 +128,8 @@ class PointController {
 
   @RequestMapping(value = Array("/save"), method = Array(RequestMethod.POST))
   @ResponseBody
-  def save(id: String, address: String, addressId: String, pointName: String, delivery_scope: String, phone: String, minCharge: Float, delivery_time: String) = {
+  def save(id: String, address: String, addressId: String, pointName: String,
+           delivery_scope: String, phone: String, minCharge: Float, delivery_time: String, distributionCharge: Float) = {
 
     val point = new Point
     if (id != null && !id.equals(""))
@@ -136,6 +139,10 @@ class PointController {
     point.setAddressId(addressId)
     point.setDelivery_scope(delivery_scope)
     point.setDelivery_time(delivery_time)
+    val dispath = new Dispatch
+    dispath.setDistributionStart(minCharge)
+    dispath.setDistributionStart(distributionCharge)
+    point.setDispatch(dispath)
     point.setMinCharge(minCharge)
     point.setPhone(phone)
     pointService.add(point)

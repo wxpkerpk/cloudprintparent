@@ -91,6 +91,10 @@
             ]],
             url: '/console/price/getPrice',
             queryParams: function (params) {
+                var pointId = $("#pointId").val()
+                if (pointId !== "") {
+                    params["currentPointId"] = pointId
+                }
                 return params;
             },
             search: false,

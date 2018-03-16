@@ -24,8 +24,8 @@ class PayController extends BaseController{
   def payment(orderID:String,payway:String):JsonNode={
     val order=orderService.get(orderID)
     if("ALIPAY".equals(payway)){
-      val re = new Alipay().open(orderID, order.getMoney.toString, "test", "")
-      order.setPayState(Order.States.PAID.toString) //测试用
+      val re = new Alipay().open(orderID, order.getMoney.toString, "知书云打印", "")
+      //order.setPayState(Order.States.PAID.toString) //测试用
       order.setPayWay("ALIPAY")
       orderService.add(order)
 

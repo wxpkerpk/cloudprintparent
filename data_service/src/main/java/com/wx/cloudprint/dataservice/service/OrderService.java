@@ -62,6 +62,8 @@ public class OrderService {
             sql=String.format("from " + EntityNameUtil.getEntityName(Order.class) + " u where u.payState='%s' ",type);
 
         }
+        LinkedHashMap<String, String> ordered = new LinkedHashMap<>();
+        sql += " order by u.id desc";
         List<Order>orderList= (List<Order>) session.createQuery(sql).setFirstResult((page-1)*rows).setMaxResults(rows).list();
         session.close();
         return orderList;

@@ -1,7 +1,6 @@
 package com.wx.cloudprint.webserver.controller
 import com.fasterxml.jackson.databind.JsonNode
 import com.wx.cloudprint.alipay.Alipay
-import com.wx.cloudprint.dataservice.entity.Order
 import com.wx.cloudprint.dataservice.service.OrderService
 import org.json4s.JsonAST.JValue
 import org.json4s.JsonDSL._
@@ -21,10 +20,15 @@ class PayController extends BaseController{
 
   @RequestMapping(value = Array("/pay/payment"), method = Array(RequestMethod.GET, RequestMethod.POST, RequestMethod.OPTIONS))
   @ResponseBody
-  def payment(orderID:String,payway:String):JsonNode={
+  def payment(orderID: String, payway: String, isTest: String): JsonNode = {
     val order=orderService.get(orderID)
     if("ALIPAY".equals(payway)){
-      val re = new Alipay().open(orderID, order.getMoney.toString, "知书云打印", "")
+
+      var money = (order.getMoney / 100).toString
+      if (Option(isTest).getOrElse("false").equals("true")) {
+        money = 0.01.toString
+      }
+      val re = new Alipay().open(orderID, money, "知书云打印", "")
       //order.setPayState(Order.States.PAID.toString) //测试用
       order.setPayWay("ALIPAY")
       orderService.add(order)

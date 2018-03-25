@@ -44,7 +44,7 @@ class PayController extends BaseController{
   def trade(orderID:String):JsonNode={
     val order=orderService.get(orderID)
 
-    ("result"->"OK")~("info"->order.getPayState )
+    ("result" -> "OK") ~ ("info" -> ("state" -> order.getPayState))
 
   }
 }

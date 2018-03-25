@@ -63,7 +63,7 @@ public class OrderService {
 
         }
         LinkedHashMap<String, String> ordered = new LinkedHashMap<>();
-        sql += " order by u.id desc";
+        sql += " ORDER BY orderDate DESC";
         List<Order>orderList= (List<Order>) session.createQuery(sql).setFirstResult((page-1)*rows).setMaxResults(rows).list();
         session.close();
         return orderList;
